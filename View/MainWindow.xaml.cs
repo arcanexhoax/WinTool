@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using WinTool.ViewModel;
 
 namespace WinTool
@@ -12,6 +13,12 @@ namespace WinTool
         {
             DataContext = new MainViewModel();
             InitializeComponent();
+        }
+
+        private void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Hide();
         }
     }
 }

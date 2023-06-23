@@ -37,12 +37,12 @@ namespace WinTool.ViewModel
             {
                 if (!string.IsNullOrEmpty(FileName))
                 {
-                    result(new CreateFileResult(true, Path.Combine(folderPath, FileName)));
+                    result?.Invoke(new CreateFileResult(true, Path.Combine(folderPath, FileName)));
                     _window?.Close();
                 }
             });
             WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            WindowClosingCommand = new DelegateCommand(() =>  result(new CreateFileResult(false, null)));
+            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new CreateFileResult(false, null)));
         }
     }
 }

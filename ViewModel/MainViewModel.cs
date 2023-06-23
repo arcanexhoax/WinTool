@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,7 +11,6 @@ using System.Windows.Input;
 using WinTool.Enum;
 using WinTool.Model;
 using WinTool.Modules;
-using WinTool.Native;
 using WinTool.View;
 
 namespace WinTool.ViewModel
@@ -19,10 +19,20 @@ namespace WinTool.ViewModel
     {
         private readonly SemaphoreSlim _semaphore = new(1);
 
+        private Window? _window;
+
+        public DelegateCommand<Window> WindowLoadedCommand { get; }
+        public DelegateCommand OpenWindowCommand { get; }
+        public DelegateCommand CloseWindowCommand { get; }
+
         public MainViewModel()
         {
             KeyHooker hooker = new(Key.E);
             hooker.KeyHooked += OnKeyHooked;
+
+            WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
+            OpenWindowCommand = new DelegateCommand(() => _window?.Show());
+            CloseWindowCommand = new DelegateCommand(() => Application.Current.Shutdown());
         }
 
         private async void OnKeyHooked(object? sender, KeyHookedEventArgs e)
