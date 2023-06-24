@@ -19,19 +19,15 @@ namespace WinTool.ViewModel
     {
         private readonly SemaphoreSlim _semaphore = new(1);
 
-        private Window? _window;
-
-        public DelegateCommand<Window> WindowLoadedCommand { get; }
         public DelegateCommand OpenWindowCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
-        public MainViewModel()
+        public MainViewModel(Window window)
         {
             KeyHooker hooker = new(Key.E);
             hooker.KeyHooked += OnKeyHooked;
 
-            WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            OpenWindowCommand = new DelegateCommand(() => _window?.Show());
+            OpenWindowCommand = new DelegateCommand(() => window.Show());
             CloseWindowCommand = new DelegateCommand(() => Application.Current.Shutdown());
         }
 
@@ -79,6 +75,7 @@ namespace WinTool.ViewModel
                                     MessageBox.Show($"File '{r.FilePath}' already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         });
+
                         CreateFileView createFileView = new(createFileVm);
                         createFileView.Show();
                         createFileView.Activate();

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WinTool": {
+      "commandName": "Project",
+      "commandLineArgs": "-background 0"
+    }
+  }
+}

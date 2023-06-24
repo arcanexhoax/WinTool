@@ -11,7 +11,7 @@ namespace WinTool
     {
         public MainWindow()
         {
-            DataContext = new MainViewModel();
+            DataContext = new MainViewModel(this);
             InitializeComponent();
         }
 
