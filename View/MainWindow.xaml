@@ -29,5 +29,49 @@
                 </Border>
             </tb:TaskbarIcon.TrayPopup>
         </tb:TaskbarIcon>
+
+        <TabControl>
+            <TabItem Header="Shortcuts">
+                <Border Padding="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Ctrl + E"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="Create file"
+                                   Margin="25 0 0 0"
+                                   Grid.Column="1" />
+                        <TextBlock Text="Ctrl + Shift + E"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="1" />
+                        <TextBlock Text="Fast file creation"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="1"
+                                   Grid.Column="1" />
+                        <TextBlock Text="Ctrl + Shift + C"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="2" />
+                        <TextBlock Text="Copy selected item path (If no one item is selected, opened folder path will be copied. If many items are selected, nothing will happen)"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="2"
+                                   Grid.Column="1"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                </Border>
+            </TabItem>
+            <TabItem Header="Settings">
+                <Border Padding="10">
+                    
+                </Border>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
