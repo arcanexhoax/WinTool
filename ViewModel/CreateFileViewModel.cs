@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using WinTool.Model;
 
@@ -31,7 +32,8 @@ namespace WinTool.ViewModel
 
         public CreateFileViewModel(string folderPath, Action<CreateFileResult> result)
         {
-            RelativeFolderPath = folderPath;
+            Uri folderUri = new(folderPath);
+            RelativeFolderPath = folderUri.Segments.Last().TrimEnd('/') + "/";
 
             CreateCommand = new DelegateCommand(() =>
             {
