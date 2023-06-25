@@ -1,9 +1,11 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Win32;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -17,18 +19,77 @@ namespace WinTool.ViewModel
 {
     public class MainViewModel : BindableBase
     {
+        private const string RegKeyName = "WinTool";
+
         private readonly SemaphoreSlim _semaphore = new(1);
+        private readonly SettingsManager _settingsManager = new();
+        private readonly Settings _settings;
+        private readonly string _executionFilePath;
+
+        private bool _launchOnWindowsStartup;
+        private bool _areUiElementsEnabled;
+
+        public bool LaunchOnWindowsStartup
+        {
+            get => _launchOnWindowsStartup;
+            set
+            {
+                AreUiElementsEnabled = false;
+
+                try
+                {
+                    using RegistryKey runKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true) ??
+                        throw new InvalidOperationException("Unable to open registry.");
+
+                    if (value)
+                    {
+                        runKey.SetValue(RegKeyName, _executionFilePath);
+                    }
+                    else
+                    {
+                        if (runKey.GetValue(RegKeyName) is not null)
+                            runKey.DeleteValue(RegKeyName);
+                    }
+
+                    _settings.WindowsStartupEnabled = value;
+                    _settingsManager.UpdateSettings(_settings);
+
+                    SetProperty(ref _launchOnWindowsStartup, value);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Unable to set windows startup. {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    AreUiElementsEnabled = true;
+                }
+            }
+        }
+
+        public bool AreUiElementsEnabled
+        {
+            get => _areUiElementsEnabled;
+            set => SetProperty(ref _areUiElementsEnabled, value);
+        }
 
         public DelegateCommand OpenWindowCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
         public MainViewModel(Window window)
         {
+            string? exeFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            // use arg "-background 1" to start app in background mode
+            _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} -background 1";
+
             KeyHooker hooker = new(Key.E, Key.C);
             hooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
             CloseWindowCommand = new DelegateCommand(() => Application.Current.Shutdown());
+
+            _settings = _settingsManager.GetSettings() ?? new Settings();
+            LaunchOnWindowsStartup = _settings.WindowsStartupEnabled;
         }
 
         private async void OnKeyHooked(object? sender, KeyHookedEventArgs e)

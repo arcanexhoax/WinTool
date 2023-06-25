@@ -59,7 +59,7 @@
                         <TextBlock Text="Ctrl + Shift + C"
                                    FontWeight="SemiBold"
                                    Grid.Row="2" />
-                        <TextBlock Text="Copy selected item path (If no one item is selected, opened folder path will be copied. If many items are selected, nothing will happen)"
+                        <TextBlock Text="Copy path to selected item (If no item is selected, the path to the open folder will be copied. If many items are selected, nothing will happen)"
                                    Margin="25 0 0 0"
                                    Grid.Row="2"
                                    Grid.Column="1"
@@ -69,7 +69,11 @@
             </TabItem>
             <TabItem Header="Settings">
                 <Border Padding="10">
-                    
+                    <CheckBox Content="Launch on Windows start up"
+                              IsChecked="{Binding LaunchOnWindowsStartup}"
+                              IsEnabled="{Binding AreUiElementsEnabled}"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"/>
                 </Border>
             </TabItem>
         </TabControl>
