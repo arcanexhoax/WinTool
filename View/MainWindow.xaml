@@ -6,10 +6,10 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:WinTool"
         mc:Ignorable="d"
-        Title="MainWindow"
         Height="450"
         Width="800"
         x:Name="mainWindow"
+        WindowStartupLocation="CenterScreen"
         Closing="OnWindowClosing">
     <Grid>
         <tb:TaskbarIcon Visibility="Visible"
@@ -35,6 +35,7 @@
                 <Border Padding="10">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
@@ -64,12 +65,21 @@
                                    Grid.Row="2"
                                    Grid.Column="1"
                                    TextWrapping="Wrap" />
+                        <TextBlock Text="Ctrl + Shift + O"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="3" />
+                        <TextBlock Text="Run exe-file with arguments"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="3"
+                                   Grid.Column="1" />
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="Settings">
+            <TabItem Header="Settings"
+                     Height="20"
+                     VerticalAlignment="Top">
                 <Border Padding="10">
-                    <CheckBox Content="Launch on Windows start up"
+                    <CheckBox Content="Launch on Windows startup"
                               IsChecked="{Binding LaunchOnWindowsStartup}"
                               IsEnabled="{Binding AreUiElementsEnabled}"
                               VerticalAlignment="Top"

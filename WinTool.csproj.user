@@ -10,12 +10,18 @@
     <Compile Update="View\CreateFileView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\RunWithArgsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\CreateFileView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\RunWithArgsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

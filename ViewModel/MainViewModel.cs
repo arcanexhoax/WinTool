@@ -82,7 +82,7 @@ namespace WinTool.ViewModel
             // use arg "-background 1" to start app in background mode
             _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} -background 1";
 
-            KeyHooker hooker = new(Key.E, Key.C);
+            KeyHooker hooker = new(Key.E, Key.C, Key.O);
             hooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
@@ -96,72 +96,98 @@ namespace WinTool.ViewModel
         {
             await _semaphore.WaitAsync();
 
-            if (e.Key == Key.E)
+            switch (e.Key)
             {
-                if (e.Modifier.HasFlag(KeyModifier.Ctrl))
-                {
-                    string? path = await Shell.GetActiveExplorerPathAsync();
-
-                    if (string.IsNullOrEmpty(path))
-                        return;
-
-                    if (e.Modifier.HasFlag(KeyModifier.Shift))
+                case Key.E:
+                    if (e.Modifier.HasFlag(KeyModifier.Ctrl))
                     {
-                        DirectoryInfo di = new(path);
-                        int num = 0;
+                        string? path = await Shell.GetActiveExplorerPathAsync();
 
-                        try
+                        if (string.IsNullOrEmpty(path))
+                            return;
+
+                        if (e.Modifier.HasFlag(KeyModifier.Shift))
                         {
-                            var numbers = di.EnumerateFiles("NewFile_*.txt").Select(f => int.Parse(Regex.Match(f.Name, @"\d+").Value));
+                            DirectoryInfo di = new(path);
+                            int num = 0;
 
-                            if (numbers.Any())
-                                num = numbers.Max() + 1;
+                            try
+                            {
+                                var numbers = di.EnumerateFiles("NewFile_*.txt").Select(f => int.Parse(Regex.Match(f.Name, @"\d+").Value));
 
-                            using (File.Create(Path.Combine(path, $"NewFile_{num}.txt"))) { }
+                                if (numbers.Any())
+                                    num = numbers.Max() + 1;
+
+                                using (File.Create(Path.Combine(path, $"NewFile_{num}.txt"))) { }
+                            }
+                            catch (Exception ex)
+                            {
+                                Trace.WriteLine(ex.Message);
+                            }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Trace.WriteLine(ex.Message);
+                            CreateFileViewModel createFileVm = new(path, r =>
+                            {
+                                if (r.Success && !string.IsNullOrEmpty(r.FilePath))
+                                {
+                                    if (!File.Exists(r.FilePath))
+                                        using (File.Create(r.FilePath)) { }
+                                    else
+                                        MessageBox.Show($"File '{r.FilePath}' already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            });
+
+                            CreateFileView createFileView = new(createFileVm);
+                            createFileView.Show();
+                            createFileView.Activate();
                         }
                     }
-                    else
+                    break;
+                case Key.C:
+                    if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
                     {
-                        CreateFileViewModel createFileVm = new(path, r => 
+                        var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
+
+                        // if there are no selections - copy folder path, if one item selected - copy item's path, else - not copying
+                        if (selectedPaths.Count == 0)
                         {
-                            if (r.Success && !string.IsNullOrEmpty(r.FilePath))
+                            string? folderPath = await Shell.GetActiveExplorerPathAsync();
+                            Clipboard.SetText(folderPath);
+                        }
+                        else if (selectedPaths.Count == 1)
+                        {
+                            Clipboard.SetText(selectedPaths[0]);
+                        }
+                    }
+                    break;
+                case Key.O:
+                    if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
+                    {
+                        var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
+
+                        if (selectedPaths.Count != 1 || Path.GetExtension(selectedPaths[0]) != ".exe")
+                            return;
+
+                        string selectedItem = selectedPaths[0];
+                        RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], r =>
+                        {
+                            if (r.Success)
                             {
-                                if (!File.Exists(r.FilePath))
-                                    using (File.Create(r.FilePath)) { }
+                                if (File.Exists(selectedItem))
+                                    using (Process.Start(selectedItem, r.Args ?? string.Empty)) { }
                                 else
-                                    MessageBox.Show($"File '{r.FilePath}' already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show($"File '{selectedItem}' doesn't exist.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         });
 
-                        CreateFileView createFileView = new(createFileVm);
-                        createFileView.Show();
-                        createFileView.Activate();
+                        RunWithArgsWindow runWithArgsWindow = new(runWithArgsVm);
+                        runWithArgsWindow.Show();
+                        runWithArgsWindow.Activate();
                     }
-                }
+                    break;
             }
-            else if (e.Key == Key.C)
-            {
-                if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
-                {
-                    var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
-
-                    // if there are no selections - copy folder path, if one item selected - copy item's path, else - not copying
-                    if (selectedPaths.Count == 0)
-                    {
-                        string? folderPath = await Shell.GetActiveExplorerPathAsync();
-                        Clipboard.SetText(folderPath);
-                    }
-                    else if (selectedPaths.Count == 1)
-                    {
-                        Clipboard.SetText(selectedPaths[0]);
-                    }
-                }
-            }
-
+            
             _semaphore.Release();
         }
     }
