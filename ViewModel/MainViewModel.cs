@@ -24,7 +24,7 @@ namespace WinTool.ViewModel
 
         public MainViewModel(Window window)
         {
-            KeyHooker hooker = new(Key.E);
+            KeyHooker hooker = new(Key.E, Key.C);
             hooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
@@ -79,6 +79,24 @@ namespace WinTool.ViewModel
                         CreateFileView createFileView = new(createFileVm);
                         createFileView.Show();
                         createFileView.Activate();
+                    }
+                }
+            }
+            else if (e.Key == Key.C)
+            {
+                if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
+                {
+                    var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
+
+                    // if there are no selections - copy folder path, if one item selected - copy item's path, else - not copying
+                    if (selectedPaths.Count == 0)
+                    {
+                        string? folderPath = await Shell.GetActiveExplorerPathAsync();
+                        Clipboard.SetText(folderPath);
+                    }
+                    else if (selectedPaths.Count == 1)
+                    {
+                        Clipboard.SetText(selectedPaths[0]);
                     }
                 }
             }
