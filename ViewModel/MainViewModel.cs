@@ -83,7 +83,7 @@ namespace WinTool.ViewModel
             // use arg "-background 1" to start app in background mode
             _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} -background 1";
 
-            _keyHooker = new(Key.E, Key.C, Key.O);
+            _keyHooker = new(Key.C, Key.E, Key.L, Key.O);
             _keyHooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
@@ -189,6 +189,22 @@ namespace WinTool.ViewModel
                         RunWithArgsWindow runWithArgsWindow = new(runWithArgsVm);
                         runWithArgsWindow.Show();
                         runWithArgsWindow.Activate();
+                    }
+                    break;
+                case Key.L:
+                    if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
+                    {
+                        string? folderPath = await Shell.GetActiveExplorerPathAsync();
+
+                        if (string.IsNullOrEmpty(folderPath))
+                            return;
+
+                        using (Process.Start(new ProcessStartInfo
+                        {
+                            WorkingDirectory = folderPath,
+                            FileName = "cmd.exe",
+                            UseShellExecute = false,
+                        })) { }
                     }
                     break;
             }
