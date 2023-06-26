@@ -33,8 +33,18 @@ namespace WinTool.ViewModel
 
         public CreateFileViewModel(string folderPath, Action<CreateFileResult> result)
         {
-            Uri folderUri = new(folderPath);
-            RelativeFolderPath = folderUri.Segments.Last().TrimEnd('/') + "/";
+            DirectoryInfo di = new(folderPath);
+            string folderName = di.Name.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+
+            if (folderName.Length > 17)
+            {
+                int start = folderName.Length - 17;
+                RelativeFolderPath = string.Concat("...", folderName.AsSpan(start));
+            }
+            else
+            {
+                RelativeFolderPath = folderName;
+            }
 
             CreateCommand = new DelegateCommand(() =>
             {

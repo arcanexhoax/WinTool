@@ -42,8 +42,8 @@ namespace WinTool.ViewModel
 
         public RunWithArgsViewModel(string filePath, Action<RunWithArgsResult> result)
         {
-            FilePath = string.Format(DescriptionTemplate, Path.GetFileName(filePath));
-            FileName = string.Format(TitleTemplate, filePath);
+            FilePath = string.Format(DescriptionTemplate, filePath);
+            FileName = string.Format(TitleTemplate, Path.GetFileName(filePath));
 
             RunCommand = new DelegateCommand(() =>
             {
