@@ -85,15 +85,43 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="Settings"
-                     Height="20"
-                     VerticalAlignment="Top">
+            <TabItem Header="Settings">
                 <Border Padding="10">
-                    <CheckBox Content="Launch on Windows startup"
-                              IsChecked="{Binding LaunchOnWindowsStartup}"
-                              IsEnabled="{Binding AreUiElementsEnabled}"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"/>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="New file template" />
+                            <TextBlock Text="(?)"
+                                       Margin="5 0 0 0">
+                                <TextBlock.ToolTip>
+                                    <ToolTip Width="300">
+                                        <ToolTip.Content>
+                                            <TextBlock TextWrapping="Wrap">
+                                                A template for new file of 'Fast file creation' shortcut.
+                                                <LineBreak /> 
+                                                You can write it without extension. 
+                                                <LineBreak/>
+                                                Filenames will have number before extension or at the end of the name.
+                                                <LineBreak />
+                                                Forbidden characters are ignored.
+                                            </TextBlock>
+                                        </ToolTip.Content>
+                                    </ToolTip>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                        </StackPanel>
+                        <TextBox Text="{Binding NewFileTemplate, UpdateSourceTrigger=PropertyChanged}"
+                                 MinWidth="150"
+                                 HorizontalAlignment="Left"
+                                 Margin="0 5 0 0"
+                                 PreviewTextInput="OnTextInput" />
+                        
+                        <CheckBox Content="Launch on Windows startup"
+                                  IsChecked="{Binding LaunchOnWindowsStartup}"
+                                  IsEnabled="{Binding AreUiElementsEnabled}"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  Margin="0 20 0 0"/>
+                    </StackPanel>
                 </Border>
             </TabItem>
         </TabControl>

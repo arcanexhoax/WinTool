@@ -29,6 +29,7 @@ namespace WinTool.ViewModel
 
         private bool _launchOnWindowsStartup;
         private bool _areUiElementsEnabled;
+        private string? _newFileTemplate;
 
         public bool LaunchOnWindowsStartup
         {
@@ -74,6 +75,19 @@ namespace WinTool.ViewModel
             set => SetProperty(ref _areUiElementsEnabled, value);
         }
 
+        public string? NewFileTemplate
+        {
+            get => _newFileTemplate;
+            set
+            {
+                if (SetProperty(ref _newFileTemplate, value))
+                {
+                    _settings.NewFileTemplate = value;
+                    _settingsManager.UpdateSettings(_settings);
+                }
+            }
+        }
+
         public DelegateCommand OpenWindowCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
@@ -95,6 +109,7 @@ namespace WinTool.ViewModel
 
             _settings = _settingsManager.GetSettings() ?? new Settings();
             LaunchOnWindowsStartup = _settings.WindowsStartupEnabled;
+            NewFileTemplate = _settings.NewFileTemplate;
         }
 
         private async void OnKeyHooked(object? sender, KeyHookedEventArgs e)
@@ -115,15 +130,27 @@ namespace WinTool.ViewModel
                         {
                             DirectoryInfo di = new(path);
                             int num = 0;
+                            string fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
+                            string extension = Path.GetExtension(NewFileTemplate);
 
                             try
                             {
-                                var numbers = di.EnumerateFiles("NewFile_*.txt").Select(f => int.Parse(Regex.Match(f.Name, @"\d+").Value));
+                                var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
+                                {
+                                    var match = Regex.Match(f.Name, $@"^{fileName}_(\d+){extension}$");
+
+                                    if (match.Groups.Count != 2)
+                                        return -1;
+
+                                    if (int.TryParse(match.Groups[1].Value, out int number))
+                                        return number;
+                                    return -1;
+                                });
 
                                 if (numbers.Any())
                                     num = numbers.Max() + 1;
 
-                                using (File.Create(Path.Combine(path, $"NewFile_{num}.txt"))) { }
+                                using (File.Create(Path.Combine(path, $"{fileName}_{num}{extension}"))) { }
                             }
                             catch (Exception ex)
                             {
