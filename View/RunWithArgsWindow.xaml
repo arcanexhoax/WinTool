@@ -13,6 +13,8 @@
     <Window.InputBindings>
         <KeyBinding Command="{Binding RunCommand}"
                     Key="Return" />
+        <KeyBinding Command="{Binding CloseWindowCommand}"
+                    Key="Esc" />
     </Window.InputBindings>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">

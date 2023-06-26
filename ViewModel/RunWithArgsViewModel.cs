@@ -38,6 +38,7 @@ namespace WinTool.ViewModel
         public DelegateCommand RunCommand { get; }
         public DelegateCommand<Window> WindowLoadedCommand { get; }
         public DelegateCommand WindowClosingCommand { get; }
+        public DelegateCommand CloseWindowCommand { get; }
 
         public RunWithArgsViewModel(string filePath, Action<RunWithArgsResult> result)
         {
@@ -51,6 +52,7 @@ namespace WinTool.ViewModel
             });
             WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
             WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new RunWithArgsResult(false, null)));
+            CloseWindowCommand = new DelegateCommand(() => _window?.Close());
         }
     }
 }

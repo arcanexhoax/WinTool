@@ -29,6 +29,7 @@ namespace WinTool.ViewModel
         public DelegateCommand CreateCommand { get; }
         public DelegateCommand<Window> WindowLoadedCommand { get; }
         public DelegateCommand WindowClosingCommand { get; }
+        public DelegateCommand CloseWindowCommand { get; }
 
         public CreateFileViewModel(string folderPath, Action<CreateFileResult> result)
         {
@@ -45,6 +46,7 @@ namespace WinTool.ViewModel
             });
             WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
             WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new CreateFileResult(false, null)));
+            CloseWindowCommand = new DelegateCommand(() => _window?.Close());
         }
     }
 }
