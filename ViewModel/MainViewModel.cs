@@ -167,7 +167,7 @@ namespace WinTool.ViewModel
                     }
                     break;
                 case Key.O:
-                    if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
+                    if (e.Modifier.HasFlag(KeyModifier.Ctrl))
                     {
                         var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
 
