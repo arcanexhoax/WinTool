@@ -21,6 +21,7 @@ namespace WinTool.ViewModel
     {
         private const string RegKeyName = "WinTool";
 
+        private readonly KeyHooker _keyHooker;
         private readonly SemaphoreSlim _semaphore = new(1);
         private readonly SettingsManager _settingsManager = new();
         private readonly Settings _settings;
@@ -82,11 +83,15 @@ namespace WinTool.ViewModel
             // use arg "-background 1" to start app in background mode
             _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} -background 1";
 
-            KeyHooker hooker = new(Key.E, Key.C, Key.O);
-            hooker.KeyHooked += OnKeyHooked;
+            _keyHooker = new(Key.E, Key.C, Key.O);
+            _keyHooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
-            CloseWindowCommand = new DelegateCommand(() => Application.Current.Shutdown());
+            CloseWindowCommand = new DelegateCommand(() =>
+            {
+                _keyHooker?.Dispose();
+                Application.Current.Shutdown();
+            });
 
             _settings = _settingsManager.GetSettings() ?? new Settings();
             LaunchOnWindowsStartup = _settings.WindowsStartupEnabled;

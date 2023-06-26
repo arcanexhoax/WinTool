@@ -57,7 +57,5 @@ namespace WinTool.Native
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
-
-        public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
     }
 }

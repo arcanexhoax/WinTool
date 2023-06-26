@@ -2,11 +2,14 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using WinTool.Enum;
 using WinTool.Model;
 
 namespace WinTool.Native
 {
+    public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+
     public class KeyHookerNative : IDisposable
     {
         public const int WH_KEYBOARD_LL = 13;
@@ -19,7 +22,7 @@ namespace WinTool.Native
 
         private IntPtr _windowsHookHandle;
         private IntPtr _user32LibraryHandle;
-        private NativeMethods.HookProc _hookProc;
+        private HookProc _hookProc;
 
         public event EventHandler<NativeKeyHookedEventArgs>? KeyPressed;
 
@@ -27,7 +30,7 @@ namespace WinTool.Native
         {
             _windowsHookHandle = IntPtr.Zero;
             _user32LibraryHandle = IntPtr.Zero;
-            _hookProc = LowLevelKeyboardProc; // we must keep alive _hookProc, because GC is not aware about SetWindowsHookEx behaviour.
+            _hookProc = LowLevelKeyboardProc; // we must keep alive _hookProc, because GC is not aware about SetWindowsHookEx behavior.
 
             _user32LibraryHandle = NativeMethods.LoadLibrary("User32");
             if (_user32LibraryHandle == IntPtr.Zero)
