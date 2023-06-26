@@ -11,6 +11,8 @@ WinTool is a utility that expands shortcuts for Windows Explorer, it adds shortc
 
 `Ctrl + Shift + C` - Copy path to selected item (If no item is selected, the path to the open folder will be copied. If many items are selected, nothing will happen)
 
+`Ctrl + Shift + L` - Open folder in cmd
+
 ## Features
 - Launching utility on windows startup
 - Working from the tray

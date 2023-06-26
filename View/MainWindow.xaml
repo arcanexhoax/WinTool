@@ -39,6 +39,7 @@
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
@@ -74,6 +75,13 @@
                                    Grid.Row="3"
                                    Grid.Column="1"
                                    TextWrapping="Wrap" />
+                        <TextBlock Text="Ctrl + Shift + L"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="4" />
+                        <TextBlock Text="Open folder in cmd"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="4"
+                                   Grid.Column="1" />
                     </Grid>
                 </Border>
             </TabItem>
