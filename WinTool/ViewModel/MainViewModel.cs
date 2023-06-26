@@ -130,8 +130,8 @@ namespace WinTool.ViewModel
                         {
                             DirectoryInfo di = new(path);
                             int num = 0;
-                            string fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
-                            string extension = Path.GetExtension(NewFileTemplate);
+                            string? fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
+                            string? extension = Path.GetExtension(NewFileTemplate);
 
                             try
                             {
