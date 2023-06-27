@@ -1,4 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using GlobalKeyInterceptor;
+using GlobalKeyInterceptor.Enum;
+using GlobalKeyInterceptor.Model;
+using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -9,8 +12,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
-using System.Windows.Input;
-using WinTool.Enum;
 using WinTool.Model;
 using WinTool.Modules;
 using WinTool.View;
@@ -97,7 +98,7 @@ namespace WinTool.ViewModel
             // use arg "-background 1" to start app in background mode
             _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} -background 1";
 
-            _keyHooker = new(Key.C, Key.E, Key.L, Key.O);
+            _keyHooker = new(ConsoleKey.C, ConsoleKey.E, ConsoleKey.L, ConsoleKey.O);
             _keyHooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
@@ -118,7 +119,7 @@ namespace WinTool.ViewModel
 
             switch (e.Key)
             {
-                case Key.E:
+                case ConsoleKey.E:
                     if (e.Modifier.HasFlag(KeyModifier.Ctrl))
                     {
                         string? path = await Shell.GetActiveExplorerPathAsync();
@@ -176,7 +177,7 @@ namespace WinTool.ViewModel
                         }
                     }
                     break;
-                case Key.C:
+                case ConsoleKey.C:
                     if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
                     {
                         var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
@@ -193,7 +194,7 @@ namespace WinTool.ViewModel
                         }
                     }
                     break;
-                case Key.O:
+                case ConsoleKey.O:
                     if (e.Modifier.HasFlag(KeyModifier.Ctrl))
                     {
                         var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
@@ -218,7 +219,7 @@ namespace WinTool.ViewModel
                         runWithArgsWindow.Activate();
                     }
                     break;
-                case Key.L:
+                case ConsoleKey.L:
                     if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
                     {
                         string? folderPath = await Shell.GetActiveExplorerPathAsync();

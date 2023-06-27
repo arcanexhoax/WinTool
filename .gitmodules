@@ -1,0 +1,3 @@
+[submodule "GlobalKeyInterceptor"]
+	path = GlobalKeyInterceptor
+	url = https://github.com/arcanexhoax/GlobalKeyInterceptor.git

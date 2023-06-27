@@ -2,7 +2,6 @@
 using Prism.Mvvm;
 using System;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using WinTool.Model;
 
