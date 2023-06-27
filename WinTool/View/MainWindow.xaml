@@ -40,6 +40,7 @@
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
@@ -75,12 +76,20 @@
                                    Grid.Row="3"
                                    Grid.Column="1"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="Ctrl + Shift + L"
+                        <TextBlock Text="Ctrl + Shift + X"
                                    FontWeight="SemiBold"
                                    Grid.Row="4" />
-                        <TextBlock Text="Open folder in cmd"
+                        <TextBlock Text="Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)"
                                    Margin="25 0 0 0"
                                    Grid.Row="4"
+                                   Grid.Column="1"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="Ctrl + Shift + L"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="5" />
+                        <TextBlock Text="Open folder in cmd"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="5"
                                    Grid.Column="1" />
                     </Grid>
                 </Border>

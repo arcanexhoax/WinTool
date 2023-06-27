@@ -98,7 +98,7 @@ namespace WinTool.ViewModel
             // use arg "-background 1" to start app in background mode
             _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} -background 1";
 
-            _keyHooker = new(ConsoleKey.C, ConsoleKey.E, ConsoleKey.L, ConsoleKey.O);
+            _keyHooker = new(ConsoleKey.C, ConsoleKey.E, ConsoleKey.L, ConsoleKey.O, ConsoleKey.X);
             _keyHooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
@@ -233,6 +233,29 @@ namespace WinTool.ViewModel
                             FileName = "cmd.exe",
                             UseShellExecute = false,
                         })) { }
+                    }
+                    break;
+                case ConsoleKey.X:
+                    if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
+                    {
+                        var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
+
+                        // if there are no selections - copy folder name, if one item selected - copy item's name, else - not copying
+                        if (selectedPaths.Count == 0)
+                        {
+                            string? folderPath = await Shell.GetActiveExplorerPathAsync();
+
+                            if (string.IsNullOrEmpty(folderPath))
+                                return;
+
+                            DirectoryInfo di = new(folderPath);
+                            Clipboard.SetText(di.Name);
+                        }
+                        else if (selectedPaths.Count == 1)
+                        {
+                            string fileName = Path.GetFileName(selectedPaths[0]);
+                            Clipboard.SetText(fileName);
+                        }
                     }
                     break;
             }
