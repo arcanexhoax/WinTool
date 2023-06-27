@@ -186,7 +186,9 @@ namespace WinTool.ViewModel
                         if (selectedPaths.Count == 0)
                         {
                             string? folderPath = await Shell.GetActiveExplorerPathAsync();
-                            Clipboard.SetText(folderPath);
+
+                            if (!string.IsNullOrEmpty(folderPath))
+                                Clipboard.SetText(folderPath);
                         }
                         else if (selectedPaths.Count == 1)
                         {
