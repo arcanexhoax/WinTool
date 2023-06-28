@@ -5,16 +5,12 @@ using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using WinTool.Model;
 using WinTool.Modules;
-using WinTool.View;
 
 namespace WinTool.ViewModel
 {
@@ -95,8 +91,8 @@ namespace WinTool.ViewModel
         public MainViewModel(Window window)
         {
             string? exeFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            // use arg "-background 1" to start app in background mode
-            _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} -background 1";
+            // use arg "/background" to start app in background mode
+            _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} {CommandLineParameters.BackgroundParameter}";
 
             _keyHooker = new KeyHooker(ConsoleKey.C, ConsoleKey.E, ConsoleKey.L, ConsoleKey.O, ConsoleKey.X);
             _keyHooker.KeyHooked += OnKeyHooked;
@@ -119,146 +115,23 @@ namespace WinTool.ViewModel
 
             switch (e.Key)
             {
-                case ConsoleKey.E:
-                    if (e.Modifier.HasFlag(KeyModifier.Ctrl))
-                    {
-                        string? path = await Shell.GetActiveExplorerPathAsync();
-
-                        if (string.IsNullOrEmpty(path))
-                            return;
-
-                        if (e.Modifier.HasFlag(KeyModifier.Shift))
-                        {
-                            DirectoryInfo di = new(path);
-                            int num = 0;
-                            string? fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
-                            string? extension = Path.GetExtension(NewFileTemplate);
-
-                            try
-                            {
-                                var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
-                                {
-                                    var match = Regex.Match(f.Name, $@"^{fileName}_(\d+){extension}$");
-
-                                    if (match.Groups.Count != 2)
-                                        return -1;
-
-                                    if (int.TryParse(match.Groups[1].Value, out int number))
-                                        return number;
-                                    return -1;
-                                });
-
-                                if (numbers.Any())
-                                    num = numbers.Max() + 1;
-
-                                using (File.Create(Path.Combine(path, $"{fileName}_{num}{extension}"))) { }
-                            }
-                            catch (Exception ex)
-                            {
-                                Trace.WriteLine(ex.Message);
-                            }
-                        }
-                        else
-                        {
-                            CreateFileViewModel createFileVm = new(path, r =>
-                            {
-                                if (r.Success && !string.IsNullOrEmpty(r.FilePath))
-                                {
-                                    if (!File.Exists(r.FilePath))
-                                        using (File.Create(r.FilePath)) { }
-                                    else
-                                        MessageBox.Show($"File '{r.FilePath}' already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                                }
-                            });
-
-                            CreateFileView createFileView = new(createFileVm);
-                            createFileView.Show();
-                            createFileView.Activate();
-                        }
-                    }
+                case ConsoleKey.E when e.Modifier.HasFlag(KeyModifier.Ctrl):
+                    if (e.Modifier.HasFlag(KeyModifier.Shift))
+                        await CommandHandler.FastCreateFile(NewFileTemplate!);
+                    else
+                        await CommandHandler.CreateFile();
                     break;
-                case ConsoleKey.C:
-                    if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
-                    {
-                        var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
-
-                        // if there are no selections - copy folder path, if one item selected - copy item's path, else - not copying
-                        if (selectedPaths.Count == 0)
-                        {
-                            string? folderPath = await Shell.GetActiveExplorerPathAsync();
-
-                            if (!string.IsNullOrEmpty(folderPath))
-                                Clipboard.SetText(folderPath);
-                        }
-                        else if (selectedPaths.Count == 1)
-                        {
-                            Clipboard.SetText(selectedPaths[0]);
-                        }
-                    }
+                case ConsoleKey.C when e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift):
+                    await CommandHandler.CopyFilePath();
                     break;
-                case ConsoleKey.O:
-                    if (e.Modifier.HasFlag(KeyModifier.Ctrl))
-                    {
-                        var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
-
-                        if (selectedPaths.Count != 1 || Path.GetExtension(selectedPaths[0]) != ".exe")
-                            return;
-
-                        string selectedItem = selectedPaths[0];
-                        RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], r =>
-                        {
-                            if (r.Success)
-                            {
-                                if (File.Exists(selectedItem))
-                                    using (Process.Start(selectedItem, r.Args ?? string.Empty)) { }
-                                else
-                                    MessageBox.Show($"File '{selectedItem}' doesn't exist.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                            }
-                        });
-
-                        RunWithArgsWindow runWithArgsWindow = new(runWithArgsVm);
-                        runWithArgsWindow.Show();
-                        runWithArgsWindow.Activate();
-                    }
+                case ConsoleKey.O when e.Modifier.HasFlag(KeyModifier.Ctrl):
+                    await CommandHandler.RunWithArgs();
                     break;
-                case ConsoleKey.L:
-                    if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
-                    {
-                        string? folderPath = await Shell.GetActiveExplorerPathAsync();
-
-                        if (string.IsNullOrEmpty(folderPath))
-                            return;
-
-                        using (Process.Start(new ProcessStartInfo
-                        {
-                            WorkingDirectory = folderPath,
-                            FileName = "cmd.exe",
-                            UseShellExecute = false,
-                        })) { }
-                    }
+                case ConsoleKey.L when e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift):
+                    await CommandHandler.OpenInCmd();
                     break;
-                case ConsoleKey.X:
-                    if (e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift))
-                    {
-                        var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
-
-                        // if there are no selections - copy folder name, if one item selected - copy item's name, else - not copying
-                        if (selectedPaths.Count == 0)
-                        {
-                            string? folderPath = await Shell.GetActiveExplorerPathAsync();
-
-                            if (string.IsNullOrEmpty(folderPath))
-                                return;
-
-                            DirectoryInfo di = new(folderPath);
-                            Clipboard.SetText(di.Name);
-                        }
-                        else if (selectedPaths.Count == 1)
-                        {
-                            string fileName = Path.GetFileName(selectedPaths[0]);
-                            Clipboard.SetText(fileName);
-                        }
-                    }
+                case ConsoleKey.X when e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift):
+                    await CommandHandler.CopyFileName();
                     break;
             }
             

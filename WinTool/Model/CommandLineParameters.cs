@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WinTool.Model
 {
     public class CommandLineParameters
     {
-        private const string BackgroundParameter = "/background";
-        private const string RunAsAdminParameter = "/runAsAdmin";
-        private const string CreateFileParameter = "/createFile"; // =name
+        public const string BackgroundParameter = "/background";
+        public const string RunAsAdminParameter = "/runAsAdmin";
+        public const string CreateFileParameter = "/createFile"; // =filePath
 
         public bool Background { get; set; }
         public bool RunAsAdmin { get; set; }
