@@ -2,7 +2,7 @@
   "profiles": {
     "WinTool": {
       "commandName": "Project",
-      "commandLineArgs": "-background 0"
+      "commandLineArgs": "1/background"
     }
   }
 }

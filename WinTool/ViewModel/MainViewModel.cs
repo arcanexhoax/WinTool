@@ -98,7 +98,7 @@ namespace WinTool.ViewModel
             // use arg "-background 1" to start app in background mode
             _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} -background 1";
 
-            _keyHooker = new(ConsoleKey.C, ConsoleKey.E, ConsoleKey.L, ConsoleKey.O, ConsoleKey.X);
+            _keyHooker = new KeyHooker(ConsoleKey.C, ConsoleKey.E, ConsoleKey.L, ConsoleKey.O, ConsoleKey.X);
             _keyHooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());

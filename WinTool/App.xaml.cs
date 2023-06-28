@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
+using WinTool.Model;
 
 namespace WinTool
 {
@@ -9,23 +9,15 @@ namespace WinTool
     /// </summary>
     public partial class App : Application
     {
-        private readonly Dictionary<string, string> _args = new();
-
         public App()
         {
             MainWindow window = new();
             string[] args = Environment.GetCommandLineArgs();
 
-            for (int i = 1; i < args.Length; i += 2)
-            {
-                string arg = args[i].Replace("-", string.Empty);
-                _args.Add(arg, args[i + 1]);
-            }
+            var clp = CommandLineParameters.Parse(args);
 
-            if (_args.TryGetValue("background", out string? value) && value == "1")
-                return;
-
-            window.Show();
+            if (!clp.Background)
+                window.Show();
         }
     }
 }
