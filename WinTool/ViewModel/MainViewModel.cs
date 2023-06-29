@@ -5,9 +5,11 @@ using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using WinTool.Model;
 using WinTool.Modules;
@@ -23,6 +25,7 @@ namespace WinTool.ViewModel
         private readonly SettingsManager _settingsManager = new();
         private readonly Settings _settings;
         private readonly string _executionFilePath;
+        private readonly Dictionary<Shortcut, Func<Task>> _shortcuts;
 
         private bool _launchOnWindowsStartup;
         private bool _areUiElementsEnabled;
@@ -90,11 +93,21 @@ namespace WinTool.ViewModel
 
         public MainViewModel(Window window)
         {
+            _shortcuts = new()
+            {
+                { new Shortcut(ConsoleKey.C, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFilePath() },
+                { new Shortcut(ConsoleKey.E, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.FastCreateFile(NewFileTemplate!) },
+                { new Shortcut(ConsoleKey.E, KeyModifier.Ctrl),                     () => CommandHandler.CreateFile() },
+                { new Shortcut(ConsoleKey.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
+                { new Shortcut(ConsoleKey.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
+                { new Shortcut(ConsoleKey.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() }
+            };
+
             string? exeFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             // use arg "/background" to start app in background mode
             _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} {CommandLineParameters.BackgroundParameter}";
 
-            _keyHooker = new KeyHooker(ConsoleKey.C, ConsoleKey.E, ConsoleKey.L, ConsoleKey.O, ConsoleKey.X);
+            _keyHooker = new KeyHooker(_shortcuts.Keys);
             _keyHooker.KeyHooked += OnKeyHooked;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
@@ -113,28 +126,9 @@ namespace WinTool.ViewModel
         {
             await _semaphore.WaitAsync();
 
-            switch (e.Key)
-            {
-                case ConsoleKey.E when e.Modifier.HasFlag(KeyModifier.Ctrl):
-                    if (e.Modifier.HasFlag(KeyModifier.Shift))
-                        await CommandHandler.FastCreateFile(NewFileTemplate!);
-                    else
-                        await CommandHandler.CreateFile();
-                    break;
-                case ConsoleKey.C when e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift):
-                    await CommandHandler.CopyFilePath();
-                    break;
-                case ConsoleKey.O when e.Modifier.HasFlag(KeyModifier.Ctrl):
-                    await CommandHandler.RunWithArgs();
-                    break;
-                case ConsoleKey.L when e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift):
-                    await CommandHandler.OpenInCmd();
-                    break;
-                case ConsoleKey.X when e.Modifier.HasFlag(KeyModifier.Ctrl) && e.Modifier.HasFlag(KeyModifier.Shift):
-                    await CommandHandler.CopyFileName();
-                    break;
-            }
-            
+            if (_shortcuts.TryGetValue(e.Shortcut, out Func<Task>? operation) && operation is not null)
+                await operation();
+
             _semaphore.Release();
         }
     }
