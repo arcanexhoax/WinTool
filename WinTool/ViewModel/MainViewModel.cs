@@ -1,6 +1,4 @@
 ﻿using GlobalKeyInterceptor;
-using GlobalKeyInterceptor.Enum;
-using GlobalKeyInterceptor.Model;
 using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -20,7 +18,7 @@ namespace WinTool.ViewModel
     {
         private const string RegKeyName = "WinTool";
 
-        private readonly KeyHooker _keyHooker;
+        private readonly KeyInterceptor _keyHooker;
         private readonly SemaphoreSlim _semaphore = new(1);
         private readonly SettingsManager _settingsManager = new();
         private readonly Settings _settings;
@@ -95,20 +93,20 @@ namespace WinTool.ViewModel
         {
             _shortcuts = new()
             {
-                { new Shortcut(ConsoleKey.C, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFilePath() },
-                { new Shortcut(ConsoleKey.E, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.FastCreateFile(NewFileTemplate!) },
-                { new Shortcut(ConsoleKey.E, KeyModifier.Ctrl),                     () => CommandHandler.CreateFile() },
-                { new Shortcut(ConsoleKey.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
-                { new Shortcut(ConsoleKey.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
-                { new Shortcut(ConsoleKey.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() }
+                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFilePath() },
+                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.FastCreateFile(NewFileTemplate!) },
+                { new Shortcut(Key.E, KeyModifier.Ctrl),                     () => CommandHandler.CreateFile() },
+                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
+                { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
+                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() },
             };
 
             string? exeFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             // use arg "/background" to start app in background mode
             _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} {CommandLineParameters.BackgroundParameter}";
 
-            _keyHooker = new KeyHooker(_shortcuts.Keys);
-            _keyHooker.KeyHooked += OnKeyHooked;
+            _keyHooker = new KeyInterceptor(_shortcuts.Keys);
+            _keyHooker.ShortcutPressed += OnShortcutPressed;
 
             OpenWindowCommand = new DelegateCommand(() => window.Show());
             CloseWindowCommand = new DelegateCommand(() =>
@@ -122,7 +120,7 @@ namespace WinTool.ViewModel
             NewFileTemplate = _settings.NewFileTemplate;
         }
 
-        private async void OnKeyHooked(object? sender, KeyHookedEventArgs e)
+        private async void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
         {
             await _semaphore.WaitAsync();
 

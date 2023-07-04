@@ -6,9 +6,10 @@
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<Version>0.6.0</Version>
-		<Authors>arcanexhoax</Authors>
-		<Copyright>arcanexhoax © 2023</Copyright>
+		<Authors>Vitalii Shchur</Authors>
+		<Copyright>Copyright (c) Vitalii Shchur 2023</Copyright>
 		<PackageProjectUrl>https://github.com/arcanexhoax/WinTool</PackageProjectUrl>
+		<Description>WinTool is a utility that expands shortcuts for Windows Explorer, it adds shortcuts for useful functions that do not have it.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
