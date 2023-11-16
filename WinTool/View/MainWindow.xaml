@@ -41,6 +41,8 @@
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
@@ -90,6 +92,20 @@
                         <TextBlock Text="Open folder in cmd"
                                    Margin="25 0 0 0"
                                    Grid.Row="5"
+                                   Grid.Column="1" />
+                        <TextBlock Text="Ctrl + Shift + Alt + Y"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="6" />
+                        <TextBlock Text="Convert selected text to uppercase"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="6"
+                                   Grid.Column="1" />
+                        <TextBlock Text="Ctrl + Shift + Alt + L"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="7" />
+                        <TextBlock Text="Convert selected text to lowercase"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="7"
                                    Grid.Column="1" />
                     </Grid>
                 </Border>

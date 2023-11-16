@@ -4,6 +4,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -99,6 +100,8 @@ namespace WinTool.ViewModel
                 { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
                 { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
                 { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() },
+                { new Shortcut(Key.Y, KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt), () => CommandHandler.UpperCaseSelectedText() },
+                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt), () => CommandHandler.LowerCaseSelectedText() }
             };
 
             string? exeFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -123,6 +126,8 @@ namespace WinTool.ViewModel
         private async void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
         {
             await _semaphore.WaitAsync();
+
+            Debug.WriteLine($"{e.Shortcut} // {e.Shortcut.State}");
 
             if (_shortcuts.TryGetValue(e.Shortcut, out Func<Task>? operation) && operation is not null)
                 await operation();
