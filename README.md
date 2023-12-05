@@ -1,6 +1,6 @@
 ## WinTool
 
-WinTool is a utility that expands shortcuts for Windows Explorer, it adds shortcuts for useful functions that do not have it.
+WinTool is a utility that expands shortcuts for Windows and its apps, it adds shortcuts for useful functions that do not have it.
 <br>[GlobalKeyInterceptor](https://github.com/arcanexhoax/GlobalKeyInterceptor) is used to keyboard shortcuts interception
 
 ## Shortcuts
@@ -13,8 +13,8 @@ WinTool is a utility that expands shortcuts for Windows Explorer, it adds shortc
 <br>`Ctrl + Shift + L` - Open folder in cmd
 
 ### Selected text (in any app)
-`Ctrl + U` - Convert to uppercase
-<br>`Ctrl + L` - Convert to lowercase
+`Ctrl + Win + U` - Convert to uppercase
+<br>`Ctrl + Win + L` - Convert to lowercase
 
 ## Features
 - Launching utility on windows startup
