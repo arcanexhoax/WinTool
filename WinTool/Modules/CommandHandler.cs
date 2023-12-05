@@ -1,5 +1,5 @@
 ﻿using GlobalKeyInterceptor;
-using GlobalKeyInterceptor.Util;
+using GlobalKeyInterceptor.Utils;
 using System;
 using System.Diagnostics;
 using System.IO;

@@ -100,8 +100,8 @@ namespace WinTool.ViewModel
                 { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
                 { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
                 { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() },
-                { new Shortcut(Key.Y, KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt), () => CommandHandler.UpperCaseSelectedText() },
-                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt), () => CommandHandler.LowerCaseSelectedText() }
+                { new Shortcut(Key.U, KeyModifier.Ctrl | KeyModifier.Win),   () => CommandHandler.UpperCaseSelectedText() },
+                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Win),   () => CommandHandler.LowerCaseSelectedText() }
             };
 
             string? exeFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

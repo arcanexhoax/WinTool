@@ -4,12 +4,17 @@ WinTool is a utility that expands shortcuts for Windows Explorer, it adds shortc
 <br>[GlobalKeyInterceptor](https://github.com/arcanexhoax/GlobalKeyInterceptor) is used to keyboard shortcuts interception
 
 ## Shortcuts
+### Windows Explorer
 `Ctrl + O` - Run selected exe-file with arguments
 <br>`Ctrl + E` - Create file
 <br>`Ctrl + Shift + E` - Fast file creation
 <br>`Ctrl + Shift + C` - Copy path to selected item (If no item is selected, the path to the open folder will be copied. If many items are selected, nothing will happen)
 <br>`Ctrl + Shift + X` - Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)
 <br>`Ctrl + Shift + L` - Open folder in cmd
+
+### Selected text (in any app)
+`Ctrl + U` - Convert to uppercase
+<br>`Ctrl + L` - Convert to lowercase
 
 ## Features
 - Launching utility on windows startup
