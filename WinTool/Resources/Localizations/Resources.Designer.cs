@@ -88,6 +88,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string Create {
+            get {
+                return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create file.
         /// </summary>
         public static string CreateFile {
@@ -144,11 +153,20 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open folder in cmd.
+        ///   Looks up a localized string similar to Open current folder in cmd.
         /// </summary>
         public static string OpenFolderInCmd {
             get {
                 return ResourceManager.GetString("OpenFolderInCmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run.
+        /// </summary>
+        public static string Run {
+            get {
+                return ResourceManager.GetString("Run", resourceCulture);
             }
         }
         

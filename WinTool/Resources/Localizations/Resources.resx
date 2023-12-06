@@ -126,6 +126,9 @@
   <data name="ConvertToUppercase" xml:space="preserve">
     <value>Convert selected text to uppercase</value>
   </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
   <data name="CreateFile" xml:space="preserve">
     <value>Create file</value>
   </data>
@@ -147,7 +150,10 @@ Forbidden characters are ignored.</value>
     <value>Open</value>
   </data>
   <data name="OpenFolderInCmd" xml:space="preserve">
-    <value>Open folder in cmd</value>
+    <value>Open current folder in cmd</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Run</value>
   </data>
   <data name="RunWithArgs" xml:space="preserve">
     <value>Run selected exe-file with arguments</value>

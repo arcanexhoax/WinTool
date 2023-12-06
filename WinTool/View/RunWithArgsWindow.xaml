@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WinTool.View"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:r="clr-namespace:WinTool.Resources.Localizations"
         mc:Ignorable="d"
-        Title="{Binding FileName}" Height="320" Width="300"
+        Title="{Binding FileName}"
+        Height="320"
+        Width="300"
         WindowStartupLocation="CenterScreen"
         x:Name="runWithArgsWindow"
         Topmost="True">
@@ -35,7 +37,7 @@
                      Margin="0 20 0 0"
                      x:Name="textBox"
                      Text="{Binding Args, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Content="Run"
+            <Button Content="{x:Static r:Resources.Run}"
                     Command="{Binding RunCommand}"
                     HorizontalAlignment="Right" 
                     Margin="0 20 0 0"
