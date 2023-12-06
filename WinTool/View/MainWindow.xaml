@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        xmlns:r="clr-namespace:WinTool.Resources.Localizations"
         d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
+        Title="{x:Static r:Resources.WinTool}"
         mc:Ignorable="d"
         Height="450"
         Width="800"
@@ -14,23 +16,23 @@
         Closing="OnWindowClosing">
     <Grid>
         <tb:TaskbarIcon Visibility="Visible"
-                        ToolTipText="Double click to open, right click - menu"
+                        ToolTipText="{x:Static r:Resources.TrayToolTip}"
                         IconSource="/Resources/icon.ico"
                         PopupActivation="RightClick"
                         DoubleClickCommand="{Binding OpenWindowCommand}">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Open"
+                    <MenuItem Header="{x:Static r:Resources.Open}"
                               Command="{Binding OpenWindowCommand}" />
                     <Separator />
-                    <MenuItem Header="Close"
+                    <MenuItem Header="{x:Static r:Resources.Close}"
                               Command="{Binding CloseWindowCommand}" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
 
         <TabControl>
-            <TabItem Header="Shortcuts">
+            <TabItem Header="{x:Static r:Resources.Shortcuts}">
                 <Border Padding="10">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -51,28 +53,28 @@
                         <TextBlock Text="Ctrl + O"
                                    FontWeight="SemiBold"
                                    Grid.Row="0"/>
-                        <TextBlock Text="Run selected exe-file with arguments"
+                        <TextBlock Text="{x:Static r:Resources.RunWithArgs}"
                                    Margin="25 0 0 0"
                                    Grid.Row="0"
                                    Grid.Column="1" />
                         <TextBlock Text="Ctrl + E"
                                    FontWeight="SemiBold"
                                    Grid.Row="1"/>
-                        <TextBlock Text="Create file"
+                        <TextBlock Text="{x:Static r:Resources.CreateFile}"
                                    Margin="25 0 0 0"
                                    Grid.Row="1"
                                    Grid.Column="1" />
                         <TextBlock Text="Ctrl + Shift + E"
                                    FontWeight="SemiBold"
                                    Grid.Row="2"/>
-                        <TextBlock Text="Fast file creation"
+                        <TextBlock Text="{x:Static r:Resources.FastFileCreation}"
                                    Margin="25 0 0 0"
                                    Grid.Row="2"
                                    Grid.Column="1" />
                         <TextBlock Text="Ctrl + Shift + C"
                                    FontWeight="SemiBold"
                                    Grid.Row="3" />
-                        <TextBlock Text="Copy path to selected item (If no item is selected, the path to the open folder will be copied. If many items are selected, nothing will happen)"
+                        <TextBlock Text="{x:Static r:Resources.SelectedItemCopyPath}"
                                    Margin="25 0 0 0"
                                    Grid.Row="3"
                                    Grid.Column="1"
@@ -80,7 +82,7 @@
                         <TextBlock Text="Ctrl + Shift + X"
                                    FontWeight="SemiBold"
                                    Grid.Row="4" />
-                        <TextBlock Text="Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)"
+                        <TextBlock Text="{x:Static r:Resources.SelectedItemCopyName}"
                                    Margin="25 0 0 0"
                                    Grid.Row="4"
                                    Grid.Column="1"
@@ -88,58 +90,43 @@
                         <TextBlock Text="Ctrl + Shift + L"
                                    FontWeight="SemiBold"
                                    Grid.Row="5" />
-                        <TextBlock Text="Open folder in cmd"
+                        <TextBlock Text="{x:Static r:Resources.OpenFolderInCmd}"
                                    Margin="25 0 0 0"
                                    Grid.Row="5"
                                    Grid.Column="1" />
                         <TextBlock Text="Ctrl + Win + U"
                                    FontWeight="SemiBold"
                                    Grid.Row="6" />
-                        <TextBlock Text="Convert selected text to uppercase"
+                        <TextBlock Text="{x:Static r:Resources.ConvertToUppercase}"
                                    Margin="25 0 0 0"
                                    Grid.Row="6"
                                    Grid.Column="1" />
                         <TextBlock Text="Ctrl + Win + L"
                                    FontWeight="SemiBold"
                                    Grid.Row="7" />
-                        <TextBlock Text="Convert selected text to lowercase"
+                        <TextBlock Text="{x:Static r:Resources.ConvertToLowercase}"
                                    Margin="25 0 0 0"
                                    Grid.Row="7"
                                    Grid.Column="1" />
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="Settings">
+            <TabItem Header="{x:Static r:Resources.Settings}">
                 <Border Padding="10">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="New file template" />
+                            <TextBlock Text="{x:Static r:Resources.NewFileTemplate}" />
                             <TextBlock Text="(?)"
-                                       Margin="5 0 0 0">
-                                <TextBlock.ToolTip>
-                                    <ToolTip Width="300">
-                                        <ToolTip.Content>
-                                            <TextBlock TextWrapping="Wrap">
-                                                A template for new file of 'Fast file creation' shortcut.
-                                                <LineBreak /> 
-                                                You can write it without extension. 
-                                                <LineBreak/>
-                                                Filenames will have number before extension or at the end of the name.
-                                                <LineBreak />
-                                                Forbidden characters are ignored.
-                                            </TextBlock>
-                                        </ToolTip.Content>
-                                    </ToolTip>
-                                </TextBlock.ToolTip>
-                            </TextBlock>
+                                       Margin="5 0 0 0"
+                                       ToolTip="{x:Static r:Resources.NewFileTemplateToolTip}"/>
                         </StackPanel>
                         <TextBox Text="{Binding NewFileTemplate, UpdateSourceTrigger=PropertyChanged}"
                                  MinWidth="150"
                                  HorizontalAlignment="Left"
                                  Margin="0 5 0 0"
                                  PreviewTextInput="OnTextInput" />
-                        
-                        <CheckBox Content="Launch on Windows startup"
+
+                        <CheckBox Content="{x:Static r:Resources.LaunchOnStartup}"
                                   IsChecked="{Binding LaunchOnWindowsStartup}"
                                   IsEnabled="{Binding AreUiElementsEnabled}"
                                   VerticalAlignment="Top"
