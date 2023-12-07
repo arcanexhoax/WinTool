@@ -217,7 +217,16 @@ namespace WinTool.Modules
             }
             finally
             {
-                Clipboard.SetText(backingText);
+                // in some cases SetText fired exception "CLIPBRD_E_CANT_OPEN"
+                try
+                {
+                    if (!string.IsNullOrEmpty(backingText))
+                        Clipboard.SetText(backingText);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Set backing copied text failed: {ex.Message}");
+                }
 
                 // restore all pressed modifiers before command was invoked
                 if (leftCtrlPressed)
