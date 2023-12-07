@@ -217,7 +217,7 @@ namespace WinTool.Modules
             }
             finally
             {
-                // in some cases SetText fired exception "CLIPBRD_E_CANT_OPEN"
+                // in some cases SetText throws exception "CLIPBRD_E_CANT_OPEN"
                 try
                 {
                     if (!string.IsNullOrEmpty(backingText))
