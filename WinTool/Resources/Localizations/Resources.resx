@@ -152,6 +152,9 @@ Forbidden characters are ignored.</value>
   <data name="OpenFolderInCmd" xml:space="preserve">
     <value>Open current folder in cmd</value>
   </data>
+  <data name="Options" xml:space="preserve">
+    <value>Options</value>
+  </data>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
   </data>
@@ -169,6 +172,9 @@ Forbidden characters are ignored.</value>
   </data>
   <data name="Shortcuts" xml:space="preserve">
     <value>Shortcuts</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Size</value>
   </data>
   <data name="TrayToolTip" xml:space="preserve">
     <value>Double click to open, right click - menu</value>

@@ -1,16 +1,29 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using WinTool.Model;
 
 namespace WinTool.ViewModel
 {
+    public enum SizeUnit : long
+    {
+        B  = 1,
+        KB = 1024,
+        MB = 1_048_576,
+        GB = 1_073_741_824,
+        TB = 1_099_511_627_776,
+    }
+
     public class CreateFileViewModel : BindableBase
     {
         private string? _fileName;
         private string? _relativeFolderPath;
+        private uint _size = 0;
+        private SizeUnit _selectedSizeUnit = SizeUnit.B;
+        private ObservableCollection<SizeUnit> _sizeUnits = new(Enum.GetValues<SizeUnit>());
         private Window? _window;
 
         public string? FileName
@@ -23,6 +36,24 @@ namespace WinTool.ViewModel
         {
             get => _relativeFolderPath;
             set => SetProperty(ref _relativeFolderPath, value);
+        }
+
+        public uint Size
+        {
+            get => _size;
+            set => SetProperty(ref _size, value);
+        }
+
+        public SizeUnit SelectedSizeUnit
+        {
+            get => _selectedSizeUnit;
+            set => SetProperty(ref _selectedSizeUnit, value);
+        }
+
+        public ObservableCollection<SizeUnit> SizeUnits
+        {
+            get => _sizeUnits;
+            set => SetProperty(ref _sizeUnits, value);
         }
 
         public DelegateCommand CreateCommand { get; }
@@ -49,7 +80,8 @@ namespace WinTool.ViewModel
             {
                 if (!string.IsNullOrEmpty(FileName))
                 {
-                    result?.Invoke(new CreateFileResult(true, Path.Combine(folderPath, FileName)));
+                    long sizeBytes = Size * (long)SelectedSizeUnit;
+                    result?.Invoke(new CreateFileResult(true, Path.Combine(folderPath, FileName), sizeBytes));
                     _window?.Close();
                 }
             });

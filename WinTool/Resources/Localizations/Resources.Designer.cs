@@ -162,6 +162,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Options {
+            get {
+                return ResourceManager.GetString("Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string Run {
@@ -212,6 +221,15 @@ namespace WinTool.Resources.Localizations {
         public static string Shortcuts {
             get {
                 return ResourceManager.GetString("Shortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string Size {
+            get {
+                return ResourceManager.GetString("Size", resourceCulture);
             }
         }
         

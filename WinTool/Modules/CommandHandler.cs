@@ -68,13 +68,40 @@ namespace WinTool.Modules
 
             CreateFileViewModel createFileVm = new(path, r =>
             {
-                if (r.Success && !string.IsNullOrEmpty(r.FilePath))
+                if (!r.Success || string.IsNullOrEmpty(r.FilePath))
+                    return;
+
+                if (File.Exists(r.FilePath))
                 {
-                    if (!File.Exists(r.FilePath))
-                        using (File.Create(r.FilePath)) { }
-                    else
-                        MessageBox.Show($"File '{r.FilePath}' already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"File '{r.FilePath}' already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
+
+                string? driveLetter = Path.GetPathRoot(r.FilePath);
+
+                if (string.IsNullOrEmpty(driveLetter))
+                {
+                    MessageBox.Show($"File path '{r.FilePath}' is invalid", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                var drive = DriveInfo.GetDrives().FirstOrDefault(d => string.Equals(d.Name, driveLetter, StringComparison.InvariantCultureIgnoreCase));
+
+                if (drive is null)
+                {
+                    MessageBox.Show($"Unable to find drive '{driveLetter}'.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (drive.AvailableFreeSpace < r.Size)
+                {
+                    MessageBox.Show($"The drive '{driveLetter}' has only {drive.AvailableFreeSpace} free bytes (requested {r.Size}).", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                using var fileStream = File.Create(r.FilePath);
+                fileStream.SetLength(r.Size);
             });
 
             CreateFileView createFileView = new(createFileVm);

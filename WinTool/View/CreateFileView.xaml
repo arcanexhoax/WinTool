@@ -6,12 +6,14 @@
         xmlns:local="clr-namespace:WinTool.View"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:r="clr-namespace:WinTool.Resources.Localizations"
+        xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:CreateFileViewModel}"
         mc:Ignorable="d"
         Title="{x:Static r:Resources.CreateFile}"
-        Height="150"
         Width="300"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
+        SizeToContent="Height"
         x:Name="CreateFileWindow"
         Topmost="True">
     <Window.InputBindings>
@@ -35,6 +37,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
@@ -52,14 +55,33 @@
                      Grid.Column="1"
                      Margin="5 0 0 0"
                      x:Name="textBox"/>
+
+            <Expander Header="{x:Static r:Resources.Options}"
+                      Margin="0 20 0 0"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2">
+                <StackPanel Orientation="Horizontal"
+                            Margin="0 10 0 0">
+                    <TextBlock Text="{x:Static r:Resources.Size}"
+                               VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Size}"
+                             Width="150"
+                             Margin="16 0 0 0"/>
+                    <ComboBox ItemsSource="{Binding SizeUnits}"
+                              SelectedItem="{Binding SelectedSizeUnit, UpdateSourceTrigger=PropertyChanged}"
+                              Width="50"
+                              Margin="5 0 0 0"/>
+                </StackPanel>
+            </Expander>
+            
             <Button Content="{x:Static r:Resources.Create}"
                     Command="{Binding CreateCommand}"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Width="60"
                     Height="22"
-                    Margin="0 20 0 0"/>
+                    Margin="0 30 0 0"/>
         </Grid>
     </Border>
 </Window>
