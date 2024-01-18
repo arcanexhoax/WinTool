@@ -234,11 +234,29 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run &apos;{0}&apos;.
+        /// </summary>
+        public static string RunFormat {
+            get {
+                return ResourceManager.GetString("RunFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run selected exe-file with arguments.
         /// </summary>
         public static string RunWithArgs {
             get {
                 return ResourceManager.GetString("RunWithArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run &apos;{0}&apos; with args:.
+        /// </summary>
+        public static string RunWithArgsFormat {
+            get {
+                return ResourceManager.GetString("RunWithArgsFormat", resourceCulture);
             }
         }
         

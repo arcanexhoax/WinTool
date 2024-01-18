@@ -112,7 +112,7 @@ namespace WinTool.ViewModel
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;
 
-            OpenWindowCommand = new DelegateCommand(() => window.Show());
+            OpenWindowCommand = new DelegateCommand(window.Show);
             CloseWindowCommand = new DelegateCommand(() =>
             {
                 _keyHooker?.Dispose();

@@ -84,7 +84,7 @@ namespace WinTool.Modules
 
         private static List<string> GetSelectedItemsPaths()
         {
-            List<string> selectedItemsPaths = new();
+            List<string> selectedItemsPaths = [];
 
             try
             {

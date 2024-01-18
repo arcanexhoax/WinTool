@@ -176,8 +176,14 @@ Forbidden characters are ignored.</value>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
   </data>
+  <data name="RunFormat" xml:space="preserve">
+    <value>Run '{0}'</value>
+  </data>
   <data name="RunWithArgs" xml:space="preserve">
     <value>Run selected exe-file with arguments</value>
+  </data>
+  <data name="RunWithArgsFormat" xml:space="preserve">
+    <value>Run '{0}' with args:</value>
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
     <value>Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)</value>

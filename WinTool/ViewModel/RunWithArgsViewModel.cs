@@ -4,14 +4,12 @@ using System;
 using System.IO;
 using System.Windows;
 using WinTool.Model;
+using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
 {
     public class RunWithArgsViewModel : BindableBase
     {
-        private const string TitleTemplate = "Run '{0}'";
-        private const string DescriptionTemplate = "Run '{0}' with args:";
-
         private Window? _window;
         private string? _fileName;
         private string? _filePath;
@@ -42,8 +40,8 @@ namespace WinTool.ViewModel
 
         public RunWithArgsViewModel(string filePath, Action<RunWithArgsResult> result)
         {
-            FilePath = string.Format(DescriptionTemplate, filePath);
-            FileName = string.Format(TitleTemplate, Path.GetFileName(filePath));
+            FilePath = string.Format(Resource.RunWithArgsFormat, filePath);
+            FileName = string.Format(Resource.RunFormat, Path.GetFileName(filePath));
 
             RunCommand = new DelegateCommand(() =>
             {
