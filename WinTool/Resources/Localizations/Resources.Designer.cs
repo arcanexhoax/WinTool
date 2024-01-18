@@ -106,11 +106,56 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to find drive &apos;{0}&apos;..
+        /// </summary>
+        public static string DriveNotFound {
+            get {
+                return ResourceManager.GetString("DriveNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fast file creation.
         /// </summary>
         public static string FastFileCreation {
             get {
                 return ResourceManager.GetString("FastFileCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; already exists..
+        /// </summary>
+        public static string FileAlreadyExists {
+            get {
+                return ResourceManager.GetString("FileAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; doesn&apos;t exist..
+        /// </summary>
+        public static string FileNotFound {
+            get {
+                return ResourceManager.GetString("FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File path &apos;{0}&apos; is invalid.
+        /// </summary>
+        public static string FilePathInvalid {
+            get {
+                return ResourceManager.GetString("FilePathInvalid", resourceCulture);
             }
         }
         
@@ -171,6 +216,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The drive &apos;{0}&apos; has only {1} free bytes (requested {2})..
+        /// </summary>
+        public static string OutOfMemory {
+            get {
+                return ResourceManager.GetString("OutOfMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string Run {
@@ -212,6 +266,15 @@ namespace WinTool.Resources.Localizations {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to set windows startup. {0}.
+        /// </summary>
+        public static string SetWindowsStartupError {
+            get {
+                return ResourceManager.GetString("SetWindowsStartupError", resourceCulture);
             }
         }
         

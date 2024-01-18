@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WinTool.Model;
 using WinTool.Modules;
+using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
 {
@@ -59,7 +60,7 @@ namespace WinTool.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Unable to set windows startup. {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(string.Format(Resource.SetWindowsStartupError, ex.Message), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 finally
                 {

@@ -10,6 +10,7 @@ using System.Windows;
 using WindowsInput;
 using WinTool.View;
 using WinTool.ViewModel;
+using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.Modules
 {
@@ -73,7 +74,7 @@ namespace WinTool.Modules
 
                 if (File.Exists(r.FilePath))
                 {
-                    MessageBox.Show($"File '{r.FilePath}' already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(string.Format(Resource.FileAlreadyExists, r.FilePath), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -81,7 +82,7 @@ namespace WinTool.Modules
 
                 if (string.IsNullOrEmpty(driveLetter))
                 {
-                    MessageBox.Show($"File path '{r.FilePath}' is invalid", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(string.Format(Resource.FilePathInvalid, r.FilePath), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -89,13 +90,13 @@ namespace WinTool.Modules
 
                 if (drive is null)
                 {
-                    MessageBox.Show($"Unable to find drive '{driveLetter}'.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(string.Format(Resource.DriveNotFound, driveLetter), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 if (drive.AvailableFreeSpace < r.Size)
                 {
-                    MessageBox.Show($"The drive '{driveLetter}' has only {drive.AvailableFreeSpace} free bytes (requested {r.Size}).", "Error",
+                    MessageBox.Show(string.Format(Resource.OutOfMemory, driveLetter, drive.AvailableFreeSpace, r.Size), Resource.Error, 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -164,7 +165,7 @@ namespace WinTool.Modules
                     if (File.Exists(selectedItem))
                         using (Process.Start(selectedItem, r.Args ?? string.Empty)) { }
                     else
-                        MessageBox.Show($"File '{selectedItem}' doesn't exist.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(string.Format(Resource.FileNotFound, selectedItem), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
 
