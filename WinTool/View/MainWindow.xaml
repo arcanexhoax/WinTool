@@ -8,6 +8,7 @@
         xmlns:r="clr-namespace:WinTool.Resources.Localizations"
         d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
         Title="{x:Static r:Resources.WinTool}"
+        Icon="/Resources/logo.png"
         mc:Ignorable="d"
         Height="450"
         Width="800"
