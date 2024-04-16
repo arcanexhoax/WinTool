@@ -32,12 +32,12 @@ namespace WinTool.CommandLine
 
         public override string ToString()
         {
-            StringBuilder sb = new();
+            StringBuilder sb = new(ParameterName);
 
             if (FilePath is not (null or []))
-                sb.Append($"{PathSubParameter}={FilePath}");
+                sb.Append($" {PathSubParameter}={FilePath}");
             if (Size > 0)
-                sb.Append($"{SizeSubParameter}={Size}");
+                sb.Append($" {SizeSubParameter}={Size}");
 
             return sb.ToString();
         }

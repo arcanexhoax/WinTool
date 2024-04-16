@@ -5,14 +5,13 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Model;
 using WinTool.Modules;
+using WinTool.Utils;
 using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
@@ -106,9 +105,8 @@ namespace WinTool.ViewModel
                 { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Win),   () => CommandHandler.LowerCaseSelectedText() }
             };
 
-            string? exeFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             // use arg "/background" to start app in background mode
-            _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} {BackgroundParameter.ParameterName}";
+            _executionFilePath =  $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
 
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;

@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using WindowsInput;
+using WinTool.CommandLine;
+using WinTool.Utils;
 using WinTool.View;
 using WinTool.ViewModel;
 using Resource = WinTool.Resources.Localizations.Resources;
@@ -111,8 +113,15 @@ namespace WinTool.Modules
 
         public static void CreateFile(string path, long size = 0)
         {
-            using var fileStream = File.Create(path);
-            fileStream.SetLength(size);
+            ProcessHelper.ExecuteWithUacIfNeeded(() =>
+            {
+                using var fileStream = File.Create(path);
+                fileStream.SetLength(size);
+            }, new CreateFileParameter() 
+            {
+                FilePath = path,
+                Size = size
+            });
         }
 
         public static async Task CopyFilePath()
