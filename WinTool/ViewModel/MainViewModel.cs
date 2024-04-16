@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using WinTool.CommandLine;
 using WinTool.Model;
 using WinTool.Modules;
 using Resource = WinTool.Resources.Localizations.Resources;
@@ -96,8 +97,8 @@ namespace WinTool.ViewModel
             _shortcuts = new()
             {
                 { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFilePath() },
-                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.FastCreateFile(NewFileTemplate!) },
-                { new Shortcut(Key.E, KeyModifier.Ctrl),                     () => CommandHandler.CreateFile() },
+                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CreateFileFast(NewFileTemplate!) },
+                { new Shortcut(Key.E, KeyModifier.Ctrl),                     () => CommandHandler.CreateFileInteractive() },
                 { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
                 { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
                 { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() },
@@ -107,7 +108,7 @@ namespace WinTool.ViewModel
 
             string? exeFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             // use arg "/background" to start app in background mode
-            _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} {CommandLineParameters.BackgroundParameter}";
+            _executionFilePath =  $"{Path.Combine(exeFolderPath!, "WinTool.exe")} {BackgroundParameter.ParameterName}";
 
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;

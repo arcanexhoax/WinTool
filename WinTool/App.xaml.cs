@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
-using WinTool.Model;
+using WinTool.CommandLine;
+using WinTool.Modules;
 
 namespace WinTool
 {
@@ -16,8 +17,21 @@ namespace WinTool
 
             var clp = CommandLineParameters.Parse(args);
 
-            if (!clp.Background)
+            if (clp.BackgroundParameter is null)
                 window.Show();
+
+            HandleOperations(clp);
+
+            if (clp.ShutdownOnEndedParameter is not null)
+                App.Current.Shutdown();
+        }
+
+        private void HandleOperations(CommandLineParameters clp)
+        {
+            if (clp.CreateFileParameter is { FilePath: not (null or [])})
+            {
+                CommandHandler.CreateFile(clp.CreateFileParameter.FilePath, clp.CreateFileParameter.Size);
+            }
         }
     }
 }

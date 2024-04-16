@@ -23,7 +23,7 @@ namespace WinTool.Modules
             _keyboardSimulator = new InputSimulator().Keyboard;
         }
 
-        public static async Task FastCreateFile(string newFileTemplate)
+        public static async Task CreateFileFast(string newFileTemplate)
         {
             string? path = await Shell.GetActiveExplorerPathAsync();
 
@@ -52,7 +52,7 @@ namespace WinTool.Modules
                 if (numbers.Any())
                     num = numbers.Max() + 1;
 
-                using (File.Create(Path.Combine(path, $"{fileName}_{num}{extension}"))) { }
+                CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace WinTool.Modules
             }
         }
 
-        public static async Task CreateFile()
+        public static async Task CreateFileInteractive()
         {
             string? path = await Shell.GetActiveExplorerPathAsync();
 
@@ -101,13 +101,18 @@ namespace WinTool.Modules
                     return;
                 }
 
-                using var fileStream = File.Create(r.FilePath);
-                fileStream.SetLength(r.Size);
+                CreateFile(r.FilePath, r.Size);
             });
 
             CreateFileView createFileView = new(createFileVm);
             createFileView.Show();
             createFileView.Activate();
+        }
+
+        public static void CreateFile(string path, long size = 0)
+        {
+            using var fileStream = File.Create(path);
+            fileStream.SetLength(size);
         }
 
         public static async Task CopyFilePath()
