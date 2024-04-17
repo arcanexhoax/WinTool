@@ -3,7 +3,6 @@ using Shell32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WinTool.Native;
@@ -54,24 +53,14 @@ namespace WinTool.Modules
                 if (window is null)
                     return null;
 
-                var shellWindow = window.Document as IShellFolderViewDual2;
-
-                if (shellWindow == null)
+                if (window.Document is not IShellFolderViewDual2 shellWindow)
                     return null;
 
                 var currentFolder = shellWindow.Folder.Items().Item();
 
                 // special folder - use window title, for some reason on "Desktop" gives null
                 if (currentFolder == null || currentFolder.Path.StartsWith("::"))
-                {
-                    const int nChars = 256;
-                    StringBuilder buff = new(nChars);
-
-                    if (NativeMethods.GetWindowText(handle, buff, nChars) > 0)
-                        return buff.ToString();
-
-                    return null;
-                }
+                    return NativeMethods.GetWindowText(handle);
                 else
                     return currentFolder.Path;
             }
@@ -115,11 +104,36 @@ namespace WinTool.Modules
 
         private static InternetExplorer? GetActiveShellWindow(IntPtr handle)
         {
+            // check if current Windows version is 11
+            if (Environment.OSVersion.Version.Build >= 22000)
+                return GetActiveShellWindow11(handle);
+            else
+                return GetActiveShellWindow10(handle);
+        }
+
+        private static InternetExplorer? GetActiveShellWindow10(IntPtr handle)
+        {
             ShellWindows shellWindows = new();
 
             foreach (InternetExplorer window in shellWindows)
             {
                 if (window.HWND == (int)handle)
+                    return window;
+            }
+
+            return null;
+        }
+
+        private static InternetExplorer? GetActiveShellWindow11(IntPtr handle)
+        {
+            string? windowTitle = NativeMethods.GetWindowText(handle);
+            ShellWindows shellWindows = new();
+
+            foreach (InternetExplorer window in shellWindows)
+            {
+                // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle, so we need to compare 
+                // the title (indicates the path) of the current explorer window with the local path of each tab of this window
+                if (window.HWND == (int)handle && new Uri(window.LocationURL).LocalPath == windowTitle)
                     return window;
             }
 
