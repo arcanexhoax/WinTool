@@ -95,14 +95,14 @@
                                    Margin="25 0 0 0"
                                    Grid.Row="5"
                                    Grid.Column="1" />
-                        <TextBlock Text="Ctrl + Win + U"
+                        <TextBlock Text="Alt + Win + U"
                                    FontWeight="SemiBold"
                                    Grid.Row="6" />
                         <TextBlock Text="{x:Static r:Resources.ConvertToUppercase}"
                                    Margin="25 0 0 0"
                                    Grid.Row="6"
                                    Grid.Column="1" />
-                        <TextBlock Text="Ctrl + Win + L"
+                        <TextBlock Text="Alt + Win + L"
                                    FontWeight="SemiBold"
                                    Grid.Row="7" />
                         <TextBlock Text="{x:Static r:Resources.ConvertToLowercase}"

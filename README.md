@@ -13,8 +13,8 @@ WinTool is a utility that expands shortcuts for Windows and its apps, it adds sh
 <br>`Ctrl + Shift + L` - Open current folder in cmd
 
 ### Selected text (in any app)
-`Ctrl + Win + U` - Convert to uppercase
-<br>`Ctrl + Win + L` - Convert to lowercase
+`Alt + Win + U` - Convert to uppercase
+<br>`Alt + Win + L` - Convert to lowercase
 
 ## Features
 - Launching utility on windows startup
