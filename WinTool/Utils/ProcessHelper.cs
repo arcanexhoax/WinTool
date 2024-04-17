@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using WinTool.CommandLine;
 
 namespace WinTool.Utils
@@ -14,6 +10,7 @@ namespace WinTool.Utils
     internal class ProcessHelper
     {
         private static readonly bool _isAdmin;
+        private static readonly string _appDirectory;
 
         public static string ProcessPath { get; }
 
@@ -23,7 +20,8 @@ namespace WinTool.Utils
             var principal = new WindowsPrincipal(identity);
             _isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
 
-            ProcessPath = Path.Combine(Directory.GetCurrentDirectory(), "WinTool.exe");
+            _appDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+            ProcessPath = Path.Combine(_appDirectory, "WinTool.exe");
         }
 
         public static void ExecuteWithUacIfNeeded(Action action, ICommandLineParameter clp)
@@ -43,7 +41,7 @@ namespace WinTool.Utils
                     FileName = ProcessPath,
                     Verb = "runas",
                     UseShellExecute = true,
-                    WorkingDirectory = Directory.GetCurrentDirectory()
+                    WorkingDirectory = _appDirectory
                 };
 
                 Process.Start(psi);
