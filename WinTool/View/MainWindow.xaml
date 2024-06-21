@@ -45,6 +45,7 @@
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
@@ -95,19 +96,26 @@
                                    Margin="25 0 0 0"
                                    Grid.Row="5"
                                    Grid.Column="1" />
-                        <TextBlock Text="Alt + Win + U"
+                        <TextBlock Text="Ctrl + Shift + F"
                                    FontWeight="SemiBold"
                                    Grid.Row="6" />
-                        <TextBlock Text="{x:Static r:Resources.ConvertToUppercase}"
+                        <TextBlock Text="{x:Static r:Resources.SearchTextDescription}"
                                    Margin="25 0 0 0"
                                    Grid.Row="6"
                                    Grid.Column="1" />
-                        <TextBlock Text="Alt + Win + L"
+                        <TextBlock Text="Alt + Win + U"
                                    FontWeight="SemiBold"
                                    Grid.Row="7" />
-                        <TextBlock Text="{x:Static r:Resources.ConvertToLowercase}"
+                        <TextBlock Text="{x:Static r:Resources.ConvertToUppercase}"
                                    Margin="25 0 0 0"
                                    Grid.Row="7"
+                                   Grid.Column="1" />
+                        <TextBlock Text="Alt + Win + L"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="8" />
+                        <TextBlock Text="{x:Static r:Resources.ConvertToLowercase}"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="8"
                                    Grid.Column="1" />
                     </Grid>
                 </Border>

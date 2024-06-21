@@ -9,7 +9,12 @@ namespace WinTool.View
         {
             DataContext = createFileViewModel;
             InitializeComponent();
+        }
 
+        public void ShowFocused()
+        {
+            Show();
+            Activate();
             textBox.Focus();
         }
     }

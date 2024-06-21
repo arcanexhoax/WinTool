@@ -4,13 +4,13 @@ using WinTool.ViewModel;
 namespace WinTool.View
 {
     /// <summary>
-    /// Interaction logic for RunWithArgsWindow.xaml
+    /// Interaction logic for SearchTextView.xaml
     /// </summary>
-    public partial class RunWithArgsWindow : Window
+    public partial class SearchTextView : Window
     {
-        public RunWithArgsWindow(RunWithArgsViewModel runWithArgsVm)
+        public SearchTextView(SearchTextViewModel vm)
         {
-            DataContext = runWithArgsVm;
+            DataContext = vm;
             InitializeComponent();
         }
 

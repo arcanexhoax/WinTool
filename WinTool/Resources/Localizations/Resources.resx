@@ -153,6 +153,9 @@
   <data name="LaunchOnStartup" xml:space="preserve">
     <value>Launch on Windows startup</value>
   </data>
+  <data name="MatchCase" xml:space="preserve">
+    <value>Match case</value>
+  </data>
   <data name="NewFileTemplate" xml:space="preserve">
     <value>New file template</value>
   </data>
@@ -173,6 +176,9 @@ Forbidden characters are ignored.</value>
   <data name="OutOfMemory" xml:space="preserve">
     <value>The drive '{0}' has only {1} free bytes (requested {2}).</value>
   </data>
+  <data name="Recursive" xml:space="preserve">
+    <value>Recursive</value>
+  </data>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
   </data>
@@ -184,6 +190,15 @@ Forbidden characters are ignored.</value>
   </data>
   <data name="RunWithArgsFormat" xml:space="preserve">
     <value>Run '{0}' with args:</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchResult" xml:space="preserve">
+    <value>Search result</value>
+  </data>
+  <data name="SearchTextDescription" xml:space="preserve">
+    <value>Search for text in files in the current folder</value>
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
     <value>Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)</value>
@@ -205,6 +220,9 @@ Forbidden characters are ignored.</value>
   </data>
   <data name="TrayToolTip" xml:space="preserve">
     <value>Double click to open, right click - menu</value>
+  </data>
+  <data name="UseRegex" xml:space="preserve">
+    <value>Use regex</value>
   </data>
   <data name="WinTool" xml:space="preserve">
     <value>WinTool</value>

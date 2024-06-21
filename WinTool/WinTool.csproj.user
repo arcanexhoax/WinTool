@@ -13,6 +13,12 @@
     <Compile Update="View\RunWithArgsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\SearchTextResultView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\SearchTextView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\Localizations\Resources.resx">
@@ -27,6 +33,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\RunWithArgsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\SearchTextResultView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\SearchTextView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

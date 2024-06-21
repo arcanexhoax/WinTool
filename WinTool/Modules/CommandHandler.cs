@@ -107,8 +107,7 @@ namespace WinTool.Modules
             });
 
             CreateFileView createFileView = new(createFileVm);
-            createFileView.Show();
-            createFileView.Activate();
+            createFileView.ShowFocused();
         }
 
         public static void CreateFile(string path, long size = 0)
@@ -184,8 +183,7 @@ namespace WinTool.Modules
             });
 
             RunWithArgsWindow runWithArgsWindow = new(runWithArgsVm);
-            runWithArgsWindow.Show();
-            runWithArgsWindow.Activate();
+            runWithArgsWindow.ShowFocused();
         }
 
         public static async Task OpenInCmd()
@@ -291,6 +289,18 @@ namespace WinTool.Modules
                 else if (rightWinPressed)
                     _keyboardSimulator.KeyDown(VirtualKeyCode.RWIN);
             }
+        }
+
+        public static async Task SearchText()
+        {
+            string? folderPath = await Shell.GetActiveExplorerPathAsync();
+
+            if (string.IsNullOrEmpty(folderPath))
+                return;
+
+            SearchTextViewModel vm = new(folderPath);
+            SearchTextView view = new(vm);
+            view.ShowFocused();
         }
     }
 }

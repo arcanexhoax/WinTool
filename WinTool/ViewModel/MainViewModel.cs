@@ -95,14 +95,15 @@ namespace WinTool.ViewModel
         {
             _shortcuts = new()
             {
-                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFilePath() },
+                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), CommandHandler.CopyFilePath },
                 { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CreateFileFast(NewFileTemplate!) },
-                { new Shortcut(Key.E, KeyModifier.Ctrl),                     () => CommandHandler.CreateFileInteractive() },
-                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
-                { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
-                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() },
-                { new Shortcut(Key.U, KeyModifier.Alt | KeyModifier.Win),   () => CommandHandler.UpperCaseSelectedText() },
-                { new Shortcut(Key.L, KeyModifier.Alt | KeyModifier.Win),   () => CommandHandler.LowerCaseSelectedText() }
+                { new Shortcut(Key.E, KeyModifier.Ctrl),                     CommandHandler.CreateFileInteractive },
+                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), CommandHandler.OpenInCmd },
+                { new Shortcut(Key.O, KeyModifier.Ctrl),                     CommandHandler.RunWithArgs },
+                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), CommandHandler.CopyFileName },
+                { new Shortcut(Key.F, KeyModifier.Ctrl | KeyModifier.Shift), CommandHandler.SearchText },
+                { new Shortcut(Key.U, KeyModifier.Alt | KeyModifier.Win),    CommandHandler.UpperCaseSelectedText },
+                { new Shortcut(Key.L, KeyModifier.Alt | KeyModifier.Win),    CommandHandler.LowerCaseSelectedText },
             };
 
             // use arg "/background" to start app in background mode

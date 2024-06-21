@@ -1,0 +1,57 @@
+﻿<Window x:Class="WinTool.View.SearchTextView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:r="clr-namespace:WinTool.Resources.Localizations"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:WinTool.View"
+        xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:SearchTextViewModel}"
+        x:Name="SearchTextWindow"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        SizeToContent="Height"
+        Topmost="True"
+        mc:Ignorable="d"
+        Title="{x:Static r:Resources.Search}" 
+        Height="200" 
+        Width="400">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding SearchCommand}"
+                    Key="Return" />
+        <KeyBinding Command="{Binding CloseWindowCommand}"
+                    Key="Esc" />
+    </Window.InputBindings>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}"
+                                   CommandParameter="{Binding ElementName=SearchTextWindow}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
+    <Border Padding="20">
+        <StackPanel>
+            <TextBox Text="{Binding SearchedText, UpdateSourceTrigger=PropertyChanged}"
+                     Height="22"
+                     x:Name="textBox"
+                     VerticalContentAlignment="Center"/>
+
+            <CheckBox Content="{x:Static r:Resources.MatchCase}"
+                      IsChecked="{Binding MatchCase, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0 10 0 0"/>
+            <CheckBox Content="{x:Static r:Resources.Recursive}"
+                      IsChecked="{Binding IsRecursive, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0 5 0 0" />
+            <CheckBox Content="{x:Static r:Resources.UseRegex}"
+                      IsChecked="{Binding UseRegex, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0 5 0 0" />
+
+            <Button Content="{x:Static r:Resources.Search}"
+                    Command="{Binding SearchCommand}"
+                    HorizontalAlignment="Right"
+                    Width="50"
+                    Margin="0 20 0 0"/>
+        </StackPanel>
+    </Border>
+</Window>

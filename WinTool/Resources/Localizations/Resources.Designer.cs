@@ -169,6 +169,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Match case.
+        /// </summary>
+        public static string MatchCase {
+            get {
+                return ResourceManager.GetString("MatchCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New file template.
         /// </summary>
         public static string NewFileTemplate {
@@ -225,6 +234,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recursive.
+        /// </summary>
+        public static string Recursive {
+            get {
+                return ResourceManager.GetString("Recursive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string Run {
@@ -257,6 +275,33 @@ namespace WinTool.Resources.Localizations {
         public static string RunWithArgsFormat {
             get {
                 return ResourceManager.GetString("RunWithArgsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Search {
+            get {
+                return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search result.
+        /// </summary>
+        public static string SearchResult {
+            get {
+                return ResourceManager.GetString("SearchResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search for text in files in the current folder.
+        /// </summary>
+        public static string SearchTextDescription {
+            get {
+                return ResourceManager.GetString("SearchTextDescription", resourceCulture);
             }
         }
         
@@ -320,6 +365,15 @@ namespace WinTool.Resources.Localizations {
         public static string TrayToolTip {
             get {
                 return ResourceManager.GetString("TrayToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use regex.
+        /// </summary>
+        public static string UseRegex {
+            get {
+                return ResourceManager.GetString("UseRegex", resourceCulture);
             }
         }
         
