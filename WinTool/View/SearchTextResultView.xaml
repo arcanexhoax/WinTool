@@ -8,7 +8,7 @@
         xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
         d:DataContext="{d:DesignInstance Type=viewmodel:SearchTextResultViewModel}"
         mc:Ignorable="d"
-        Title="{x:Static r:Resources.SearchResult}" 
+        Title="{Binding Title}" 
         Height="450" 
         Width="800">
     <Border Padding="20 0 0 20">

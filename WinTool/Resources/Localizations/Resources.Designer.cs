@@ -160,6 +160,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Files filter (includes regex):.
+        /// </summary>
+        public static string FilesFilter {
+            get {
+                return ResourceManager.GetString("FilesFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launch on Windows startup.
         /// </summary>
         public static string LaunchOnStartup {
@@ -288,7 +297,7 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search result.
+        ///   Looks up a localized string similar to Search &quot;{0}&quot; ({1} results).
         /// </summary>
         public static string SearchResult {
             get {
@@ -302,6 +311,15 @@ namespace WinTool.Resources.Localizations {
         public static string SearchTextDescription {
             get {
                 return ResourceManager.GetString("SearchTextDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search in {0}.
+        /// </summary>
+        public static string SearchTitle {
+            get {
+                return ResourceManager.GetString("SearchTitle", resourceCulture);
             }
         }
         

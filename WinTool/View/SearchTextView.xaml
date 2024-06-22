@@ -14,8 +14,8 @@
         SizeToContent="Height"
         Topmost="True"
         mc:Ignorable="d"
-        Title="{x:Static r:Resources.Search}" 
-        Height="200" 
+        Title="{Binding FolderPath, StringFormat={x:Static r:Resources.SearchTitle}}"
+        Height="240" 
         Width="400">
     <Window.InputBindings>
         <KeyBinding Command="{Binding SearchCommand}"
@@ -47,6 +47,18 @@
                       IsChecked="{Binding UseRegex, UpdateSourceTrigger=PropertyChanged}"
                       Margin="0 5 0 0" />
 
+            <Grid Margin="0 15 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Text="{x:Static r:Resources.FilesFilter}" />
+                <TextBox Text="{Binding FilesFilter, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="10 0 0 0"
+                         Grid.Column="1"/>
+            </Grid>
+            
             <Button Content="{x:Static r:Resources.Search}"
                     Command="{Binding SearchCommand}"
                     HorizontalAlignment="Right"

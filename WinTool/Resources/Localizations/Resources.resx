@@ -150,6 +150,9 @@
   <data name="FilePathInvalid" xml:space="preserve">
     <value>File path '{0}' is invalid</value>
   </data>
+  <data name="FilesFilter" xml:space="preserve">
+    <value>Files filter (includes regex):</value>
+  </data>
   <data name="LaunchOnStartup" xml:space="preserve">
     <value>Launch on Windows startup</value>
   </data>
@@ -195,10 +198,13 @@ Forbidden characters are ignored.</value>
     <value>Search</value>
   </data>
   <data name="SearchResult" xml:space="preserve">
-    <value>Search result</value>
+    <value>Search "{0}" ({1} results)</value>
   </data>
   <data name="SearchTextDescription" xml:space="preserve">
     <value>Search for text in files in the current folder</value>
+  </data>
+  <data name="SearchTitle" xml:space="preserve">
+    <value>Search in {0}</value>
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
     <value>Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)</value>
