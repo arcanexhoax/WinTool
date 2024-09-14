@@ -101,8 +101,6 @@ namespace WinTool.ViewModel
                 { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
                 { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
                 { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() },
-                { new Shortcut(Key.U, KeyModifier.Alt | KeyModifier.Win),   () => CommandHandler.UpperCaseSelectedText() },
-                { new Shortcut(Key.L, KeyModifier.Alt | KeyModifier.Win),   () => CommandHandler.LowerCaseSelectedText() }
             };
 
             // use arg "/background" to start app in background mode

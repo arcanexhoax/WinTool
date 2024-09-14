@@ -12,10 +12,6 @@ WinTool is a utility that expands shortcuts for Windows and its apps, it adds sh
 <br>`Ctrl + Shift + X` - Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)
 <br>`Ctrl + Shift + L` - Open current folder in cmd
 
-### Selected text (in any app)
-`Alt + Win + U` - Convert to uppercase
-<br>`Alt + Win + L` - Convert to lowercase
-
 ## Features
 - Launching utility on windows startup
 - Working from the tray
