@@ -12,7 +12,8 @@ namespace WinTool.ViewModel
     {
         private Window? _window;
         private string? _fileName;
-        private string? _filePath;
+        private string? _fullFilePath;
+        private string? _shortedFilePath;
         private string? _args;
 
         public string? FileName
@@ -21,10 +22,16 @@ namespace WinTool.ViewModel
             set => SetProperty(ref _fileName, value);
         }
 
-        public string? FilePath
+        public string? FullFilePath
         {
-            get => _filePath;
-            set => SetProperty(ref _filePath, value);
+            get => _fullFilePath;
+            set => SetProperty(ref _fullFilePath, value);
+        }
+
+        public string? ShortedFilePath
+        {
+            get => _shortedFilePath;
+            set => SetProperty(ref _shortedFilePath, value);
         }
 
         public string? Args
@@ -38,10 +45,15 @@ namespace WinTool.ViewModel
         public DelegateCommand WindowClosingCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
-        public RunWithArgsViewModel(string filePath, Action<RunWithArgsResult> result)
+        public RunWithArgsViewModel(string filePath, string lastArgs, Action<RunWithArgsResult> result)
         {
-            FilePath = string.Format(Resource.RunWithArgsFormat, filePath);
-            FileName = string.Format(Resource.RunFormat, Path.GetFileName(filePath));
+            FileName = Path.GetFileName(filePath);
+            FullFilePath = filePath;
+
+            var folders = FullFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            ShortedFilePath = folders.Length > 3 ? Path.Combine(folders[0], folders[1], "...", folders[^1]) : FullFilePath;
+
+            Args = lastArgs;
 
             RunCommand = new DelegateCommand(() =>
             {

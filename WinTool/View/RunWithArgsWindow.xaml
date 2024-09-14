@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:r="clr-namespace:WinTool.Resources.Localizations"
-        Title="{Binding FileName}"
+        xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:RunWithArgsViewModel}"
+        Title="{Binding FileName, StringFormat={x:Static r:Resources.RunFormat}}"
         Icon="/Resources/logo.png"
         mc:Ignorable="d"
-        Height="320"
-        Width="300"
+        SizeToContent="Height"
+        Width="400"
         WindowStartupLocation="CenterScreen"
         x:Name="runWithArgsWindow"
         Topmost="True">
@@ -31,8 +33,13 @@
 
     <Border Padding="20">
         <StackPanel>
-            <TextBlock Text="{Binding FilePath}"
-                       TextWrapping="Wrap" />
+            <TextBlock TextWrapping="Wrap">
+                <Run Text="{x:Static r:Resources.Run}" />
+                <Run Text="{Binding ShortedFilePath, StringFormat='&quot;{0}&quot;'}"
+                     ToolTip="{Binding FullFilePath}"
+                     FontWeight="SemiBold"/>
+                <Run Text="{x:Static r:Resources.WithArgs}" />
+            </TextBlock>
             <TextBox MinHeight="150"
                      MinWidth="200"
                      Margin="0 20 0 0"

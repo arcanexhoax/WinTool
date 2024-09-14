@@ -15,6 +15,8 @@ namespace WinTool.Modules
 {
     public class CommandHandler
     {
+        private static string s_lastRunWithArgsData = string.Empty;
+
         public static async Task CreateFileFast(string newFileTemplate)
         {
             string? path = await Shell.GetActiveExplorerPathAsync();
@@ -162,12 +164,14 @@ namespace WinTool.Modules
                 return;
 
             string selectedItem = selectedPaths[0];
-            RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], r =>
+            RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], s_lastRunWithArgsData, r =>
             {
                 if (r.Success)
                 {
+                    s_lastRunWithArgsData = r.Args ?? string.Empty;
+
                     if (File.Exists(selectedItem))
-                        using (Process.Start(selectedItem, r.Args ?? string.Empty)) { }
+                        using (Process.Start(selectedItem, s_lastRunWithArgsData)) { }
                     else
                         MessageBox.Show(string.Format(Resource.FileNotFound, selectedItem), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }

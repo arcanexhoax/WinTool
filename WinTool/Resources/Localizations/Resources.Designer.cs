@@ -252,15 +252,6 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run &apos;{0}&apos; with args:.
-        /// </summary>
-        public static string RunWithArgsFormat {
-            get {
-                return ResourceManager.GetString("RunWithArgsFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen).
         /// </summary>
         public static string SelectedItemCopyName {
@@ -329,6 +320,15 @@ namespace WinTool.Resources.Localizations {
         public static string WinTool {
             get {
                 return ResourceManager.GetString("WinTool", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to with args:.
+        /// </summary>
+        public static string WithArgs {
+            get {
+                return ResourceManager.GetString("WithArgs", resourceCulture);
             }
         }
     }
