@@ -20,7 +20,7 @@ namespace WinTool.Utils
             var principal = new WindowsPrincipal(identity);
             _isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
 
-            _appDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+            _appDirectory = Path.GetDirectoryName(Environment.ProcessPath)!;
             ProcessPath = Path.Combine(_appDirectory, "WinTool.exe");
         }
 

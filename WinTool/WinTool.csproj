@@ -11,6 +11,7 @@
 		<PackageProjectUrl>https://github.com/arcanexhoax/WinTool</PackageProjectUrl>
 		<Description>WinTool is a utility that expands shortcuts for Windows Explorer, it adds shortcuts for useful functions that do not have it.</Description>
 		<ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+		<RuntimeIdentifier>win-x86</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -37,10 +38,6 @@
 			<Isolated>false</Isolated>
 			<EmbedInteropTypes>true</EmbedInteropTypes>
 		</COMReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Include="Resources\icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
