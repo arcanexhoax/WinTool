@@ -7,6 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:r="clr-namespace:WinTool.Resources.Localizations"
         xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        xmlns:u="clr-namespace:WinTool.Utils"
         d:DataContext="{d:DesignInstance Type=viewmodel:CreateFileViewModel}"
         Title="{x:Static r:Resources.CreateFile}"
         Icon="/Resources/logo.png"
@@ -45,11 +46,13 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="{Binding RelativeFolderPath}" 
+            <TextBlock Text="{Binding RelativeFolderPath}"
+                       ToolTip="{Binding FullFolderPath}"
                        Grid.Row="0"
                        Grid.Column="0"
                        VerticalAlignment="Center"/>
             <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"
+                     u:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}"
                      Height="22"
                      VerticalContentAlignment="Center"
                      Grid.Row="0"
@@ -58,6 +61,7 @@
                      x:Name="textBox"/>
 
             <Expander Header="{x:Static r:Resources.Options}"
+                      IsExpanded="{Binding AreOptionsOpened}"
                       Margin="0 20 0 0"
                       Grid.Row="1"
                       Grid.ColumnSpan="2">

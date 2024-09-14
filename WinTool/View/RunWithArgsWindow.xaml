@@ -6,6 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:r="clr-namespace:WinTool.Resources.Localizations"
         xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        xmlns:u="clr-namespace:WinTool.Utils"
         d:DataContext="{d:DesignInstance Type=viewmodel:RunWithArgsViewModel}"
         Title="{Binding FileName, StringFormat={x:Static r:Resources.RunFormat}}"
         Icon="/Resources/logo.png"
@@ -44,7 +45,8 @@
                      MinWidth="200"
                      Margin="0 20 0 0"
                      x:Name="textBox"
-                     Text="{Binding Args, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding Args, UpdateSourceTrigger=PropertyChanged}"
+                     u:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}" />
             <Button Content="{x:Static r:Resources.Run}"
                     Command="{Binding RunCommand}"
                     HorizontalAlignment="Right" 

@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Windows;
 using WinTool.Model;
-using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
 {
@@ -15,6 +14,7 @@ namespace WinTool.ViewModel
         private string? _fullFilePath;
         private string? _shortedFilePath;
         private string? _args;
+        private bool _isTextSelected;
 
         public string? FileName
         {
@@ -40,6 +40,12 @@ namespace WinTool.ViewModel
             set => SetProperty(ref _args, value);
         }
 
+        public bool IsTextSelected
+        {
+            get => _isTextSelected;
+            set => SetProperty(ref _isTextSelected, value);
+        }
+
         public DelegateCommand RunCommand { get; }
         public DelegateCommand<Window> WindowLoadedCommand { get; }
         public DelegateCommand WindowClosingCommand { get; }
@@ -53,7 +59,11 @@ namespace WinTool.ViewModel
             var folders = FullFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             ShortedFilePath = folders.Length > 3 ? Path.Combine(folders[0], folders[1], "...", folders[^1]) : FullFilePath;
 
-            Args = lastArgs;
+            if (lastArgs is not (null or []))
+            {
+                Args = lastArgs;
+                IsTextSelected = true;
+            }
 
             RunCommand = new DelegateCommand(() =>
             {

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Model;
 using WinTool.Utils;
 using WinTool.View;
 using WinTool.ViewModel;
@@ -16,6 +17,7 @@ namespace WinTool.Modules
     public class CommandHandler
     {
         private static string s_lastRunWithArgsData = string.Empty;
+        private static CreateFileData? s_lastCreateFileData;
 
         public static async Task CreateFileFast(string newFileTemplate)
         {
@@ -61,10 +63,12 @@ namespace WinTool.Modules
             if (string.IsNullOrEmpty(path))
                 return;
 
-            CreateFileViewModel createFileVm = new(path, r =>
+            CreateFileViewModel createFileVm = new(path, s_lastCreateFileData, r =>
             {
-                if (!r.Success || string.IsNullOrEmpty(r.FilePath))
+                if (!r.Success || r.FilePath is null or [])
                     return;
+
+                s_lastCreateFileData = r.CreateFileData;
 
                 if (File.Exists(r.FilePath))
                 {

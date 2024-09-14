@@ -20,8 +20,11 @@ namespace WinTool.ViewModel
     public class CreateFileViewModel : BindableBase
     {
         private string? _fileName;
+        private string? _fullFolderPath;
         private string? _relativeFolderPath;
         private uint _size = 0;
+        private bool _isTextSelected;
+        private bool _areOptionsOpened;
         private SizeUnit _selectedSizeUnit = SizeUnit.B;
         private ObservableCollection<SizeUnit> _sizeUnits = new(Enum.GetValues<SizeUnit>());
         private Window? _window;
@@ -30,6 +33,12 @@ namespace WinTool.ViewModel
         {
             get => _fileName;
             set => SetProperty(ref _fileName, value);
+        }
+
+        public string? FullFolderPath
+        {
+            get => _fullFolderPath; 
+            set => SetProperty(ref _fullFolderPath, value);
         }
 
         public string? RelativeFolderPath
@@ -42,6 +51,18 @@ namespace WinTool.ViewModel
         {
             get => _size;
             set => SetProperty(ref _size, value);
+        }
+
+        public bool IsTextSelected
+        {
+            get => _isTextSelected;
+            set => SetProperty(ref _isTextSelected, value);
+        }
+
+        public bool AreOptionsOpened
+        {
+            get => _areOptionsOpened;
+            set => SetProperty(ref _areOptionsOpened, value);
         }
 
         public SizeUnit SelectedSizeUnit
@@ -61,8 +82,9 @@ namespace WinTool.ViewModel
         public DelegateCommand WindowClosingCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
-        public CreateFileViewModel(string folderPath, Action<CreateFileResult> result)
+        public CreateFileViewModel(string folderPath, CreateFileData? createFileData, Action<CreateFileResult> result)
         {
+            FullFolderPath = folderPath;
             DirectoryInfo di = new(folderPath);
             string folderName = di.Name.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
 
@@ -76,17 +98,29 @@ namespace WinTool.ViewModel
                 RelativeFolderPath = folderName;
             }
 
+            if (createFileData is not null)
+            {
+                FileName = createFileData.FileName;
+                IsTextSelected = true;
+
+                Size = createFileData.Size;
+                SelectedSizeUnit = createFileData.SizeUnit;
+                AreOptionsOpened = Size > 0;
+            }
+
             CreateCommand = new DelegateCommand(() =>
             {
                 if (!string.IsNullOrEmpty(FileName))
                 {
                     long sizeBytes = Size * (long)SelectedSizeUnit;
-                    result?.Invoke(new CreateFileResult(true, Path.Combine(folderPath, FileName), sizeBytes));
+                    string filePath = Path.Combine(folderPath, FileName);
+                    var createFileData = new CreateFileData(FileName, Size, SelectedSizeUnit);
+                    result?.Invoke(new CreateFileResult(true, filePath, createFileData, sizeBytes));
                     _window?.Close();
                 }
             });
             WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new CreateFileResult(false, null)));
+            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new CreateFileResult(false, null, null)));
             CloseWindowCommand = new DelegateCommand(() => _window?.Close());
         }
     }
