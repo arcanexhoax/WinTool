@@ -252,7 +252,7 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen).
+        ///   Looks up a localized string similar to Copy name of selected item (If no item is selected, the name of the open folder will be copied).
         /// </summary>
         public static string SelectedItemCopyName {
             get {
@@ -261,7 +261,7 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy path to selected item (If no item is selected, the path to the open folder will be copied. If many items are selected, nothing will happen).
+        ///   Looks up a localized string similar to Copy path to selected item (If no item is selected, the path to the open folder will be copied).
         /// </summary>
         public static string SelectedItemCopyPath {
             get {

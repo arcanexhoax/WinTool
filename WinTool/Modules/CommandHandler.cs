@@ -31,29 +31,22 @@ namespace WinTool.Modules
             string? fileName = Path.GetFileNameWithoutExtension(newFileTemplate);
             string? extension = Path.GetExtension(newFileTemplate);
 
-            try
+            var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
             {
-                var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
-                {
-                    var match = Regex.Match(f.Name, $@"^{fileName}_(\d+){extension}$");
+                var match = Regex.Match(f.Name, $@"^{fileName}_(\d+){extension}$");
 
-                    if (match.Groups.Count != 2)
-                        return -1;
-
-                    if (int.TryParse(match.Groups[1].Value, out int number))
-                        return number;
+                if (match.Groups.Count != 2)
                     return -1;
-                });
 
-                if (numbers.Any())
-                    num = numbers.Max() + 1;
+                if (int.TryParse(match.Groups[1].Value, out int number))
+                    return number;
+                return -1;
+            });
 
-                CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex.Message);
-            }
+            if (numbers.Any())
+                num = numbers.Max() + 1;
+
+            CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
         }
 
         public static async Task CreateFileInteractive()
@@ -124,7 +117,7 @@ namespace WinTool.Modules
         {
             var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
 
-            // if there are no selections - copy folder path, if one item selected - copy item's path, else - not copying
+            // if there are no selections - copy folder path
             if (selectedPaths.Count == 0)
             {
                 string? folderPath = await Shell.GetActiveExplorerPathAsync();
@@ -132,9 +125,9 @@ namespace WinTool.Modules
                 if (!string.IsNullOrEmpty(folderPath))
                     Clipboard.SetText(folderPath);
             }
-            else if (selectedPaths.Count == 1)
+            else
             {
-                Clipboard.SetText(selectedPaths[0]);
+                Clipboard.SetText(string.Join(Environment.NewLine, selectedPaths));
             }
         }
 
@@ -142,7 +135,7 @@ namespace WinTool.Modules
         {
             var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
 
-            // if there are no selections - copy folder name, if one item selected - copy item's name, else - not copying
+            // if there are no selections - copy folder name
             if (selectedPaths.Count == 0)
             {
                 string? folderPath = await Shell.GetActiveExplorerPathAsync();
@@ -153,10 +146,10 @@ namespace WinTool.Modules
                 DirectoryInfo di = new(folderPath);
                 Clipboard.SetText(di.Name);
             }
-            else if (selectedPaths.Count == 1)
+            else
             {
-                string fileName = Path.GetFileName(selectedPaths[0]);
-                Clipboard.SetText(fileName);
+                var fileNames = selectedPaths.Select(p => Path.GetFileName(p));
+                Clipboard.SetText(string.Join(Environment.NewLine, fileNames));
             }
         }
 

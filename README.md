@@ -8,8 +8,8 @@ WinTool is a utility that expands shortcuts for Windows and its apps, it adds sh
 `Ctrl + O` - Run selected exe-file with arguments
 <br>`Ctrl + E` - Create file
 <br>`Ctrl + Shift + E` - Fast file creation
-<br>`Ctrl + Shift + C` - Copy path to selected item (If no item is selected, the path to the open folder will be copied. If many items are selected, nothing will happen)
-<br>`Ctrl + Shift + X` - Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)
+<br>`Ctrl + Shift + C` - Copy path to selected item (If no item is selected, the path to the open folder will be copied)
+<br>`Ctrl + Shift + X` - Copy name of selected item (If no item is selected, the name of the open folder will be copied)
 <br>`Ctrl + Shift + L` - Open current folder in cmd
 
 ## Features

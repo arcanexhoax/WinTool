@@ -128,7 +128,16 @@ namespace WinTool.ViewModel
             Debug.WriteLine($"{e.Shortcut} // {e.Shortcut.State}");
 
             if (_shortcuts.TryGetValue(e.Shortcut, out Func<Task>? operation) && operation is not null)
-                await operation();
+            {
+                try
+                {
+                    await operation();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
 
             _semaphore.Release();
         }

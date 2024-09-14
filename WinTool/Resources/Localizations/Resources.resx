@@ -183,10 +183,10 @@ Forbidden characters are ignored.</value>
     <value>Run selected exe-file with arguments</value>
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
-    <value>Copy name of selected item (If no item is selected, the name of the open folder will be copied. If many items are selected, nothing will happen)</value>
+    <value>Copy name of selected item (If no item is selected, the name of the open folder will be copied)</value>
   </data>
   <data name="SelectedItemCopyPath" xml:space="preserve">
-    <value>Copy path to selected item (If no item is selected, the path to the open folder will be copied. If many items are selected, nothing will happen)</value>
+    <value>Copy path to selected item (If no item is selected, the path to the open folder will be copied)</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
