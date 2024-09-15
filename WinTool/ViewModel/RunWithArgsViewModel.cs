@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.IO;
@@ -51,7 +52,7 @@ namespace WinTool.ViewModel
         public DelegateCommand WindowClosingCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
-        public RunWithArgsViewModel(string filePath, string lastArgs, Action<RunWithArgsResult> result)
+        public RunWithArgsViewModel(string filePath, MemoryCache memoryCache, Action<RunWithArgsResult> result)
         {
             FileName = Path.GetFileName(filePath);
             FullFilePath = filePath;
@@ -59,7 +60,7 @@ namespace WinTool.ViewModel
             var folders = FullFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             ShortedFilePath = folders.Length > 3 ? Path.Combine(folders[0], folders[1], "...", folders[^1]) : FullFilePath;
 
-            if (lastArgs is not (null or []))
+            if (memoryCache.TryGetValue(nameof(RunWithArgsViewModel), out string? lastArgs))
             {
                 Args = lastArgs;
                 IsTextSelected = true;
@@ -67,6 +68,7 @@ namespace WinTool.ViewModel
 
             RunCommand = new DelegateCommand(() =>
             {
+                memoryCache.Set(nameof(RunWithArgsViewModel), Args);
                 result?.Invoke(new RunWithArgsResult(true, Args));
                 _window?.Close();
             });

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Windows;
@@ -23,6 +24,7 @@ namespace WinTool
                 services.AddSingleton<CommandHandler>();
                 services.AddSingleton<Shell>();
                 services.AddSingleton<SettingsManager>();
+                services.AddSingleton<MemoryCache>();
             });
 
             _app = builder.Build();

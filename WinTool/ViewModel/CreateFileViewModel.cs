@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
@@ -82,7 +83,7 @@ namespace WinTool.ViewModel
         public DelegateCommand WindowClosingCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
-        public CreateFileViewModel(string folderPath, CreateFileData? createFileData, Action<CreateFileResult> result)
+        public CreateFileViewModel(string folderPath, MemoryCache memoryCache, Action<CreateFileResult> result)
         {
             FullFolderPath = folderPath;
             DirectoryInfo di = new(folderPath);
@@ -98,9 +99,9 @@ namespace WinTool.ViewModel
                 RelativeFolderPath = folderName;
             }
 
-            if (createFileData is not null)
+            if (memoryCache.TryGetValue(nameof(CreateFileViewModel), out CreateFileData? createFileData))
             {
-                FileName = createFileData.FileName;
+                FileName = createFileData!.FileName;
                 IsTextSelected = true;
 
                 Size = createFileData.Size;
@@ -114,13 +115,15 @@ namespace WinTool.ViewModel
                 {
                     long sizeBytes = Size * (long)SelectedSizeUnit;
                     string filePath = Path.Combine(folderPath, FileName);
-                    var createFileData = new CreateFileData(FileName, Size, SelectedSizeUnit);
-                    result?.Invoke(new CreateFileResult(true, filePath, createFileData, sizeBytes));
+
+                    memoryCache.Set(nameof(CreateFileViewModel), new CreateFileData(FileName, Size, SelectedSizeUnit));
+                    result?.Invoke(new CreateFileResult(true, filePath, sizeBytes));
+
                     _window?.Close();
                 }
             });
             WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new CreateFileResult(false, null, null)));
+            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new CreateFileResult(false, null)));
             CloseWindowCommand = new DelegateCommand(() => _window?.Close());
         }
     }

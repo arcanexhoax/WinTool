@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,12 +15,10 @@ using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.Modules
 {
-    public class CommandHandler(Shell shell)
+    public class CommandHandler(Shell shell, MemoryCache memoryCache)
     {
         private readonly Shell _shell = shell;
-
-        private string _lastRunWithArgsData = string.Empty;
-        private CreateFileData? _lastCreateFileData;
+        private readonly MemoryCache _memoryCache = memoryCache;
 
         public async Task CreateFileFast(string newFileTemplate)
         {
@@ -58,12 +57,10 @@ namespace WinTool.Modules
             if (string.IsNullOrEmpty(path))
                 return;
 
-            CreateFileViewModel createFileVm = new(path, _lastCreateFileData, r =>
+            CreateFileViewModel createFileVm = new(path, _memoryCache, r =>
             {
                 if (!r.Success || r.FilePath is null or [])
                     return;
-
-                _lastCreateFileData = r.CreateFileData;
 
                 if (File.Exists(r.FilePath))
                 {
@@ -89,7 +86,7 @@ namespace WinTool.Modules
 
                 if (drive.AvailableFreeSpace < r.Size)
                 {
-                    MessageBox.Show(string.Format(Resource.OutOfMemory, driveLetter, drive.AvailableFreeSpace, r.Size), Resource.Error, 
+                    MessageBox.Show(string.Format(Resource.OutOfMemory, driveLetter, drive.AvailableFreeSpace, r.Size), Resource.Error,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -108,7 +105,7 @@ namespace WinTool.Modules
             {
                 using var fileStream = File.Create(path);
                 fileStream.SetLength(size);
-            }, new CreateFileParameter() 
+            }, new CreateFileParameter()
             {
                 FilePath = path,
                 Size = size
@@ -163,14 +160,12 @@ namespace WinTool.Modules
                 return;
 
             string selectedItem = selectedPaths[0];
-            RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], _lastRunWithArgsData, r =>
+            RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], _memoryCache, r =>
             {
                 if (r.Success)
                 {
-                    _lastRunWithArgsData = r.Args ?? string.Empty;
-
                     if (File.Exists(selectedItem))
-                        using (Process.Start(selectedItem, _lastRunWithArgsData)) { }
+                        using (Process.Start(selectedItem, r.Args ?? string.Empty)) { }
                     else
                         MessageBox.Show(string.Format(Resource.FileNotFound, selectedItem), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
