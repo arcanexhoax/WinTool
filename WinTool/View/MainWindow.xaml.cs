@@ -6,14 +6,12 @@ using WinTool.ViewModel;
 
 namespace WinTool
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(MainViewModel mainViewModel)
         {
-            DataContext = new MainViewModel(this);
+            mainViewModel.ShowWindowRequested += (_, _) => Show();
+            DataContext = mainViewModel;
             InitializeComponent();
         }
 

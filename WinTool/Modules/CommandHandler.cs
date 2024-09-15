@@ -14,14 +14,16 @@ using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.Modules
 {
-    public class CommandHandler
+    public class CommandHandler(Shell shell)
     {
-        private static string s_lastRunWithArgsData = string.Empty;
-        private static CreateFileData? s_lastCreateFileData;
+        private readonly Shell _shell = shell;
 
-        public static async Task CreateFileFast(string newFileTemplate)
+        private string _lastRunWithArgsData = string.Empty;
+        private CreateFileData? _lastCreateFileData;
+
+        public async Task CreateFileFast(string newFileTemplate)
         {
-            string? path = await Shell.GetActiveExplorerPathAsync();
+            string? path = await _shell.GetActiveExplorerPathAsync();
 
             if (string.IsNullOrEmpty(path))
                 return;
@@ -49,19 +51,19 @@ namespace WinTool.Modules
             CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
         }
 
-        public static async Task CreateFileInteractive()
+        public async Task CreateFileInteractive()
         {
-            string? path = await Shell.GetActiveExplorerPathAsync();
+            string? path = await _shell.GetActiveExplorerPathAsync();
 
             if (string.IsNullOrEmpty(path))
                 return;
 
-            CreateFileViewModel createFileVm = new(path, s_lastCreateFileData, r =>
+            CreateFileViewModel createFileVm = new(path, _lastCreateFileData, r =>
             {
                 if (!r.Success || r.FilePath is null or [])
                     return;
 
-                s_lastCreateFileData = r.CreateFileData;
+                _lastCreateFileData = r.CreateFileData;
 
                 if (File.Exists(r.FilePath))
                 {
@@ -100,7 +102,7 @@ namespace WinTool.Modules
             createFileView.Activate();
         }
 
-        public static void CreateFile(string path, long size = 0)
+        public void CreateFile(string path, long size = 0)
         {
             ProcessHelper.ExecuteWithUacIfNeeded(() =>
             {
@@ -113,14 +115,14 @@ namespace WinTool.Modules
             });
         }
 
-        public static async Task CopyFilePath()
+        public async Task CopyFilePath()
         {
-            var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
+            var selectedPaths = await _shell.GetSelectedItemsPathsAsync();
 
             // if there are no selections - copy folder path
             if (selectedPaths.Count == 0)
             {
-                string? folderPath = await Shell.GetActiveExplorerPathAsync();
+                string? folderPath = await _shell.GetActiveExplorerPathAsync();
 
                 if (!string.IsNullOrEmpty(folderPath))
                     Clipboard.SetText(folderPath);
@@ -131,14 +133,14 @@ namespace WinTool.Modules
             }
         }
 
-        public static async Task CopyFileName()
+        public async Task CopyFileName()
         {
-            var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
+            var selectedPaths = await _shell.GetSelectedItemsPathsAsync();
 
             // if there are no selections - copy folder name
             if (selectedPaths.Count == 0)
             {
-                string? folderPath = await Shell.GetActiveExplorerPathAsync();
+                string? folderPath = await _shell.GetActiveExplorerPathAsync();
 
                 if (string.IsNullOrEmpty(folderPath))
                     return;
@@ -153,22 +155,22 @@ namespace WinTool.Modules
             }
         }
 
-        public static async Task RunWithArgs()
+        public async Task RunWithArgs()
         {
-            var selectedPaths = await Shell.GetSelectedItemsPathsAsync();
+            var selectedPaths = await _shell.GetSelectedItemsPathsAsync();
 
             if (selectedPaths.Count != 1 || Path.GetExtension(selectedPaths[0]) != ".exe")
                 return;
 
             string selectedItem = selectedPaths[0];
-            RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], s_lastRunWithArgsData, r =>
+            RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], _lastRunWithArgsData, r =>
             {
                 if (r.Success)
                 {
-                    s_lastRunWithArgsData = r.Args ?? string.Empty;
+                    _lastRunWithArgsData = r.Args ?? string.Empty;
 
                     if (File.Exists(selectedItem))
-                        using (Process.Start(selectedItem, s_lastRunWithArgsData)) { }
+                        using (Process.Start(selectedItem, _lastRunWithArgsData)) { }
                     else
                         MessageBox.Show(string.Format(Resource.FileNotFound, selectedItem), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -179,9 +181,9 @@ namespace WinTool.Modules
             runWithArgsWindow.Activate();
         }
 
-        public static async Task OpenInCmd()
+        public async Task OpenInCmd()
         {
-            string? folderPath = await Shell.GetActiveExplorerPathAsync();
+            string? folderPath = await _shell.GetActiveExplorerPathAsync();
 
             if (string.IsNullOrEmpty(folderPath))
                 return;

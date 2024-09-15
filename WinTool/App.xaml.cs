@@ -1,37 +1,65 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Modules;
+using WinTool.ViewModel;
 
 namespace WinTool
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        private readonly IHost _app;
+
         public App()
         {
-            MainWindow window = new();
-            string[] args = Environment.GetCommandLineArgs();
+            var builder = Host.CreateDefaultBuilder();
 
-            var clp = CommandLineParameters.Parse(args);
+            builder.ConfigureServices((context, services) =>
+            {
+                services.AddSingleton<MainWindow>();
+                services.AddSingleton<MainViewModel>();
+                services.AddSingleton<CommandHandler>();
+                services.AddSingleton<Shell>();
+                services.AddSingleton<SettingsManager>();
+            });
+
+            _app = builder.Build();
+        }
+
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            await _app.StartAsync();
+
+            var mainWindow = _app.Services.GetRequiredService<MainWindow>();
+            var commandHandler = _app.Services.GetRequiredService<CommandHandler>();
+
+            var clp = CommandLineParameters.Parse(e.Args);
 
             if (clp.BackgroundParameter is null)
-                window.Show();
+                mainWindow.Show();
 
-            HandleOperations(clp);
+            HandleOperations(commandHandler, clp);
 
             if (clp.ShutdownOnEndedParameter is not null)
                 App.Current.Shutdown();
+
+            base.OnStartup(e);
         }
 
-        private void HandleOperations(CommandLineParameters clp)
+        private void HandleOperations(CommandHandler commandHandler, CommandLineParameters clp)
         {
             if (clp.CreateFileParameter is { FilePath: not (null or [])})
             {
-                CommandHandler.CreateFile(clp.CreateFileParameter.FilePath, clp.CreateFileParameter.Size);
+                commandHandler.CreateFile(clp.CreateFileParameter.FilePath, clp.CreateFileParameter.Size);
             }
+        }
+
+        protected override async void OnExit(ExitEventArgs e)
+        {
+            await _app.StopAsync();
+            base.OnExit(e);
         }
     }
 }
