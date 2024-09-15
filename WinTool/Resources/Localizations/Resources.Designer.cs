@@ -142,6 +142,24 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; consists only of dots.
+        /// </summary>
+        public static string FileConsistsOnlyOfDots {
+            get {
+                return ResourceManager.GetString("FileConsistsOnlyOfDots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; has forbidden characters.
+        /// </summary>
+        public static string FileHasForbiddenChars {
+            get {
+                return ResourceManager.GetString("FileHasForbiddenChars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File &apos;{0}&apos; doesn&apos;t exist..
         /// </summary>
         public static string FileNotFound {

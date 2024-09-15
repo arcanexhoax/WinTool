@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Windows;
 using WinTool.Model;
+using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
 {
@@ -66,14 +67,20 @@ namespace WinTool.ViewModel
                 IsTextSelected = true;
             }
 
+            var runWithArgsResult = new RunWithArgsResult(false, null);
+
             RunCommand = new DelegateCommand(() =>
             {
+                if (!File.Exists(FullFilePath))
+                    MessageBox.Show(string.Format(Resource.FileNotFound, FullFilePath), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                    runWithArgsResult = new RunWithArgsResult(true, Args);
+
                 memoryCache.Set(nameof(RunWithArgsViewModel), Args);
-                result?.Invoke(new RunWithArgsResult(true, Args));
                 _window?.Close();
             });
             WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new RunWithArgsResult(false, null)));
+            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(runWithArgsResult));
             CloseWindowCommand = new DelegateCommand(() => _window?.Close());
         }
     }

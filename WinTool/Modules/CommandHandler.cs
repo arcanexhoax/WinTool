@@ -10,7 +10,6 @@ using WinTool.CommandLine;
 using WinTool.Utils;
 using WinTool.View;
 using WinTool.ViewModel;
-using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.Modules
 {
@@ -63,35 +62,6 @@ namespace WinTool.Modules
                 if (!r.Success || r.FilePath is null or [])
                     return;
 
-                if (File.Exists(r.FilePath))
-                {
-                    MessageBox.Show(string.Format(Resource.FileAlreadyExists, r.FilePath), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                string? driveLetter = Path.GetPathRoot(r.FilePath);
-
-                if (string.IsNullOrEmpty(driveLetter))
-                {
-                    MessageBox.Show(string.Format(Resource.FilePathInvalid, r.FilePath), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                var drive = DriveInfo.GetDrives().FirstOrDefault(d => string.Equals(d.Name, driveLetter, StringComparison.InvariantCultureIgnoreCase));
-
-                if (drive is null)
-                {
-                    MessageBox.Show(string.Format(Resource.DriveNotFound, driveLetter), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                if (drive.AvailableFreeSpace < r.Size)
-                {
-                    MessageBox.Show(string.Format(Resource.OutOfMemory, driveLetter, drive.AvailableFreeSpace, r.Size), Resource.Error,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
                 CreateFile(r.FilePath, r.Size);
             });
 
@@ -114,8 +84,15 @@ namespace WinTool.Modules
 
             ProcessHelper.ExecuteWithUacIfNeeded(() =>
             {
-                using var fileStream = File.Create(path);
-                fileStream.SetLength(size);
+                try
+                {
+                    using var fileStream = File.Create(path);
+                    fileStream.SetLength(size);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Failed to create file: " + ex.Message);
+                }
             }, clp);
         }
 
@@ -167,15 +144,11 @@ namespace WinTool.Modules
                 return;
 
             string selectedItem = selectedPaths[0];
-            RunWithArgsViewModel runWithArgsVm = new(selectedPaths[0], _memoryCache, r =>
+
+            RunWithArgsViewModel runWithArgsVm = new(selectedItem, _memoryCache, r =>
             {
                 if (r.Success)
-                {
-                    if (File.Exists(selectedItem))
-                        using (Process.Start(selectedItem, r.Args ?? string.Empty)) { }
-                    else
-                        MessageBox.Show(string.Format(Resource.FileNotFound, selectedItem), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    using (Process.Start(selectedItem, r.Args ?? string.Empty)) { }
             });
 
             RunWithArgsWindow runWithArgsWindow = new(runWithArgsVm);
