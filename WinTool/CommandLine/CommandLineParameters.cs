@@ -47,11 +47,11 @@ namespace WinTool.CommandLine
             StringBuilder args = new();
 
             if (BackgroundParameter is not null) 
-                args.Append(BackgroundParameter.ToString());
+                args.Append($"{BackgroundParameter} ");
             if (CreateFileParameter is not null)
-                args.Append(CreateFileParameter.ToString());
+                args.Append($"{CreateFileParameter} ");
             if (ShutdownOnEndedParameter is not null)
-                args.Append(ShutdownOnEndedParameter.ToString());
+                args.Append($"{ShutdownOnEndedParameter} ");
 
             return args.ToString();
         }

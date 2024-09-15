@@ -24,7 +24,7 @@ namespace WinTool.Utils
             ProcessPath = Path.Combine(_appDirectory, "WinTool.exe");
         }
 
-        public static void ExecuteWithUacIfNeeded(Action action, ICommandLineParameter clp)
+        public static void ExecuteWithUacIfNeeded(Action action, CommandLineParameters clp)
         {
             try
             {

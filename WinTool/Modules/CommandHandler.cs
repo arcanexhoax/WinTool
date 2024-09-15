@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
-using WinTool.Model;
 using WinTool.Utils;
 using WinTool.View;
 using WinTool.ViewModel;
@@ -19,6 +18,8 @@ namespace WinTool.Modules
     {
         private readonly Shell _shell = shell;
         private readonly MemoryCache _memoryCache = memoryCache;
+
+        public bool IsBackgroundMode { get; set; } = true;
 
         public async Task CreateFileFast(string newFileTemplate)
         {
@@ -101,15 +102,21 @@ namespace WinTool.Modules
 
         public void CreateFile(string path, long size = 0)
         {
+            var clp = new CommandLineParameters()
+            {
+                BackgroundParameter = IsBackgroundMode ? new BackgroundParameter() : null,
+                CreateFileParameter = new CreateFileParameter()
+                {
+                    FilePath = path,
+                    Size = size
+                }
+            };
+
             ProcessHelper.ExecuteWithUacIfNeeded(() =>
             {
                 using var fileStream = File.Create(path);
                 fileStream.SetLength(size);
-            }, new CreateFileParameter()
-            {
-                FilePath = path,
-                Size = size
-            });
+            }, clp);
         }
 
         public async Task CopyFilePath()

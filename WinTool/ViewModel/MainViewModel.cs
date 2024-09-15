@@ -88,6 +88,8 @@ namespace WinTool.ViewModel
             }
         }
 
+        public DelegateCommand WindowLoadedCommand { get; }
+        public DelegateCommand WindowClosingCommand { get; }
         public DelegateCommand OpenWindowCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
@@ -112,7 +114,13 @@ namespace WinTool.ViewModel
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;
 
-            OpenWindowCommand = new DelegateCommand(() => ShowWindowRequested?.Invoke(this, EventArgs.Empty));
+            WindowLoadedCommand = new DelegateCommand(() => commandHandler.IsBackgroundMode = false);
+            WindowClosingCommand = new DelegateCommand(() => commandHandler.IsBackgroundMode = true);
+            OpenWindowCommand = new DelegateCommand(() =>
+            {
+                commandHandler.IsBackgroundMode = false;
+                ShowWindowRequested?.Invoke(this, EventArgs.Empty);
+            });
             CloseWindowCommand = new DelegateCommand(() =>
             {
                 _keyHooker?.Dispose();
