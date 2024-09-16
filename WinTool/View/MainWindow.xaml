@@ -54,55 +54,63 @@
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Ctrl + O"
+                        <TextBlock Text="Ctrl + F2"
                                    FontWeight="SemiBold"
-                                   Grid.Row="0"/>
-                        <TextBlock Text="{x:Static r:Resources.RunWithArgs}"
+                                   Grid.Row="0" />
+                        <TextBlock Text="{x:Static r:Resources.ChangeFileProperties}"
                                    Margin="25 0 0 0"
                                    Grid.Row="0"
                                    Grid.Column="1" />
-                        <TextBlock Text="Ctrl + E"
+                        <TextBlock Text="Ctrl + O"
                                    FontWeight="SemiBold"
                                    Grid.Row="1"/>
-                        <TextBlock Text="{x:Static r:Resources.CreateFile}"
+                        <TextBlock Text="{x:Static r:Resources.RunWithArgs}"
                                    Margin="25 0 0 0"
                                    Grid.Row="1"
                                    Grid.Column="1" />
-                        <TextBlock Text="Ctrl + Shift + E"
+                        <TextBlock Text="Ctrl + E"
                                    FontWeight="SemiBold"
                                    Grid.Row="2"/>
-                        <TextBlock Text="{x:Static r:Resources.FastFileCreation}"
+                        <TextBlock Text="{x:Static r:Resources.CreateFile}"
                                    Margin="25 0 0 0"
                                    Grid.Row="2"
                                    Grid.Column="1" />
-                        <TextBlock Text="Ctrl + Shift + C"
+                        <TextBlock Text="Ctrl + Shift + E"
                                    FontWeight="SemiBold"
-                                   Grid.Row="3" />
-                        <TextBlock Text="{x:Static r:Resources.SelectedItemCopyPath}"
+                                   Grid.Row="3"/>
+                        <TextBlock Text="{x:Static r:Resources.FastFileCreation}"
                                    Margin="25 0 0 0"
                                    Grid.Row="3"
-                                   Grid.Column="1"
-                                   TextWrapping="Wrap" />
-                        <TextBlock Text="Ctrl + Shift + X"
+                                   Grid.Column="1" />
+                        <TextBlock Text="Ctrl + Shift + C"
                                    FontWeight="SemiBold"
                                    Grid.Row="4" />
-                        <TextBlock Text="{x:Static r:Resources.SelectedItemCopyName}"
+                        <TextBlock Text="{x:Static r:Resources.SelectedItemCopyPath}"
                                    Margin="25 0 0 0"
                                    Grid.Row="4"
                                    Grid.Column="1"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="Ctrl + Shift + L"
+                        <TextBlock Text="Ctrl + Shift + X"
                                    FontWeight="SemiBold"
                                    Grid.Row="5" />
-                        <TextBlock Text="{x:Static r:Resources.OpenFolderInCmd}"
+                        <TextBlock Text="{x:Static r:Resources.SelectedItemCopyName}"
                                    Margin="25 0 0 0"
                                    Grid.Row="5"
+                                   Grid.Column="1"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="Ctrl + Shift + L"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="6" />
+                        <TextBlock Text="{x:Static r:Resources.OpenFolderInCmd}"
+                                   Margin="25 0 0 0"
+                                   Grid.Row="6"
                                    Grid.Column="1" />
                     </Grid>
                 </Border>

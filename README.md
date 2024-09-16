@@ -5,7 +5,8 @@ WinTool is a utility that expands shortcuts for Windows and its apps, it adds sh
 
 ## Shortcuts
 ### Windows Explorer
-`Ctrl + O` - Run selected exe-file with arguments
+`Ctrl + F2` - Change file properties (last write time, music tags etc)
+<br>`Ctrl + O` - Run selected exe-file with arguments
 <br>`Ctrl + E` - Create file
 <br>`Ctrl + Shift + E` - Fast file creation
 <br>`Ctrl + Shift + C` - Copy path to selected item (If no item is selected, the path to the open folder will be copied)

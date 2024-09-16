@@ -61,6 +61,24 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change file &apos;{0}&apos; properties.
+        /// </summary>
+        public static string ChangeFileProperiesTitle {
+            get {
+                return ResourceManager.GetString("ChangeFileProperiesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change file properties.
+        /// </summary>
+        public static string ChangeFileProperties {
+            get {
+                return ResourceManager.GetString("ChangeFileProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Close {
@@ -102,6 +120,15 @@ namespace WinTool.Resources.Localizations {
         public static string CreateFile {
             get {
                 return ResourceManager.GetString("CreateFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creation time.
+        /// </summary>
+        public static string CreationTime {
+            get {
+                return ResourceManager.GetString("CreationTime", resourceCulture);
             }
         }
         
@@ -178,11 +205,29 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last write time.
+        /// </summary>
+        public static string LastWriteTime {
+            get {
+                return ResourceManager.GetString("LastWriteTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launch on Windows startup.
         /// </summary>
         public static string LaunchOnStartup {
             get {
                 return ResourceManager.GetString("LaunchOnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Music tags.
+        /// </summary>
+        public static string MusicTags {
+            get {
+                return ResourceManager.GetString("MusicTags", resourceCulture);
             }
         }
         
@@ -243,6 +288,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Performers.
+        /// </summary>
+        public static string Performers {
+            get {
+                return ResourceManager.GetString("Performers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string Run {
@@ -266,6 +320,24 @@ namespace WinTool.Resources.Localizations {
         public static string RunWithArgs {
             get {
                 return ResourceManager.GetString("RunWithArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save file &apos;{0}&apos; properties error: {1}.
+        /// </summary>
+        public static string SaveFilePropertiesError {
+            get {
+                return ResourceManager.GetString("SaveFilePropertiesError", resourceCulture);
             }
         }
         
@@ -320,6 +392,15 @@ namespace WinTool.Resources.Localizations {
         public static string Size {
             get {
                 return ResourceManager.GetString("Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
         

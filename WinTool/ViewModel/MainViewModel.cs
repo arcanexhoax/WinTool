@@ -99,6 +99,7 @@ namespace WinTool.ViewModel
         {
             _shortcuts = new()
             {
+                { new Shortcut(Key.F2, KeyModifier.Ctrl),                    () => commandHandler.ChangeFileProperties() },
                 { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CopyFilePath() },
                 { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CreateFileFast(NewFileTemplate!) },
                 { new Shortcut(Key.E, KeyModifier.Ctrl),                     () => commandHandler.CreateFileInteractive() },

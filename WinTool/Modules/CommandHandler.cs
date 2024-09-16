@@ -170,5 +170,26 @@ namespace WinTool.Modules
                 UseShellExecute = false,
             })) { }
         }
+
+        public async Task ChangeFileProperties()
+        {
+            var selectedPaths = await _shell.GetSelectedItemsPathsAsync();
+
+            if (selectedPaths.Count == 0)
+                return;
+
+            var selectedItemPath = selectedPaths[0];
+
+            if (!File.Exists(selectedItemPath))
+                return;
+
+            var tfile = TagLib.File.Create(selectedItemPath);
+
+            var changeFilePropertiesVm = new ChangeFilePropertiesViewModel(selectedItemPath, tfile);
+            var changeFilePropertiesView = new ChangeFilePropertiesView(changeFilePropertiesVm);
+
+            changeFilePropertiesView.Show();
+            changeFilePropertiesView.Activate();
+        }
     }
 }
