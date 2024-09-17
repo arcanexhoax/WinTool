@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using WinTool.Model;
+using WinTool.Utils;
 using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
@@ -123,7 +124,7 @@ namespace WinTool.ViewModel
 
                 if (!CheckIfFileValid(filePath, FileName, sizeBytes, out string? errorMessage))
                 {
-                    MessageBox.Show(errorMessage, Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxHelper.ShowError(errorMessage);
                     return;
                 }
 

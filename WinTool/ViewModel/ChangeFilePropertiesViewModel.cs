@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using WinTool.Utils;
 using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
@@ -74,7 +75,7 @@ namespace WinTool.ViewModel
                 catch (Exception ex)
                 {
                     Debug.WriteLine("Save file properties error: " + ex.Message);
-                    MessageBox.Show(string.Format(Resource.SaveFilePropertiesError, filePath, ex.Message), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxHelper.ShowError(string.Format(Resource.SaveFilePropertiesError, filePath, ex.Message));
                 }
 
                 _window?.Close();

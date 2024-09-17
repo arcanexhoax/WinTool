@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Windows;
 using WinTool.Model;
+using WinTool.Utils;
 using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
@@ -72,7 +73,7 @@ namespace WinTool.ViewModel
             RunCommand = new DelegateCommand(() =>
             {
                 if (!File.Exists(FullFilePath))
-                    MessageBox.Show(string.Format(Resource.FileNotFound, FullFilePath), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxHelper.ShowError(string.Format(Resource.FileNotFound, FullFilePath));
                 else
                     runWithArgsResult = new RunWithArgsResult(true, Args);
 

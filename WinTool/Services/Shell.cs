@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WinTool.Native;
 
-namespace WinTool.Modules
+namespace WinTool.Services
 {
     public class Shell
     {

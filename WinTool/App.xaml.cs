@@ -4,7 +4,8 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Windows;
 using WinTool.CommandLine;
-using WinTool.Modules;
+using WinTool.Services;
+using WinTool.Utils;
 using WinTool.ViewModel;
 
 namespace WinTool
@@ -54,7 +55,14 @@ namespace WinTool
         {
             if (clp.CreateFileParameter is { FilePath: not (null or [])})
             {
-                commandHandler.CreateFile(clp.CreateFileParameter.FilePath, clp.CreateFileParameter.Size);
+                try
+                {
+                    commandHandler.CreateFile(clp.CreateFileParameter.FilePath, clp.CreateFileParameter.Size);
+                }
+                catch (Exception ex)
+                {
+                    MessageBoxHelper.ShowError(ex.Message);
+                }
             }
         }
 

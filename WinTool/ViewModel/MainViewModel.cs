@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Model;
-using WinTool.Modules;
+using WinTool.Services;
 using WinTool.Utils;
 using Resource = WinTool.Resources.Localizations.Resources;
 
@@ -60,7 +60,7 @@ namespace WinTool.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(string.Format(Resource.SetWindowsStartupError, ex.Message), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxHelper.ShowError(string.Format(Resource.SetWindowsStartupError, ex.Message));
                 }
                 finally
                 {
@@ -148,6 +148,7 @@ namespace WinTool.ViewModel
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
+                    MessageBoxHelper.ShowError(ex.Message);
                 }
             }
 

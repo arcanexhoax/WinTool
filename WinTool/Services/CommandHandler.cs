@@ -11,7 +11,7 @@ using WinTool.Utils;
 using WinTool.View;
 using WinTool.ViewModel;
 
-namespace WinTool.Modules
+namespace WinTool.Services
 {
     public class CommandHandler(Shell shell, MemoryCache memoryCache)
     {
@@ -84,15 +84,8 @@ namespace WinTool.Modules
 
             ProcessHelper.ExecuteWithUacIfNeeded(() =>
             {
-                try
-                {
-                    using var fileStream = File.Create(path);
-                    fileStream.SetLength(size);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Failed to create file: " + ex.Message);
-                }
+                using var fileStream = File.Create(path);
+                fileStream.SetLength(size);
             }, clp);
         }
 
