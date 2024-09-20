@@ -12,8 +12,12 @@ namespace WinTool.ViewModel
     public class ChangeFilePropertiesViewModel : BindableBase
     {
         private string? _fileName;
-        private string? _musicTitle;
-        private string? _musicPerformers;
+        private string? _title;
+        private string? _performers;
+        private string? _album;
+        private string? _genres;
+        private string? _lyrics;
+        private uint _year;
         private bool _mediaTagsSupported;
         private DateTime _creationTime;
         private DateTime _changeTime;
@@ -25,16 +29,40 @@ namespace WinTool.ViewModel
             set => SetProperty(ref _fileName, value);
         }
 
-        public string? MusicTitle
+        public string? Title
         {
-            get => _musicTitle;
-            set => SetProperty(ref _musicTitle, value);
+            get => _title;
+            set => SetProperty(ref _title, value);
         }
 
-        public string? MusicPerformers
+        public string? Performers
         {
-            get => _musicPerformers;
-            set => SetProperty(ref _musicPerformers, value);
+            get => _performers;
+            set => SetProperty(ref _performers, value);
+        }
+
+        public string? Album
+        {
+            get => _album;
+            set => SetProperty(ref _album, value);
+        }
+
+        public string? Genres
+        {
+            get => _genres;
+            set => SetProperty(ref _genres, value);
+        }
+
+        public string? Lyrics
+        {
+            get => _lyrics;
+            set => SetProperty(ref _lyrics, value);
+        }
+
+        public uint Year
+        {
+            get => _year;
+            set => SetProperty(ref _year, value);
         }
 
         public bool MediaTagsSupported
@@ -68,8 +96,12 @@ namespace WinTool.ViewModel
             if (tfile != null)
             {
                 MediaTagsSupported = true;
-                MusicTitle = tfile.Tag.Title;
-                MusicPerformers = string.Join(", ", tfile.Tag.Performers);
+                Title = tfile.Tag.Title;
+                Performers = string.Join(", ", tfile.Tag.Performers);
+                Album = tfile.Tag.Album;
+                Genres = string.Join(", ", tfile.Tag.Genres);
+                Lyrics = tfile.Tag.Lyrics;
+                Year = tfile.Tag.Year;
             }
 
             SaveCommand = new DelegateCommand(() =>
@@ -78,8 +110,12 @@ namespace WinTool.ViewModel
                 {
                     if (MediaTagsSupported)
                     {
-                        tfile!.Tag.Title = MusicTitle;
-                        tfile.Tag.Performers = [MusicPerformers];
+                        tfile!.Tag.Title = Title;
+                        tfile.Tag.Performers = [Performers];
+                        tfile.Tag.Album = Album;
+                        tfile.Tag.Genres = [Genres];
+                        tfile.Tag.Lyrics = Lyrics;
+                        tfile.Tag.Year = Year;
                         tfile.Save();
                         tfile.Dispose();
                     }

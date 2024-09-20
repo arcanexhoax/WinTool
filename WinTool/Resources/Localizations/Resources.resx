@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Album" xml:space="preserve">
+    <value>Album</value>
+  </data>
   <data name="ChangeFileProperiesTitle" xml:space="preserve">
     <value>Change file '{0}' properties</value>
   </data>
@@ -165,11 +168,17 @@
   <data name="FilePathInvalid" xml:space="preserve">
     <value>File path '{0}' is invalid</value>
   </data>
+  <data name="Genres" xml:space="preserve">
+    <value>Genres</value>
+  </data>
   <data name="LastWriteTime" xml:space="preserve">
     <value>Last write time</value>
   </data>
   <data name="LaunchOnStartup" xml:space="preserve">
     <value>Launch on Windows startup</value>
+  </data>
+  <data name="Lyrics" xml:space="preserve">
+    <value>Lyrics</value>
   </data>
   <data name="MediaTags" xml:space="preserve">
     <value>Media tags</value>
@@ -241,5 +250,8 @@ Forbidden characters are ignored.</value>
   </data>
   <data name="WithArgs" xml:space="preserve">
     <value>with args:</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
   </data>
 </root>

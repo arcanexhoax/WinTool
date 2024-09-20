@@ -61,6 +61,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Album.
+        /// </summary>
+        public static string Album {
+            get {
+                return ResourceManager.GetString("Album", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change file &apos;{0}&apos; properties.
         /// </summary>
         public static string ChangeFileProperiesTitle {
@@ -205,6 +214,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Genres.
+        /// </summary>
+        public static string Genres {
+            get {
+                return ResourceManager.GetString("Genres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last write time.
         /// </summary>
         public static string LastWriteTime {
@@ -219,6 +237,15 @@ namespace WinTool.Resources.Localizations {
         public static string LaunchOnStartup {
             get {
                 return ResourceManager.GetString("LaunchOnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lyrics.
+        /// </summary>
+        public static string Lyrics {
+            get {
+                return ResourceManager.GetString("Lyrics", resourceCulture);
             }
         }
         
@@ -428,6 +455,15 @@ namespace WinTool.Resources.Localizations {
         public static string WithArgs {
             get {
                 return ResourceManager.GetString("WithArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year.
+        /// </summary>
+        public static string Year {
+            get {
+                return ResourceManager.GetString("Year", resourceCulture);
             }
         }
     }
