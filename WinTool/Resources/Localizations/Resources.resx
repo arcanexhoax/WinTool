@@ -171,8 +171,8 @@
   <data name="LaunchOnStartup" xml:space="preserve">
     <value>Launch on Windows startup</value>
   </data>
-  <data name="MusicTags" xml:space="preserve">
-    <value>Music tags</value>
+  <data name="MediaTags" xml:space="preserve">
+    <value>Media tags</value>
   </data>
   <data name="NewFileTemplate" xml:space="preserve">
     <value>New file template</value>

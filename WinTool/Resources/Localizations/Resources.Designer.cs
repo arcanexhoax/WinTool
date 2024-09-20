@@ -223,11 +223,11 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Music tags.
+        ///   Looks up a localized string similar to Media tags.
         /// </summary>
-        public static string MusicTags {
+        public static string MediaTags {
             get {
-                return ResourceManager.GetString("MusicTags", resourceCulture);
+                return ResourceManager.GetString("MediaTags", resourceCulture);
             }
         }
         

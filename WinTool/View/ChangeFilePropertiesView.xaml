@@ -7,21 +7,26 @@
         xmlns:r="clr-namespace:WinTool.Resources.Localizations"
         xmlns:local="clr-namespace:WinTool.View"
         xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        xmlns:ui="clr-namespace:WinTool.UI.Controls"
+        xmlns:c="clr-namespace:Hoax.WpfConverters;assembly=Hoax.WpfConverters"
         d:DataContext="{d:DesignInstance Type=viewmodel:ChangeFilePropertiesViewModel}"
         mc:Ignorable="d"
         Icon="/Resources/logo.png"
         Title="{Binding FileName, StringFormat={x:Static r:Resources.ChangeFileProperiesTitle}}" 
         SizeToContent="Height"
         Width="400"
+        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        x:Name="changeFilePropertiesView"
-        Topmost="True">
+        x:Name="changeFilePropertiesView">
     <Window.InputBindings>
         <KeyBinding Command="{Binding SaveCommand}"
                     Key="Return" />
         <KeyBinding Command="{Binding CloseWindowCommand}"
                     Key="Esc" />
     </Window.InputBindings>
+    <Window.Resources>
+        <c:BoolToVisibilityConverter x:Key="boolToVis" />
+    </Window.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}"
@@ -47,30 +52,20 @@
 
             <TextBlock Text="{x:Static r:Resources.CreationTime}"
                        VerticalAlignment="Center"/>
-            <DatePicker SelectedDate="{Binding CreationTime}"
-                        Grid.Column="1">
-                <DatePicker.Resources>
-                    <Style TargetType="DatePickerTextBox">
-                        <Setter Property="IsReadOnly" Value="True" />
-                    </Style>
-                </DatePicker.Resources>
-            </DatePicker>
+            <ui:DateTimePicker SelectedDate="{Binding CreationTime}"
+                               Height="24"
+                               Grid.Column="1" />
 
             <TextBlock Text="{x:Static r:Resources.LastWriteTime}"
                        VerticalAlignment="Center"
                        Grid.Row="2"/>
-            <DatePicker SelectedDate="{Binding ChangeTime}"
-                        Grid.Row="2"
-                        Grid.Column="1">
-                <DatePicker.Resources>
-                    <Style TargetType="DatePickerTextBox">
-                        <Setter Property="IsReadOnly"
-                                Value="True" />
-                    </Style>
-                </DatePicker.Resources>
-            </DatePicker>
+            <ui:DateTimePicker SelectedDate="{Binding ChangeTime}"
+                               Height="24"
+                               Grid.Row="2"
+                               Grid.Column="1" />
 
-            <Expander Header="{x:Static r:Resources.MusicTags}"
+            <Expander Header="{x:Static r:Resources.MediaTags}"
+                      Visibility="{Binding MediaTagsSupported, Converter={StaticResource boolToVis}}"
                       Grid.Row="4"
                       Grid.ColumnSpan="2">
                 <Grid>

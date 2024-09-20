@@ -14,6 +14,7 @@ namespace WinTool.ViewModel
         private string? _fileName;
         private string? _musicTitle;
         private string? _musicPerformers;
+        private bool _mediaTagsSupported;
         private DateTime _creationTime;
         private DateTime _changeTime;
         private Window? _window;
@@ -36,6 +37,12 @@ namespace WinTool.ViewModel
             set => SetProperty(ref _musicPerformers, value);
         }
 
+        public bool MediaTagsSupported
+        {
+            get => _mediaTagsSupported;
+            set => SetProperty(ref _mediaTagsSupported, value);
+        }
+
         public DateTime CreationTime
         {
             get => _creationTime;
@@ -50,24 +57,32 @@ namespace WinTool.ViewModel
 
         public DelegateCommand<Window> WindowLoadedCommand { get; }
         public DelegateCommand SaveCommand { get; }
-        public DelegateCommand CloseCommand { get; }
+        public DelegateCommand CloseWindowCommand { get; }
 
-        public ChangeFilePropertiesViewModel(string filePath, TagLib.File tfile)
+        public ChangeFilePropertiesViewModel(string filePath, TagLib.File? tfile = null)
         {
             FileName = Path.GetFileName(filePath);
             CreationTime = File.GetCreationTime(filePath);
             ChangeTime = File.GetLastWriteTime(filePath);
-            MusicTitle = tfile.Tag.Title;
-            MusicPerformers = string.Join(", ", tfile.Tag.Performers);
+
+            if (tfile != null)
+            {
+                MediaTagsSupported = true;
+                MusicTitle = tfile.Tag.Title;
+                MusicPerformers = string.Join(", ", tfile.Tag.Performers);
+            }
 
             SaveCommand = new DelegateCommand(() =>
             {
                 try
                 {
-                    tfile.Tag.Title = MusicTitle;
-                    tfile.Tag.Performers = [MusicPerformers];
-                    tfile.Save();
-                    tfile.Dispose();
+                    if (MediaTagsSupported)
+                    {
+                        tfile!.Tag.Title = MusicTitle;
+                        tfile.Tag.Performers = [MusicPerformers];
+                        tfile.Save();
+                        tfile.Dispose();
+                    }
 
                     File.SetCreationTime(filePath, CreationTime);
                     File.SetLastWriteTime(filePath, ChangeTime);
@@ -81,7 +96,7 @@ namespace WinTool.ViewModel
                 _window?.Close();
             });
             WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            CloseCommand = new DelegateCommand(() => _window?.Close());
+            CloseWindowCommand = new DelegateCommand(() => _window?.Close());
         }
     }
 }

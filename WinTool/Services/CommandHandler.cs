@@ -176,7 +176,19 @@ namespace WinTool.Services
             if (!File.Exists(selectedItemPath))
                 return;
 
-            var tfile = TagLib.File.Create(selectedItemPath);
+            TagLib.File? tfile = null;
+
+            try
+            {
+                tfile = TagLib.File.Create(selectedItemPath);
+            }
+            catch (Exception ex) when (ex.Source == "taglib-sharp")
+            { 
+            }
+            catch 
+            {
+                throw;
+            }
 
             var changeFilePropertiesVm = new ChangeFilePropertiesViewModel(selectedItemPath, tfile);
             var changeFilePropertiesView = new ChangeFilePropertiesView(changeFilePropertiesVm);
