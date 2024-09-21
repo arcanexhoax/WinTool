@@ -7,11 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using WinTool.Native;
 
-namespace WinTool.Modules
+namespace WinTool.Services
 {
-    internal class Shell
+    public class Shell
     {
-        public static Task<string?> GetActiveExplorerPathAsync()
+        public Task<string?> GetActiveExplorerPathAsync()
         {
             TaskCompletionSource<string?> tcs = new();
             // use new thread because it is unable to get shell windows from MTA thread
@@ -27,7 +27,7 @@ namespace WinTool.Modules
             return tcs.Task;
         }
 
-        public static Task<List<string>> GetSelectedItemsPathsAsync()
+        public Task<List<string>> GetSelectedItemsPathsAsync()
         {
             TaskCompletionSource<List<string>> tcs = new();
             // use new thread because it is unable to get shell windows from MTA thread
@@ -43,7 +43,7 @@ namespace WinTool.Modules
             return tcs.Task;
         }
 
-        private static string? GetActiveExplorerPath()
+        private string? GetActiveExplorerPath()
         {
             try
             {
@@ -71,7 +71,7 @@ namespace WinTool.Modules
             }
         }
 
-        private static List<string> GetSelectedItemsPaths()
+        private List<string> GetSelectedItemsPaths()
         {
             List<string> selectedItemsPaths = [];
 
@@ -102,7 +102,7 @@ namespace WinTool.Modules
             }
         }
 
-        private static InternetExplorer? GetActiveShellWindow(IntPtr handle)
+        private InternetExplorer? GetActiveShellWindow(IntPtr handle)
         {
             // check if current Windows version is 11
             if (Environment.OSVersion.Version.Build >= 22000)
@@ -111,7 +111,7 @@ namespace WinTool.Modules
                 return GetActiveShellWindow10(handle);
         }
 
-        private static InternetExplorer? GetActiveShellWindow10(IntPtr handle)
+        private InternetExplorer? GetActiveShellWindow10(IntPtr handle)
         {
             ShellWindows shellWindows = new();
 
@@ -124,7 +124,7 @@ namespace WinTool.Modules
             return null;
         }
 
-        private static InternetExplorer? GetActiveShellWindow11(IntPtr handle)
+        private InternetExplorer? GetActiveShellWindow11(IntPtr handle)
         {
             string? windowTitle = NativeMethods.GetWindowText(handle);
             ShellWindows shellWindows = new();

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Model;
-using WinTool.Modules;
+using WinTool.Services;
 using WinTool.Utils;
 using Resource = WinTool.Resources.Localizations.Resources;
 
@@ -22,10 +22,10 @@ namespace WinTool.ViewModel
 
         private readonly KeyInterceptor _keyHooker;
         private readonly SemaphoreSlim _semaphore = new(1);
-        private readonly SettingsManager _settingsManager = new();
+        private readonly SettingsManager _settingsManager;
         private readonly Settings _settings;
-        private readonly string _executionFilePath;
         private readonly Dictionary<Shortcut, Func<Task>> _shortcuts;
+        private readonly string _executionFilePath;
 
         private bool _launchOnWindowsStartup;
         private bool _areUiElementsEnabled;
@@ -60,7 +60,7 @@ namespace WinTool.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(string.Format(Resource.SetWindowsStartupError, ex.Message), Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxHelper.ShowError(string.Format(Resource.SetWindowsStartupError, ex.Message));
                 }
                 finally
                 {
@@ -88,28 +88,40 @@ namespace WinTool.ViewModel
             }
         }
 
+        public DelegateCommand WindowLoadedCommand { get; }
+        public DelegateCommand WindowClosingCommand { get; }
         public DelegateCommand OpenWindowCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
-        public MainViewModel(Window window)
+        public event EventHandler? ShowWindowRequested;
+
+        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager)
         {
             _shortcuts = new()
             {
-                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFilePath() },
-                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CreateFileFast(NewFileTemplate!) },
-                { new Shortcut(Key.E, KeyModifier.Ctrl),                     () => CommandHandler.CreateFileInteractive() },
-                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.OpenInCmd() },
-                { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => CommandHandler.RunWithArgs() },
-                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => CommandHandler.CopyFileName() },
+                { new Shortcut(Key.F2, KeyModifier.Ctrl),                    () => commandHandler.ChangeFileProperties() },
+                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CopyFilePath() },
+                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CreateFileFast(NewFileTemplate!) },
+                { new Shortcut(Key.E, KeyModifier.Ctrl),                     () => commandHandler.CreateFileInteractive() },
+                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.OpenInCmd() },
+                { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => commandHandler.RunWithArgs() },
+                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CopyFileName() },
             };
 
             // use arg "/background" to start app in background mode
             _executionFilePath =  $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
+            _settingsManager = settingsManager;
 
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;
 
-            OpenWindowCommand = new DelegateCommand(window.Show);
+            WindowLoadedCommand = new DelegateCommand(() => commandHandler.IsBackgroundMode = false);
+            WindowClosingCommand = new DelegateCommand(() => commandHandler.IsBackgroundMode = true);
+            OpenWindowCommand = new DelegateCommand(() =>
+            {
+                commandHandler.IsBackgroundMode = false;
+                ShowWindowRequested?.Invoke(this, EventArgs.Empty);
+            });
             CloseWindowCommand = new DelegateCommand(() =>
             {
                 _keyHooker?.Dispose();
@@ -136,6 +148,7 @@ namespace WinTool.ViewModel
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
+                    MessageBoxHelper.ShowError(ex.Message);
                 }
             }
 

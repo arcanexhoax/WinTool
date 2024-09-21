@@ -1,10 +1,14 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using WinTool.Model;
+using WinTool.Utils;
+using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
 {
@@ -82,7 +86,7 @@ namespace WinTool.ViewModel
         public DelegateCommand WindowClosingCommand { get; }
         public DelegateCommand CloseWindowCommand { get; }
 
-        public CreateFileViewModel(string folderPath, CreateFileData? createFileData, Action<CreateFileResult> result)
+        public CreateFileViewModel(string folderPath, MemoryCache memoryCache, Action<CreateFileResult> result)
         {
             FullFolderPath = folderPath;
             DirectoryInfo di = new(folderPath);
@@ -98,9 +102,9 @@ namespace WinTool.ViewModel
                 RelativeFolderPath = folderName;
             }
 
-            if (createFileData is not null)
+            if (memoryCache.TryGetValue(nameof(CreateFileViewModel), out CreateFileData? createFileData))
             {
-                FileName = createFileData.FileName;
+                FileName = createFileData!.FileName;
                 IsTextSelected = true;
 
                 Size = createFileData.Size;
@@ -108,20 +112,74 @@ namespace WinTool.ViewModel
                 AreOptionsOpened = Size > 0;
             }
 
+            var createFileResult = new CreateFileResult(false, null);
+
             CreateCommand = new DelegateCommand(() =>
             {
-                if (!string.IsNullOrEmpty(FileName))
+                if (string.IsNullOrEmpty(FileName))
+                    return;
+
+                long sizeBytes = Size * (long)SelectedSizeUnit;
+                string filePath = Path.Combine(folderPath, FileName);
+
+                if (!CheckIfFileValid(filePath, FileName, sizeBytes, out string? errorMessage))
                 {
-                    long sizeBytes = Size * (long)SelectedSizeUnit;
-                    string filePath = Path.Combine(folderPath, FileName);
-                    var createFileData = new CreateFileData(FileName, Size, SelectedSizeUnit);
-                    result?.Invoke(new CreateFileResult(true, filePath, createFileData, sizeBytes));
-                    _window?.Close();
+                    MessageBoxHelper.ShowError(errorMessage);
+                    return;
                 }
+
+                memoryCache.Set(nameof(CreateFileViewModel), new CreateFileData(FileName, Size, SelectedSizeUnit));
+                createFileResult = new CreateFileResult(true, filePath, sizeBytes);
+
+                _window?.Close();
             });
             WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(new CreateFileResult(false, null, null)));
+            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(createFileResult));
             CloseWindowCommand = new DelegateCommand(() => _window?.Close());
+        }
+
+        private bool CheckIfFileValid(string filePath, string fileName, long sizeBytes, out string? errorMessage)
+        {
+            if (fileName.All(c => c == '.'))
+            {
+                errorMessage = string.Format(Resource.FileConsistsOnlyOfDots, filePath);
+                return false;
+            }
+
+            if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                errorMessage = string.Format(Resource.FileHasForbiddenChars, filePath);
+                return false;
+            }
+
+            if (File.Exists(filePath))
+            {
+                errorMessage = string.Format(Resource.FileAlreadyExists, filePath);
+                return false;
+            }
+
+            string? driveLetter = Path.GetPathRoot(filePath);
+            if (string.IsNullOrEmpty(driveLetter))
+            {
+                errorMessage = string.Format(Resource.FilePathInvalid, filePath);
+                return false;
+            }
+
+            var drive = DriveInfo.GetDrives().FirstOrDefault(d => string.Equals(d.Name, driveLetter, StringComparison.InvariantCultureIgnoreCase));
+            if (drive is null)
+            {
+                errorMessage = string.Format(Resource.DriveNotFound, driveLetter);
+                return false;
+            }
+
+            if (drive.AvailableFreeSpace < sizeBytes)
+            {
+                errorMessage = string.Format(Resource.OutOfMemory, driveLetter, drive.AvailableFreeSpace, sizeBytes);
+                return false;
+            }
+
+            errorMessage = null;
+            return true;
         }
     }
 }

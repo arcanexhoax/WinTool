@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using WinTool.Model;
 
-namespace WinTool.Modules
+namespace WinTool.Services
 {
     public class SettingsManager
     {

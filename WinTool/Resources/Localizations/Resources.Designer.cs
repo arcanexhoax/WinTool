@@ -61,6 +61,33 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Album.
+        /// </summary>
+        public static string Album {
+            get {
+                return ResourceManager.GetString("Album", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change file &apos;{0}&apos; properties.
+        /// </summary>
+        public static string ChangeFileProperiesTitle {
+            get {
+                return ResourceManager.GetString("ChangeFileProperiesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change file properties.
+        /// </summary>
+        public static string ChangeFileProperties {
+            get {
+                return ResourceManager.GetString("ChangeFileProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Close {
@@ -106,6 +133,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creation time.
+        /// </summary>
+        public static string CreationTime {
+            get {
+                return ResourceManager.GetString("CreationTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to find drive &apos;{0}&apos;..
         /// </summary>
         public static string DriveNotFound {
@@ -142,6 +178,24 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; consists only of dots.
+        /// </summary>
+        public static string FileConsistsOnlyOfDots {
+            get {
+                return ResourceManager.GetString("FileConsistsOnlyOfDots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; has forbidden characters.
+        /// </summary>
+        public static string FileHasForbiddenChars {
+            get {
+                return ResourceManager.GetString("FileHasForbiddenChars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File &apos;{0}&apos; doesn&apos;t exist..
         /// </summary>
         public static string FileNotFound {
@@ -160,11 +214,47 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Genres.
+        /// </summary>
+        public static string Genres {
+            get {
+                return ResourceManager.GetString("Genres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last write time.
+        /// </summary>
+        public static string LastWriteTime {
+            get {
+                return ResourceManager.GetString("LastWriteTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launch on Windows startup.
         /// </summary>
         public static string LaunchOnStartup {
             get {
                 return ResourceManager.GetString("LaunchOnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lyrics.
+        /// </summary>
+        public static string Lyrics {
+            get {
+                return ResourceManager.GetString("Lyrics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Media tags.
+        /// </summary>
+        public static string MediaTags {
+            get {
+                return ResourceManager.GetString("MediaTags", resourceCulture);
             }
         }
         
@@ -225,6 +315,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Performers.
+        /// </summary>
+        public static string Performers {
+            get {
+                return ResourceManager.GetString("Performers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string Run {
@@ -248,6 +347,24 @@ namespace WinTool.Resources.Localizations {
         public static string RunWithArgs {
             get {
                 return ResourceManager.GetString("RunWithArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save file &apos;{0}&apos; properties error: {1}.
+        /// </summary>
+        public static string SaveFilePropertiesError {
+            get {
+                return ResourceManager.GetString("SaveFilePropertiesError", resourceCulture);
             }
         }
         
@@ -306,6 +423,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Double click to open, right click - menu.
         /// </summary>
         public static string TrayToolTip {
@@ -329,6 +455,15 @@ namespace WinTool.Resources.Localizations {
         public static string WithArgs {
             get {
                 return ResourceManager.GetString("WithArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year.
+        /// </summary>
+        public static string Year {
+            get {
+                return ResourceManager.GetString("Year", resourceCulture);
             }
         }
     }

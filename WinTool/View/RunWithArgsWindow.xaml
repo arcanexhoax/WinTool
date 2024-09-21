@@ -44,6 +44,7 @@
             <TextBox MinHeight="150"
                      MinWidth="200"
                      Margin="0 20 0 0"
+                     Height="24"
                      x:Name="textBox"
                      Text="{Binding Args, UpdateSourceTrigger=PropertyChanged}"
                      u:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}" />
@@ -52,7 +53,7 @@
                     HorizontalAlignment="Right" 
                     Margin="0 20 0 0"
                     Width="60"
-                    Height="22"/>
+                    Height="24"/>
         </StackPanel>
     </Border>
 </Window>
