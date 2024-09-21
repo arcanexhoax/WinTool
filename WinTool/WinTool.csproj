@@ -52,6 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="GlobalKeyInterceptor" Version="1.1.0" />
 		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
 		<PackageReference Include="Hoax.WpfConverters" Version="1.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
@@ -61,10 +62,6 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Prism.Core" Version="8.1.97" />
 		<PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\GlobalKeyInterceptor\GlobalKeyInterceptor\GlobalKeyInterceptor.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
