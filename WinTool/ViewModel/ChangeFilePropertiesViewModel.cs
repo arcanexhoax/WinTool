@@ -1,5 +1,5 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +9,7 @@ using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
 {
-    public class ChangeFilePropertiesViewModel : BindableBase
+    public class ChangeFilePropertiesViewModel : ObservableObject
     {
         private Window? _window;
 
@@ -63,9 +63,9 @@ namespace WinTool.ViewModel
             get; set => SetProperty(ref field, value);
         }
 
-        public DelegateCommand<Window> WindowLoadedCommand { get; }
-        public DelegateCommand SaveCommand { get; }
-        public DelegateCommand CloseWindowCommand { get; }
+        public RelayCommand<Window> WindowLoadedCommand { get; }
+        public RelayCommand SaveCommand { get; }
+        public RelayCommand CloseWindowCommand { get; }
 
         public ChangeFilePropertiesViewModel(string filePath, TagLib.File? tfile = null)
         {
@@ -84,7 +84,7 @@ namespace WinTool.ViewModel
                 Year = tfile.Tag.Year;
             }
 
-            SaveCommand = new DelegateCommand(() =>
+            SaveCommand = new RelayCommand(() =>
             {
                 try
                 {
@@ -111,8 +111,8 @@ namespace WinTool.ViewModel
 
                 _window?.Close();
             });
-            WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            CloseWindowCommand = new DelegateCommand(() => _window?.Close());
+            WindowLoadedCommand = new RelayCommand<Window>(w => _window = w);
+            CloseWindowCommand = new RelayCommand(() => _window?.Close());
         }
     }
 }

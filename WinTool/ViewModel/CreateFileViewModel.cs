@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Prism.Commands;
-using Prism.Mvvm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -21,7 +21,7 @@ namespace WinTool.ViewModel
         TB = 1_099_511_627_776,
     }
 
-    public class CreateFileViewModel : BindableBase
+    public class CreateFileViewModel : ObservableObject
     {
         private Window? _window;
 
@@ -65,10 +65,10 @@ namespace WinTool.ViewModel
             get; set => SetProperty(ref field, value);
         }
 
-        public DelegateCommand CreateCommand { get; }
-        public DelegateCommand<Window> WindowLoadedCommand { get; }
-        public DelegateCommand WindowClosingCommand { get; }
-        public DelegateCommand CloseWindowCommand { get; }
+        public RelayCommand CreateCommand { get; }
+        public RelayCommand<Window> WindowLoadedCommand { get; }
+        public RelayCommand WindowClosingCommand { get; }
+        public RelayCommand CloseWindowCommand { get; }
 
         public CreateFileViewModel(string folderPath, MemoryCache memoryCache, Action<CreateFileResult> result)
         {
@@ -100,7 +100,7 @@ namespace WinTool.ViewModel
 
             var createFileResult = new CreateFileResult(false, null);
 
-            CreateCommand = new DelegateCommand(() =>
+            CreateCommand = new RelayCommand(() =>
             {
                 if (string.IsNullOrEmpty(FileName))
                     return;
@@ -119,9 +119,9 @@ namespace WinTool.ViewModel
 
                 _window?.Close();
             });
-            WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(createFileResult));
-            CloseWindowCommand = new DelegateCommand(() => _window?.Close());
+            WindowLoadedCommand = new RelayCommand<Window>(w => _window = w);
+            WindowClosingCommand = new RelayCommand(() => result?.Invoke(createFileResult));
+            CloseWindowCommand = new RelayCommand(() => _window?.Close());
         }
 
         private bool CheckIfFileValid(string filePath, string fileName, long sizeBytes, out string? errorMessage)

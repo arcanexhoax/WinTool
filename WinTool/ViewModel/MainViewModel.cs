@@ -1,7 +1,7 @@
-﻿using GlobalKeyInterceptor;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using GlobalKeyInterceptor;
 using Microsoft.Win32;
-using Prism.Commands;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +16,7 @@ using Resource = WinTool.Resources.Localizations.Resources;
 
 namespace WinTool.ViewModel
 {
-    public class MainViewModel : BindableBase
+    public class MainViewModel : ObservableObject
     {
         private const string RegKeyName = "WinTool";
 
@@ -83,10 +83,10 @@ namespace WinTool.ViewModel
             }
         }
 
-        public DelegateCommand WindowLoadedCommand { get; }
-        public DelegateCommand WindowClosingCommand { get; }
-        public DelegateCommand OpenWindowCommand { get; }
-        public DelegateCommand CloseWindowCommand { get; }
+        public RelayCommand WindowLoadedCommand { get; }
+        public RelayCommand WindowClosingCommand { get; }
+        public RelayCommand OpenWindowCommand { get; }
+        public RelayCommand CloseWindowCommand { get; }
 
         public event EventHandler? ShowWindowRequested;
 
@@ -110,14 +110,14 @@ namespace WinTool.ViewModel
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;
 
-            WindowLoadedCommand = new DelegateCommand(() => commandHandler.IsBackgroundMode = false);
-            WindowClosingCommand = new DelegateCommand(() => commandHandler.IsBackgroundMode = true);
-            OpenWindowCommand = new DelegateCommand(() =>
+            WindowLoadedCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = false);
+            WindowClosingCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = true);
+            OpenWindowCommand = new RelayCommand(() =>
             {
                 commandHandler.IsBackgroundMode = false;
                 ShowWindowRequested?.Invoke(this, EventArgs.Empty);
             });
-            CloseWindowCommand = new DelegateCommand(() =>
+            CloseWindowCommand = new RelayCommand(() =>
             {
                 _keyHooker?.Dispose();
                 Application.Current.Shutdown();
