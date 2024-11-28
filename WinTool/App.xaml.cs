@@ -16,17 +16,14 @@ namespace WinTool
 
         public App()
         {
-            var builder = Host.CreateDefaultBuilder();
+            var builder = Host.CreateApplicationBuilder();
 
-            builder.ConfigureServices((context, services) =>
-            {
-                services.AddSingleton<MainWindow>();
-                services.AddSingleton<MainViewModel>();
-                services.AddSingleton<CommandHandler>();
-                services.AddSingleton<Shell>();
-                services.AddSingleton<SettingsManager>();
-                services.AddSingleton<MemoryCache>();
-            });
+            builder.Services.AddSingleton<MainWindow>();
+            builder.Services.AddSingleton<MainViewModel>();
+            builder.Services.AddSingleton<CommandHandler>();
+            builder.Services.AddSingleton<Shell>();
+            builder.Services.AddSingleton<SettingsManager>();
+            builder.Services.AddSingleton<MemoryCache>();
 
             _app = builder.Build();
         }

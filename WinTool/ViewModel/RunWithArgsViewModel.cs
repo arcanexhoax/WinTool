@@ -13,40 +13,30 @@ namespace WinTool.ViewModel
     public class RunWithArgsViewModel : BindableBase
     {
         private Window? _window;
-        private string? _fileName;
-        private string? _fullFilePath;
-        private string? _shortedFilePath;
-        private string? _args;
-        private bool _isTextSelected;
 
         public string? FileName
         {
-            get => _fileName;
-            set => SetProperty(ref _fileName, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? FullFilePath
         {
-            get => _fullFilePath;
-            set => SetProperty(ref _fullFilePath, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? ShortedFilePath
         {
-            get => _shortedFilePath;
-            set => SetProperty(ref _shortedFilePath, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? Args
         {
-            get => _args;
-            set => SetProperty(ref _args, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public bool IsTextSelected
         {
-            get => _isTextSelected;
-            set => SetProperty(ref _isTextSelected, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public DelegateCommand RunCommand { get; }

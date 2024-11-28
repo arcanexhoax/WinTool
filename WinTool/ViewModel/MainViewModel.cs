@@ -27,13 +27,9 @@ namespace WinTool.ViewModel
         private readonly Dictionary<Shortcut, Func<Task>> _shortcuts;
         private readonly string _executionFilePath;
 
-        private bool _launchOnWindowsStartup;
-        private bool _areUiElementsEnabled;
-        private string? _newFileTemplate;
-
         public bool LaunchOnWindowsStartup
         {
-            get => _launchOnWindowsStartup;
+            get;
             set
             {
                 AreUiElementsEnabled = false;
@@ -56,7 +52,7 @@ namespace WinTool.ViewModel
                     _settings.WindowsStartupEnabled = value;
                     _settingsManager.UpdateSettings(_settings);
 
-                    SetProperty(ref _launchOnWindowsStartup, value);
+                    SetProperty(ref field, value);
                 }
                 catch (Exception ex)
                 {
@@ -71,16 +67,15 @@ namespace WinTool.ViewModel
 
         public bool AreUiElementsEnabled
         {
-            get => _areUiElementsEnabled;
-            set => SetProperty(ref _areUiElementsEnabled, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? NewFileTemplate
         {
-            get => _newFileTemplate;
+            get;
             set
             {
-                if (SetProperty(ref _newFileTemplate, value))
+                if (SetProperty(ref field, value))
                 {
                     _settings.NewFileTemplate = value;
                     _settingsManager.UpdateSettings(_settings);
@@ -99,13 +94,13 @@ namespace WinTool.ViewModel
         {
             _shortcuts = new()
             {
-                { new Shortcut(Key.F2, KeyModifier.Ctrl),                    () => commandHandler.ChangeFileProperties() },
-                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CopyFilePath() },
+                { new Shortcut(Key.F2, KeyModifier.Ctrl),                    commandHandler.ChangeFileProperties },
+                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.CopyFilePath },
                 { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CreateFileFast(NewFileTemplate!) },
-                { new Shortcut(Key.E, KeyModifier.Ctrl),                     () => commandHandler.CreateFileInteractive() },
-                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.OpenInCmd() },
-                { new Shortcut(Key.O, KeyModifier.Ctrl),                     () => commandHandler.RunWithArgs() },
-                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CopyFileName() },
+                { new Shortcut(Key.E, KeyModifier.Ctrl),                     commandHandler.CreateFileInteractive },
+                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.OpenInCmd },
+                { new Shortcut(Key.O, KeyModifier.Ctrl),                     commandHandler.RunWithArgs },
+                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.CopyFileName },
             };
 
             // use arg "/background" to start app in background mode

@@ -11,76 +11,56 @@ namespace WinTool.ViewModel
 {
     public class ChangeFilePropertiesViewModel : BindableBase
     {
-        private string? _fileName;
-        private string? _title;
-        private string? _performers;
-        private string? _album;
-        private string? _genres;
-        private string? _lyrics;
-        private uint _year;
-        private bool _mediaTagsSupported;
-        private DateTime _creationTime;
-        private DateTime _changeTime;
         private Window? _window;
 
         public string? FileName
         {
-            get => _fileName;
-            set => SetProperty(ref _fileName, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? Title
         {
-            get => _title;
-            set => SetProperty(ref _title, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? Performers
         {
-            get => _performers;
-            set => SetProperty(ref _performers, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? Album
         {
-            get => _album;
-            set => SetProperty(ref _album, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? Genres
         {
-            get => _genres;
-            set => SetProperty(ref _genres, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? Lyrics
         {
-            get => _lyrics;
-            set => SetProperty(ref _lyrics, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public uint Year
         {
-            get => _year;
-            set => SetProperty(ref _year, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public bool MediaTagsSupported
         {
-            get => _mediaTagsSupported;
-            set => SetProperty(ref _mediaTagsSupported, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public DateTime CreationTime
         {
-            get => _creationTime;
-            set => SetProperty(ref _creationTime, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public DateTime ChangeTime
         {
-            get => _changeTime;
-            set => SetProperty(ref _changeTime, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public DelegateCommand<Window> WindowLoadedCommand { get; }

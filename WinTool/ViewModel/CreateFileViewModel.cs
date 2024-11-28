@@ -23,62 +23,46 @@ namespace WinTool.ViewModel
 
     public class CreateFileViewModel : BindableBase
     {
-        private string? _fileName;
-        private string? _fullFolderPath;
-        private string? _relativeFolderPath;
-        private uint _size = 0;
-        private bool _isTextSelected;
-        private bool _areOptionsOpened;
-        private SizeUnit _selectedSizeUnit = SizeUnit.B;
-        private ObservableCollection<SizeUnit> _sizeUnits = new(Enum.GetValues<SizeUnit>());
         private Window? _window;
 
         public string? FileName
         {
-            get => _fileName;
-            set => SetProperty(ref _fileName, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? FullFolderPath
         {
-            get => _fullFolderPath; 
-            set => SetProperty(ref _fullFolderPath, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? RelativeFolderPath
         {
-            get => _relativeFolderPath;
-            set => SetProperty(ref _relativeFolderPath, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public uint Size
         {
-            get => _size;
-            set => SetProperty(ref _size, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public bool IsTextSelected
         {
-            get => _isTextSelected;
-            set => SetProperty(ref _isTextSelected, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public bool AreOptionsOpened
         {
-            get => _areOptionsOpened;
-            set => SetProperty(ref _areOptionsOpened, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public SizeUnit SelectedSizeUnit
         {
-            get => _selectedSizeUnit;
-            set => SetProperty(ref _selectedSizeUnit, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public ObservableCollection<SizeUnit> SizeUnits
         {
-            get => _sizeUnits;
-            set => SetProperty(ref _sizeUnits, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public DelegateCommand CreateCommand { get; }
@@ -88,6 +72,8 @@ namespace WinTool.ViewModel
 
         public CreateFileViewModel(string folderPath, MemoryCache memoryCache, Action<CreateFileResult> result)
         {
+            SelectedSizeUnit = SizeUnit.B;
+            SizeUnits = new ObservableCollection<SizeUnit>(Enum.GetValues<SizeUnit>());
             FullFolderPath = folderPath;
             DirectoryInfo di = new(folderPath);
             string folderName = di.Name.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
