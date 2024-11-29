@@ -15,6 +15,8 @@ namespace WinTool
             InitializeComponent();
         }
 
+        private void OnWindowActivated(object? sender, System.EventArgs e) => Show();
+
         private void OnWindowClosing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;

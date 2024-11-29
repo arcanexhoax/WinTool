@@ -2,8 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Threading;
 using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Native;
 using WinTool.Services;
 using WinTool.Utils;
 using WinTool.ViewModel;
@@ -14,8 +16,12 @@ namespace WinTool
     {
         private readonly IHost _app;
 
+        private Mutex? _secondInstanceMutex;
+
         public App()
         {
+            CheckForSecondInstance();
+
             var builder = Host.CreateApplicationBuilder();
 
             builder.Services.AddSingleton<MainWindow>();
@@ -48,6 +54,14 @@ namespace WinTool
             base.OnStartup(e);
         }
 
+        private void CheckForSecondInstance()
+        {
+            _secondInstanceMutex = new Mutex(true, "WinTool-10fdf33711f4591a368bd6a0b0e20cc1", out bool isFirstInstance);
+
+            if (!isFirstInstance && NativeMethods.ShowWindow("WinTool"))
+                Environment.Exit(0);
+        }
+
         private void HandleOperations(CommandHandler commandHandler, CommandLineParameters clp)
         {
             if (clp.CreateFileParameter is { FilePath: not (null or [])})
@@ -65,6 +79,7 @@ namespace WinTool
 
         protected override async void OnExit(ExitEventArgs e)
         {
+            _secondInstanceMutex?.Dispose();
             await _app.StopAsync();
             base.OnExit(e);
         }
