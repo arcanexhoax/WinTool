@@ -53,16 +53,7 @@ namespace WinTool.Services
                 if (window is null)
                     return null;
 
-                if (window.Document is not IShellFolderViewDual2 shellWindow)
-                    return null;
-
-                var currentFolder = shellWindow.Folder.Items().Item();
-
-                // special folder - use window title, for some reason on "Desktop" gives null
-                if (currentFolder == null || currentFolder.Path.StartsWith("::"))
-                    return NativeMethods.GetWindowText(handle);
-                else
-                    return currentFolder.Path;
+                return new Uri(window.LocationURL).LocalPath;
             }
             catch (Exception ex)
             {
@@ -127,17 +118,36 @@ namespace WinTool.Services
         private InternetExplorer? GetActiveShellWindow11(IntPtr handle)
         {
             string? windowTitle = NativeMethods.GetWindowText(handle);
-            ShellWindows shellWindows = new();
 
-            foreach (InternetExplorer window in shellWindows)
+            if (windowTitle is null or [])
             {
-                // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle, so we need to compare 
-                // the title (indicates the path) of the current explorer window with the local path of each tab of this window
-                if (window.HWND == (int)handle && new Uri(window.LocationURL).LocalPath == windowTitle)
-                    return window;
+                Trace.WriteLine("Failed to get window title of current Explorer window");
+                return null;
             }
 
-            return null;
+            ShellWindows shellWindows = new();
+            InternetExplorer? seekingWindow = null;
+            int pathLength = 0;
+            
+            foreach (InternetExplorer window in shellWindows)
+            {
+                if (window.HWND != (int)handle)
+                    continue;
+
+                string currentExplorerPath = new Uri(window.LocationURL).LocalPath;
+
+                // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle, so we need to compare 
+                // the title (indicates the path) of the current explorer window with the local path of each tab of this window. In recent Windows 11
+                // versions, the Explorer title format has changed to "C:\\folder - File Explorer" or "C:\\folder and X more tabs - File Explorer".
+                // So now it's unable to get current explorer window if it's Desktop/Downloads/Pictures etc
+                if (windowTitle.StartsWith(currentExplorerPath) && currentExplorerPath.Length > pathLength)
+                {
+                    seekingWindow = window;
+                    pathLength = currentExplorerPath.Length;
+                }
+            }
+
+            return seekingWindow;
         }
     }
 }

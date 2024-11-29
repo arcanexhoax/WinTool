@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Prism.Commands;
-using Prism.Mvvm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -21,73 +21,59 @@ namespace WinTool.ViewModel
         TB = 1_099_511_627_776,
     }
 
-    public class CreateFileViewModel : BindableBase
+    public class CreateFileViewModel : ObservableObject
     {
-        private string? _fileName;
-        private string? _fullFolderPath;
-        private string? _relativeFolderPath;
-        private uint _size = 0;
-        private bool _isTextSelected;
-        private bool _areOptionsOpened;
-        private SizeUnit _selectedSizeUnit = SizeUnit.B;
-        private ObservableCollection<SizeUnit> _sizeUnits = new(Enum.GetValues<SizeUnit>());
         private Window? _window;
 
         public string? FileName
         {
-            get => _fileName;
-            set => SetProperty(ref _fileName, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? FullFolderPath
         {
-            get => _fullFolderPath; 
-            set => SetProperty(ref _fullFolderPath, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public string? RelativeFolderPath
         {
-            get => _relativeFolderPath;
-            set => SetProperty(ref _relativeFolderPath, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public uint Size
         {
-            get => _size;
-            set => SetProperty(ref _size, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public bool IsTextSelected
         {
-            get => _isTextSelected;
-            set => SetProperty(ref _isTextSelected, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public bool AreOptionsOpened
         {
-            get => _areOptionsOpened;
-            set => SetProperty(ref _areOptionsOpened, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public SizeUnit SelectedSizeUnit
         {
-            get => _selectedSizeUnit;
-            set => SetProperty(ref _selectedSizeUnit, value);
+            get; set => SetProperty(ref field, value);
         }
 
         public ObservableCollection<SizeUnit> SizeUnits
         {
-            get => _sizeUnits;
-            set => SetProperty(ref _sizeUnits, value);
+            get; set => SetProperty(ref field, value);
         }
 
-        public DelegateCommand CreateCommand { get; }
-        public DelegateCommand<Window> WindowLoadedCommand { get; }
-        public DelegateCommand WindowClosingCommand { get; }
-        public DelegateCommand CloseWindowCommand { get; }
+        public RelayCommand CreateCommand { get; }
+        public RelayCommand<Window> WindowLoadedCommand { get; }
+        public RelayCommand WindowClosingCommand { get; }
+        public RelayCommand CloseWindowCommand { get; }
 
         public CreateFileViewModel(string folderPath, MemoryCache memoryCache, Action<CreateFileResult> result)
         {
+            SelectedSizeUnit = SizeUnit.B;
+            SizeUnits = new ObservableCollection<SizeUnit>(Enum.GetValues<SizeUnit>());
             FullFolderPath = folderPath;
             DirectoryInfo di = new(folderPath);
             string folderName = di.Name.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
@@ -114,7 +100,7 @@ namespace WinTool.ViewModel
 
             var createFileResult = new CreateFileResult(false, null);
 
-            CreateCommand = new DelegateCommand(() =>
+            CreateCommand = new RelayCommand(() =>
             {
                 if (string.IsNullOrEmpty(FileName))
                     return;
@@ -133,9 +119,9 @@ namespace WinTool.ViewModel
 
                 _window?.Close();
             });
-            WindowLoadedCommand = new DelegateCommand<Window>(w => _window = w);
-            WindowClosingCommand = new DelegateCommand(() => result?.Invoke(createFileResult));
-            CloseWindowCommand = new DelegateCommand(() => _window?.Close());
+            WindowLoadedCommand = new RelayCommand<Window>(w => _window = w);
+            WindowClosingCommand = new RelayCommand(() => result?.Invoke(createFileResult));
+            CloseWindowCommand = new RelayCommand(() => _window?.Close());
         }
 
         private bool CheckIfFileValid(string filePath, string fileName, long sizeBytes, out string? errorMessage)

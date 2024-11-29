@@ -15,7 +15,8 @@
         Width="800"
         x:Name="mainWindow"
         WindowStartupLocation="CenterScreen"
-        Closing="OnWindowClosing">
+        Closing="OnWindowClosing"
+        Activated="OnWindowActivated">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}" />

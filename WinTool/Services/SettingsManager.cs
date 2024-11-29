@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using WinTool.Model;
 
 namespace WinTool.Services
@@ -28,7 +28,7 @@ namespace WinTool.Services
             try
             {
                 string json = File.ReadAllText(_settingsFilePath);
-                var settings = JsonConvert.DeserializeObject<Settings>(json);
+                var settings = JsonSerializer.Deserialize<Settings>(json);
                 return settings;
             }
             catch (Exception ex)
@@ -42,7 +42,7 @@ namespace WinTool.Services
         {
             try
             {
-                string json = JsonConvert.SerializeObject(settings);
+                string json = JsonSerializer.Serialize(settings);
                 File.WriteAllText(_settingsFilePath, json);
             }
             catch (Exception ex)
