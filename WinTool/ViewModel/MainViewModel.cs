@@ -94,13 +94,13 @@ namespace WinTool.ViewModel
         {
             _shortcuts = new()
             {
-                { new Shortcut(Key.F2, KeyModifier.Ctrl),                    commandHandler.ChangeFileProperties },
-                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.CopyFilePath },
-                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CreateFileFast(NewFileTemplate!) },
-                { new Shortcut(Key.E, KeyModifier.Ctrl),                     commandHandler.CreateFileInteractive },
-                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.OpenInCmd },
-                { new Shortcut(Key.O, KeyModifier.Ctrl),                     commandHandler.RunWithArgs },
-                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.CopyFileName },
+                { new Shortcut(Key.F2, KeyModifier.Ctrl, KeyState.Down),                    commandHandler.ChangeFileProperties },
+                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.CopyFilePath },
+                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), () => commandHandler.CreateFileFast(NewFileTemplate!) },
+                { new Shortcut(Key.E, KeyModifier.Ctrl, KeyState.Down),                     commandHandler.CreateFileInteractive },
+                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.OpenInCmd },
+                { new Shortcut(Key.O, KeyModifier.Ctrl, KeyState.Down),                     commandHandler.RunWithArgs },
+                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.CopyFileName },
             };
 
             // use arg "/background" to start app in background mode
@@ -138,6 +138,8 @@ namespace WinTool.ViewModel
             {
                 try
                 {
+                    // TODO handle only in explorer app
+                    e.IsHandled = true;
                     await operation();
                 }
                 catch (Exception ex)

@@ -1,12 +1,8 @@
-﻿using System.Windows;
-using WinTool.ViewModel;
+﻿using WinTool.ViewModel;
 
 namespace WinTool.View
 {
-    /// <summary>
-    /// Interaction logic for RunWithArgsWindow.xaml
-    /// </summary>
-    public partial class RunWithArgsWindow : Window
+    public partial class RunWithArgsWindow : ModalWindow
     {
         public RunWithArgsWindow(RunWithArgsViewModel runWithArgsVm)
         {
