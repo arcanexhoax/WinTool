@@ -11,6 +11,25 @@ namespace WinTool.Services
 {
     public class Shell
     {
+        public bool IsActive
+        {
+            get
+            {
+                try
+                {
+                    var handle = NativeMethods.GetForegroundWindow();
+                    var className = NativeMethods.GetClassName(handle);
+
+                    return className is "CabinetWClass" or "ExploreWClass";
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Error in IsActive: {ex.Message}");
+                    return false;
+                }
+            }
+        }
+
         public Task<string?> GetActiveExplorerPathAsync()
         {
             TaskCompletionSource<string?> tcs = new();

@@ -7,13 +7,13 @@ public class ModalWindow : Window
 {
     public ModalWindow()
     {
-        // TODO unsub
         Loaded += OnLoaded;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         BringProcessToForeground();
+        Loaded -= OnLoaded;
     }
 
     private void BringProcessToForeground()

@@ -24,6 +24,7 @@ namespace WinTool.ViewModel
         private readonly SemaphoreSlim _semaphore = new(1);
         private readonly SettingsManager _settingsManager;
         private readonly Settings _settings;
+        private readonly Shell _shell;
         private readonly Dictionary<Shortcut, Func<Task>> _shortcuts;
         private readonly string _executionFilePath;
 
@@ -90,7 +91,7 @@ namespace WinTool.ViewModel
 
         public event EventHandler? ShowWindowRequested;
 
-        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager)
+        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell)
         {
             _shortcuts = new()
             {
@@ -106,6 +107,7 @@ namespace WinTool.ViewModel
             // use arg "/background" to start app in background mode
             _executionFilePath =  $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
             _settingsManager = settingsManager;
+            _shell = shell;
 
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;
@@ -138,8 +140,9 @@ namespace WinTool.ViewModel
             {
                 try
                 {
-                    // TODO handle only in explorer app
-                    e.IsHandled = true;
+                    if (_shell.IsActive)
+                        e.IsHandled = true;
+
                     await operation();
                 }
                 catch (Exception ex)

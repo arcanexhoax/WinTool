@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using static WinTool.View.CreateFileView;
 
 namespace WinTool.Native
 {
@@ -28,17 +27,23 @@ namespace WinTool.Native
         [DllImport("user32.dll")]
         internal static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
-        public static string? GetWindowText(IntPtr hWnd)
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        internal static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {
             string? text = null;
-            const int nChars = 256;
-            StringBuilder buff = new(nChars);
+            var buff = new StringBuilder(256);
 
-            if (GetWindowText(hWnd, buff, nChars) > 0)
+            if (getText(hWnd, buff, buff.Capacity) > 0)
                 text = buff.ToString();
 
             return text;
         }
+
+        public static string? GetWindowText(nint hWnd) => GetTextFrom(hWnd, GetWindowText);
+
+        public static string? GetClassName(nint hWnd) => GetTextFrom(hWnd, GetClassName);
 
         public static bool ShowWindow(string windowTitle)
         {
