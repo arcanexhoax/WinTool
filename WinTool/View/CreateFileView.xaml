@@ -45,11 +45,16 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="{Binding RelativeFolderPath}"
-                       ToolTip="{Binding FullFolderPath}"
-                       Grid.Row="0"
-                       Grid.Column="0"
-                       VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding RelativeFolderPath}"
+                           ToolTip="{Binding FullFolderPath}"
+                           MaxWidth="95"
+                           TextTrimming="CharacterEllipsis"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="/"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
             <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"
                      u:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}"
                      Height="24"
