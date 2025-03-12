@@ -1,9 +1,8 @@
-﻿using System.Windows;
-using WinTool.ViewModel;
+﻿using WinTool.ViewModel;
 
 namespace WinTool.View
 {
-    public partial class CreateFileView : Window
+    public partial class CreateFileView : ModalWindow
     {
         public CreateFileView(CreateFileViewModel createFileViewModel)
         {

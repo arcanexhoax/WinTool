@@ -75,18 +75,9 @@ namespace WinTool.ViewModel
             SelectedSizeUnit = SizeUnit.B;
             SizeUnits = new ObservableCollection<SizeUnit>(Enum.GetValues<SizeUnit>());
             FullFolderPath = folderPath;
-            DirectoryInfo di = new(folderPath);
-            string folderName = di.Name.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
 
-            if (folderName.Length > 17)
-            {
-                int start = folderName.Length - 17;
-                RelativeFolderPath = string.Concat("...", folderName.AsSpan(start));
-            }
-            else
-            {
-                RelativeFolderPath = folderName;
-            }
+            var di = new DirectoryInfo(folderPath);
+            RelativeFolderPath = di.Name.TrimEnd(Path.DirectorySeparatorChar);
 
             if (memoryCache.TryGetValue(nameof(CreateFileViewModel), out CreateFileData? createFileData))
             {

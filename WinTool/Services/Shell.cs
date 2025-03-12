@@ -11,6 +11,25 @@ namespace WinTool.Services
 {
     public class Shell
     {
+        public bool IsActive
+        {
+            get
+            {
+                try
+                {
+                    var handle = NativeMethods.GetForegroundWindow();
+                    var className = NativeMethods.GetClassName(handle);
+
+                    return className is "CabinetWClass" or "ExploreWClass";
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Error in IsActive: {ex.Message}");
+                    return false;
+                }
+            }
+        }
+
         public Task<string?> GetActiveExplorerPathAsync()
         {
             TaskCompletionSource<string?> tcs = new();
@@ -131,10 +150,13 @@ namespace WinTool.Services
             
             foreach (InternetExplorer window in shellWindows)
             {
-                if (window.HWND != (int)handle)
+                if (window.HWND != handle.ToInt32())
                     continue;
 
-                string currentExplorerPath = new Uri(window.LocationURL).LocalPath;
+                if (window.LocationURL is null or [] || !Uri.TryCreate(window.LocationURL, UriKind.RelativeOrAbsolute, out var currentExplorerUri))
+                    continue;
+
+                string currentExplorerPath = currentExplorerUri.LocalPath;
 
                 // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle, so we need to compare 
                 // the title (indicates the path) of the current explorer window with the local path of each tab of this window. In recent Windows 11

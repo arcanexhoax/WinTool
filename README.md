@@ -1,6 +1,6 @@
 ## WinTool
 ![NET](https://img.shields.io/badge/.NET%209-%23512BD4)
-![Version](https://img.shields.io/badge/Version-0.6.2-%230c7ebf)
+![Version](https://img.shields.io/badge/Version-0.6.3-%230c7ebf)
 [![License](https://img.shields.io/github/license/arcanexhoax/GlobalKeyInterceptor.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/GlobalKeyInterceptor/master/LICENSE)
 
 WinTool is a utility that expands shortcuts for Windows and its apps, it adds shortcuts for useful functions that do not have it.

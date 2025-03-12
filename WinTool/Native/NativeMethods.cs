@@ -9,32 +9,41 @@ namespace WinTool.Native
         private const int SW_NORMAL = 1;
 
         [DllImport("user32.dll")]
-        public static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
+        internal static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
+        internal static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+        internal static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        public static string? GetWindowText(IntPtr hWnd)
+        [DllImport("user32.dll")]
+        internal static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        internal static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {
             string? text = null;
-            const int nChars = 256;
-            StringBuilder buff = new(nChars);
+            var buff = new StringBuilder(256);
 
-            if (GetWindowText(hWnd, buff, nChars) > 0)
+            if (getText(hWnd, buff, buff.Capacity) > 0)
                 text = buff.ToString();
 
             return text;
         }
+
+        public static string? GetWindowText(nint hWnd) => GetTextFrom(hWnd, GetWindowText);
+
+        public static string? GetClassName(nint hWnd) => GetTextFrom(hWnd, GetClassName);
 
         public static bool ShowWindow(string windowTitle)
         {

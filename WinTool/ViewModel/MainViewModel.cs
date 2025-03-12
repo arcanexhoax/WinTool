@@ -24,6 +24,7 @@ namespace WinTool.ViewModel
         private readonly SemaphoreSlim _semaphore = new(1);
         private readonly SettingsManager _settingsManager;
         private readonly Settings _settings;
+        private readonly Shell _shell;
         private readonly Dictionary<Shortcut, Func<Task>> _shortcuts;
         private readonly string _executionFilePath;
 
@@ -90,22 +91,23 @@ namespace WinTool.ViewModel
 
         public event EventHandler? ShowWindowRequested;
 
-        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager)
+        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell)
         {
             _shortcuts = new()
             {
-                { new Shortcut(Key.F2, KeyModifier.Ctrl),                    commandHandler.ChangeFileProperties },
-                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.CopyFilePath },
-                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift), () => commandHandler.CreateFileFast(NewFileTemplate!) },
-                { new Shortcut(Key.E, KeyModifier.Ctrl),                     commandHandler.CreateFileInteractive },
-                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.OpenInCmd },
-                { new Shortcut(Key.O, KeyModifier.Ctrl),                     commandHandler.RunWithArgs },
-                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift), commandHandler.CopyFileName },
+                { new Shortcut(Key.F2, KeyModifier.Ctrl, KeyState.Down),                    commandHandler.ChangeFileProperties },
+                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.CopyFilePath },
+                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), () => commandHandler.CreateFileFast(NewFileTemplate!) },
+                { new Shortcut(Key.E, KeyModifier.Ctrl, KeyState.Down),                     commandHandler.CreateFileInteractive },
+                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.OpenInCmd },
+                { new Shortcut(Key.O, KeyModifier.Ctrl, KeyState.Down),                     commandHandler.RunWithArgs },
+                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.CopyFileName },
             };
 
             // use arg "/background" to start app in background mode
             _executionFilePath =  $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
             _settingsManager = settingsManager;
+            _shell = shell;
 
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;
@@ -138,6 +140,9 @@ namespace WinTool.ViewModel
             {
                 try
                 {
+                    if (_shell.IsActive)
+                        e.IsHandled = true;
+
                     await operation();
                 }
                 catch (Exception ex)
