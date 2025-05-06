@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Model;
+using WinTool.Native;
 using WinTool.Services;
 using WinTool.Utils;
 using Resource = WinTool.Resources.Localizations.Resources;
@@ -91,7 +92,7 @@ namespace WinTool.ViewModel
 
         public event EventHandler? ShowWindowRequested;
 
-        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell)
+        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell, LanguagePopupHandler languagePopupHandler)
         {
             _shortcuts = new()
             {
@@ -102,6 +103,13 @@ namespace WinTool.ViewModel
                 { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.OpenInCmd },
                 { new Shortcut(Key.O, KeyModifier.Ctrl, KeyState.Down),                     commandHandler.RunWithArgs },
                 { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.CopyFileName },
+                { new Shortcut(Key.D1, KeyModifier.Ctrl, KeyState.Down), () => 
+                    { 
+                        Task.Delay(10).ContinueWith(_ =>
+                        App.Current.Dispatcher.Invoke(() => languagePopupHandler.Show())); 
+                        return Task.CompletedTask; 
+                    } 
+                },
             };
 
             // use arg "/background" to start app in background mode

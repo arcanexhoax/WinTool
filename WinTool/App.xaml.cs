@@ -8,6 +8,7 @@ using WinTool.CommandLine;
 using WinTool.Native;
 using WinTool.Services;
 using WinTool.Utils;
+using WinTool.View;
 using WinTool.ViewModel;
 
 namespace WinTool
@@ -25,8 +26,10 @@ namespace WinTool
             var builder = Host.CreateApplicationBuilder();
 
             builder.Services.AddSingleton<MainWindow>();
+            builder.Services.AddSingleton<SwitchLanguageWindow>();
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddSingleton<CommandHandler>();
+            builder.Services.AddSingleton<LanguagePopupHandler>();
             builder.Services.AddSingleton<Shell>();
             builder.Services.AddSingleton<SettingsManager>();
             builder.Services.AddSingleton<MemoryCache>();
