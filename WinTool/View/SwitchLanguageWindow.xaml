@@ -10,6 +10,7 @@
         Title="ChangeLanguageWindow"
         ResizeMode="NoResize"
         SizeToContent="Width"
+        ShowInTaskbar="False"
         Height="30"
         WindowStyle="None">
     <Grid>
