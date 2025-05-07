@@ -13,11 +13,32 @@
         Height="30"
         WindowStyle="None">
     <Grid>
-        <Border Background="#111111">
-            <TextBlock Text="{Binding CurrentLanguage}"
-                       VerticalAlignment="Center"
-                       Padding="8"
-                       Foreground="White" />
-        </Border>
+        <ItemsControl ItemsSource="{Binding AllLanguages}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border>
+                        <TextBlock Text="{Binding Name}"
+                                   VerticalAlignment="Center"
+                                   Padding="8"
+                                   Foreground="White" />
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="#111111" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="Background" Value="#FF007ACC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </Window>

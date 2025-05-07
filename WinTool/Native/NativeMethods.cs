@@ -103,6 +103,9 @@ namespace WinTool.Native
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern IntPtr GetKeyboardLayout(uint idThread);
 
+        [DllImport("user32.dll")]
+        internal static extern int GetKeyboardLayoutList(int nBuff, [Out] IntPtr[]? lpList);
+
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {
             string? text = null;

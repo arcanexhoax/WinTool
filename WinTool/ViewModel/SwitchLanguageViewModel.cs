@@ -1,12 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using WinTool.Native;
-using UIAutomationClient;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
-using WinTool.Services;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using UIAutomationClient;
+using WinTool.Native;
+using WinTool.Services;
 
 namespace WinTool.ViewModel
 {
@@ -19,12 +22,20 @@ namespace WinTool.ViewModel
             get; set => SetProperty(ref field, value);
         }
 
+        public ObservableCollection<LanguageViewModel>? AllLanguages
+        {
+            get; set => SetProperty(ref field, value);
+        }
+
         public event Action<Point>? ShowPopup;
 
         public SwitchLanguageViewModel(KeyboardLayoutManager keyboardLayoutManager)
         {
             _keyboardLayoutManager = keyboardLayoutManager;
             _keyboardLayoutManager.LayoutChanged += OnLayoutChanged;
+            _keyboardLayoutManager.LayoutsListChanged += OnLayoutsListChanged;
+
+            OnLayoutsListChanged(_keyboardLayoutManager.AllCultures);
         }
 
         public async Task Init()
@@ -32,13 +43,25 @@ namespace WinTool.ViewModel
             await _keyboardLayoutManager.Start();
         }
 
-        public void OnLayoutChanged(CultureInfo newLayout)
+        private void OnLayoutsListChanged(IEnumerable<CultureInfo> allLayouts)
         {
-            CurrentLanguage = newLayout.ThreeLetterISOLanguageName.ToUpper();
+            var allLanguages = allLayouts.Select(layout => new LanguageViewModel(layout, GetThreeLettersNativeName(layout)));
+            AllLanguages = [.. allLanguages];
+        }
+
+        public void OnLayoutChanged(CultureInfo newCulture)
+        {
             var caretRect = GetCaretRect();
 
             if (caretRect == null)
                 return;
+
+            CurrentLanguage = GetThreeLettersNativeName(newCulture);
+
+            foreach (var language in AllLanguages!)
+            {
+                language.IsSelected = language.CultureInfo.Equals(newCulture);
+            }
 
             ShowPopup?.Invoke(new Point(caretRect.Value.right, caretRect.Value.bottom));
         }
@@ -117,9 +140,14 @@ namespace WinTool.ViewModel
             };
         }
 
-        private static bool RectValid(RECT? rect)
+        private bool RectValid(RECT? rect)
         {
             return rect is { bottom: > 0, left: > 0, right: > 0, top: > 0 };
+        }
+
+        private string GetThreeLettersNativeName(CultureInfo culture)
+        {
+            return culture.NativeName.Length > 3 ? culture.NativeName[..3].ToUpper() : culture.NativeName.ToUpper();
         }
     }
 }
