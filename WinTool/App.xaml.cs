@@ -55,6 +55,9 @@ namespace WinTool
                 App.Current.Shutdown();
 
             base.OnStartup(e);
+
+            var languagePopupHandler = _app.Services.GetRequiredService<LanguagePopupHandler>();
+            await languagePopupHandler.Start();
         }
 
         private void CheckForSecondInstance()

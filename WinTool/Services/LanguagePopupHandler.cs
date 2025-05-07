@@ -1,30 +1,65 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Interop;
 using UIAutomationClient;
+using WinTool.Native;
 using WinTool.Utils;
 using WinTool.View;
 
-namespace WinTool.Native
+namespace WinTool.Services
 {
-    public class LanguagePopupHandler(SwitchLanguageWindow changeLanguageWindow)
+    public class LanguagePopupHandler
     {
-        public void Show()
+        private readonly SwitchLanguageWindow _changeLanguageWindow;
+
+        private nint _lastLanguage = nint.Zero;
+
+        public LanguagePopupHandler(SwitchLanguageWindow changeLanguageWindow)
         {
-            var caretRect = GetCaretRect(changeLanguageWindow.Width, changeLanguageWindow.Height);
+            _changeLanguageWindow = changeLanguageWindow;
+        }
+
+        public async Task Start()
+        {
+            var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(100));
+
+            while (await timer.WaitForNextTickAsync())
+            {
+                var foregroundWindow = NativeMethods.GetForegroundWindow();
+                var threadId = NativeMethods.GetWindowThreadProcessId(foregroundWindow, out _);
+                var currentLayout = NativeMethods.GetKeyboardLayout(threadId);
+
+                if (currentLayout != _lastLanguage)
+                {
+                    _lastLanguage = currentLayout;
+
+                    var culture = CultureInfo.GetCultureInfo((short)currentLayout.ToInt64());
+                    var languageName = culture.ThreeLetterISOLanguageName;
+                    Debug.WriteLine($"New layout: {languageName}");
+                    ShowPopup();
+                }
+            }
+        }
+
+        public void ShowPopup()
+        {
+            var caretRect = GetCaretRect(_changeLanguageWindow.Width, _changeLanguageWindow.Height);
 
             // https://stackoverflow.com/questions/1918877/how-can-i-get-the-dpi-in-wpf
             var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretRect.right, caretRect.bottom);
-            changeLanguageWindow.Left = caretRect.right * DpiUtils.DefaultDpiX / dpiAtPoint;
-            changeLanguageWindow.Top = caretRect.bottom * DpiUtils.DefaultDpiY / dpiAtPoint;
+            _changeLanguageWindow.Left = caretRect.right * DpiUtils.DefaultDpiX / dpiAtPoint;
+            _changeLanguageWindow.Top = caretRect.bottom * DpiUtils.DefaultDpiY / dpiAtPoint;
 
-            ShiftWindowToScreen(changeLanguageWindow);
-            changeLanguageWindow.Show();
+            ShiftWindowToScreen(_changeLanguageWindow);
+            _changeLanguageWindow.Show();
         }
 
-        public RECT GetCaretRect(double width, double height)
+        private RECT GetCaretRect(double width, double height)
         {
             var info = new GUITHREADINFO();
             info.cbSize = Marshal.SizeOf(info);
@@ -52,7 +87,7 @@ namespace WinTool.Native
             };
         }
 
-        private static RECT GetAccessibleCaretRect(IntPtr hwnd)
+        private RECT GetAccessibleCaretRect(nint hwnd)
         {
             var guid = typeof(IAccessible).GUID;
             object? accessibleObject = null;
@@ -65,7 +100,7 @@ namespace WinTool.Native
             return new RECT() { bottom = top + height, left = left, right = left + width, top = top };
         }
 
-        private static RECT GetWinApiCaretRect(IntPtr hwnd)
+        private RECT GetWinApiCaretRect(nint hwnd)
         {
             // Try WinAPI
             uint idAttach = 0;
