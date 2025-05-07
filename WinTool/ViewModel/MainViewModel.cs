@@ -91,7 +91,7 @@ namespace WinTool.ViewModel
 
         public event EventHandler? ShowWindowRequested;
 
-        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell, LanguagePopupHandler languagePopupHandler)
+        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell)
         {
             _shortcuts = new()
             {

@@ -28,10 +28,11 @@ namespace WinTool
             builder.Services.AddSingleton<MainWindow>();
             builder.Services.AddSingleton<SwitchLanguageWindow>();
             builder.Services.AddSingleton<MainViewModel>();
+            builder.Services.AddSingleton<SwitchLanguageViewModel>();
             builder.Services.AddSingleton<CommandHandler>();
-            builder.Services.AddSingleton<LanguagePopupHandler>();
             builder.Services.AddSingleton<Shell>();
             builder.Services.AddSingleton<SettingsManager>();
+            builder.Services.AddSingleton<KeyboardLayoutManager>();
             builder.Services.AddSingleton<MemoryCache>();
 
             _app = builder.Build();
@@ -56,8 +57,10 @@ namespace WinTool
 
             base.OnStartup(e);
 
-            var languagePopupHandler = _app.Services.GetRequiredService<LanguagePopupHandler>();
-            await languagePopupHandler.Start();
+            _app.Services.GetRequiredService<SwitchLanguageWindow>();
+
+            var switchLanguageViewModel = _app.Services.GetRequiredService<SwitchLanguageViewModel>();
+            await switchLanguageViewModel.Init();
         }
 
         private void CheckForSecondInstance()

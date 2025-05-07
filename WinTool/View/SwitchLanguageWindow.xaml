@@ -4,14 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WinTool.View"
+        xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:SwitchLanguageViewModel}"
         mc:Ignorable="d"
         Title="ChangeLanguageWindow"
         ResizeMode="NoResize"
         SizeToContent="Width"
-        Height="50"
+        Height="30"
         WindowStyle="None">
     <Grid>
-        <Border Background="Purple"
-                Width="100" />
+        <Border Background="#111111">
+            <TextBlock Text="{Binding CurrentLanguage}"
+                       VerticalAlignment="Center"
+                       Padding="8"
+                       Foreground="White" />
+        </Border>
     </Grid>
 </Window>
