@@ -42,6 +42,8 @@ namespace WinTool
         {
             await _app.StartAsync();
 
+            // activate the window
+            _app.Services.GetRequiredService<SwitchLanguageWindow>();
             var mainWindow = _app.Services.GetRequiredService<MainWindow>();
             var commandHandler = _app.Services.GetRequiredService<CommandHandler>();
 
@@ -56,11 +58,6 @@ namespace WinTool
                 App.Current.Shutdown();
 
             base.OnStartup(e);
-
-            _app.Services.GetRequiredService<SwitchLanguageWindow>();
-
-            var switchLanguageViewModel = _app.Services.GetRequiredService<SwitchLanguageViewModel>();
-            await switchLanguageViewModel.Init();
         }
 
         private void CheckForSecondInstance()

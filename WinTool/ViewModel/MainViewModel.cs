@@ -25,13 +25,30 @@ namespace WinTool.ViewModel
         private readonly SettingsManager _settingsManager;
         private readonly Settings _settings;
         private readonly Shell _shell;
+        private readonly SwitchLanguageViewModel _switchLanguageVm;
         private readonly Dictionary<Shortcut, Func<Task>> _shortcuts;
         private readonly string _executionFilePath;
 
+        public bool EnableSwitchLanguagePopup
+        {
+            get; set
+            {
+                if (SetProperty(ref field, value))
+                {
+                    _settings.EnableSwitchLanguagePopup = value;
+                    _settingsManager.UpdateSettings(_settings);
+
+                    if (value)
+                        Task.Run(_switchLanguageVm.StartAsync);
+                    else
+                        _switchLanguageVm.Stop();
+                }
+            }
+        }
+
         public bool LaunchOnWindowsStartup
         {
-            get;
-            set
+            get; set
             {
                 AreUiElementsEnabled = false;
 
@@ -73,8 +90,7 @@ namespace WinTool.ViewModel
 
         public string? NewFileTemplate
         {
-            get;
-            set
+            get; set
             {
                 if (SetProperty(ref field, value))
                 {
@@ -91,7 +107,7 @@ namespace WinTool.ViewModel
 
         public event EventHandler? ShowWindowRequested;
 
-        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell)
+        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell, SwitchLanguageViewModel switchLanguageVm)
         {
             _shortcuts = new()
             {
@@ -105,10 +121,10 @@ namespace WinTool.ViewModel
             };
 
             // use arg "/background" to start app in background mode
-            _executionFilePath =  $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
+            _executionFilePath = $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
             _settingsManager = settingsManager;
             _shell = shell;
-
+            _switchLanguageVm = switchLanguageVm;
             _keyHooker = new KeyInterceptor(_shortcuts.Keys);
             _keyHooker.ShortcutPressed += OnShortcutPressed;
 
@@ -126,6 +142,7 @@ namespace WinTool.ViewModel
             });
 
             _settings = _settingsManager.GetSettings() ?? new Settings();
+            EnableSwitchLanguagePopup = _settings.EnableSwitchLanguagePopup;
             LaunchOnWindowsStartup = _settings.WindowsStartupEnabled;
             NewFileTemplate = _settings.NewFileTemplate;
         }

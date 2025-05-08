@@ -38,10 +38,9 @@ namespace WinTool.ViewModel
             OnLayoutsListChanged(_keyboardLayoutManager.AllCultures);
         }
 
-        public async Task Init()
-        {
-            await _keyboardLayoutManager.Start();
-        }
+        public async Task StartAsync() => await _keyboardLayoutManager.StartAsync();
+
+        public void Stop() => _keyboardLayoutManager.Stop();
 
         private void OnLayoutsListChanged(IEnumerable<CultureInfo> allLayouts)
         {
@@ -49,7 +48,7 @@ namespace WinTool.ViewModel
             AllLanguages = [.. allLanguages];
         }
 
-        public void OnLayoutChanged(CultureInfo newCulture)
+        private void OnLayoutChanged(CultureInfo newCulture)
         {
             var caretRect = GetCaretRect();
 

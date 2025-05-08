@@ -15,6 +15,7 @@ namespace WinTool.Services
 
         private nint _lastLayout;
         private IEnumerable<nint> _allLayouts;
+        private CancellationTokenSource? _pollingCts;
 
         public IEnumerable<CultureInfo> AllCultures => _allLayouts.Select(ConvertToCultureInfo);
 
@@ -27,29 +28,43 @@ namespace WinTool.Services
             _allLayouts = GetKeyboardLayouts();
         }
 
-        public async Task Start()
+        public async Task StartAsync()
         {
-            while (await _layoutPollingTimer.WaitForNextTickAsync())
+            _pollingCts = new CancellationTokenSource();
+
+            try
             {
-                var currentLayout = GetCurrentKeyboardLayout();
-
-                if (currentLayout != _lastLayout)
+                while (await _layoutPollingTimer.WaitForNextTickAsync(_pollingCts.Token))
                 {
-                    _lastLayout = currentLayout;
-                    var allLayouts = GetKeyboardLayouts();
+                    var currentLayout = GetCurrentKeyboardLayout();
 
-                    if (!_allLayouts.SequenceEqual(allLayouts))
+                    if (currentLayout != _lastLayout)
                     {
-                        _allLayouts = allLayouts;
-                        LayoutsListChanged?.Invoke(allLayouts.Select(ConvertToCultureInfo));
-                    }
+                        _lastLayout = currentLayout;
+                        var allLayouts = GetKeyboardLayouts();
 
-                    var currentCulture = ConvertToCultureInfo(currentLayout);
-                    Debug.WriteLine($"New layout: {currentCulture.NativeName}");
-                    LayoutChanged?.Invoke(currentCulture);
+                        if (!_allLayouts.SequenceEqual(allLayouts))
+                        {
+                            _allLayouts = allLayouts;
+                            LayoutsListChanged?.Invoke(allLayouts.Select(ConvertToCultureInfo));
+                        }
+
+                        var currentCulture = ConvertToCultureInfo(currentLayout);
+                        Debug.WriteLine($"New layout: {currentCulture.NativeName}");
+                        LayoutChanged?.Invoke(currentCulture);
+                    }
                 }
             }
+            catch (OperationCanceledException) 
+            { 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in keyboard layout polling: {ex}");
+            }
         }
+
+        public void Stop() => _pollingCts?.Cancel();
 
         private nint GetCurrentKeyboardLayout()
         {

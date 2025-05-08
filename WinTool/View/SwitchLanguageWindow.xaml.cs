@@ -23,15 +23,18 @@ namespace WinTool.View
 
             vm.ShowPopup += caretPos =>
             {
-                var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretPos.X, caretPos.Y);
-                Left = caretPos.X * DpiUtils.DefaultDpiX / dpiAtPoint;
-                Top = caretPos.Y * DpiUtils.DefaultDpiY / dpiAtPoint;
+                Dispatcher.Invoke(() =>
+                {
+                    var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretPos.X, caretPos.Y);
+                    Left = caretPos.X * DpiUtils.DefaultDpiX / dpiAtPoint;
+                    Top = caretPos.Y * DpiUtils.DefaultDpiY / dpiAtPoint;
 
-                ShiftWindowToScreen();
-                ShowPopup();
+                    ShiftWindowToScreen();
+                    ShowPopup();
 
-                _hideTimer.Stop();
-                _hideTimer.Start();
+                    _hideTimer.Stop();
+                    _hideTimer.Start();
+                });
             };
         }
 
