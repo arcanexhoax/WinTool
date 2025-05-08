@@ -53,7 +53,7 @@ namespace WinTool.View
             var growAnimation = new DoubleAnimation
             {
                 From = 0,
-                To = 30,
+                To = 50,
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
             };
