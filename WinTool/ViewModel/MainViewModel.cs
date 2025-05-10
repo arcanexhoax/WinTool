@@ -22,11 +22,11 @@ namespace WinTool.ViewModel
 
         private readonly KeyInterceptor _keyHooker;
         private readonly SemaphoreSlim _semaphore = new(1);
+        private readonly CommandHandler _commandHandler;
         private readonly SettingsManager _settingsManager;
         private readonly Settings _settings;
         private readonly Shell _shell;
         private readonly SwitchLanguageViewModel _switchLanguageVm;
-        private readonly Dictionary<Shortcut, Func<Task>> _shortcuts;
         private readonly string _executionFilePath;
 
         public bool EnableSwitchLanguagePopup
@@ -39,7 +39,7 @@ namespace WinTool.ViewModel
                     _settingsManager.UpdateSettings(_settings);
 
                     if (value)
-                        Task.Run(_switchLanguageVm.StartAsync);
+                        _switchLanguageVm.Start();
                     else
                         _switchLanguageVm.Stop();
                 }
@@ -107,26 +107,16 @@ namespace WinTool.ViewModel
 
         public event EventHandler? ShowWindowRequested;
 
-        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell, SwitchLanguageViewModel switchLanguageVm)
+        public MainViewModel(CommandHandler commandHandler, SettingsManager settingsManager, Shell shell, SwitchLanguageViewModel switchLanguageVm, KeyInterceptor keyHooker)
         {
-            _shortcuts = new()
-            {
-                { new Shortcut(Key.F2, KeyModifier.Ctrl, KeyState.Down),                    commandHandler.ChangeFileProperties },
-                { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.CopyFilePath },
-                { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), () => commandHandler.CreateFileFast(NewFileTemplate!) },
-                { new Shortcut(Key.E, KeyModifier.Ctrl, KeyState.Down),                     commandHandler.CreateFileInteractive },
-                { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.OpenInCmd },
-                { new Shortcut(Key.O, KeyModifier.Ctrl, KeyState.Down),                     commandHandler.RunWithArgs },
-                { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), commandHandler.CopyFileName },
-            };
-
-            // use arg "/background" to start app in background mode
-            _executionFilePath = $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
+            _commandHandler = commandHandler;
             _settingsManager = settingsManager;
             _shell = shell;
             _switchLanguageVm = switchLanguageVm;
-            _keyHooker = new KeyInterceptor(_shortcuts.Keys);
+            _keyHooker = keyHooker;
             _keyHooker.ShortcutPressed += OnShortcutPressed;
+            // use arg "/background" to start app in background mode
+            _executionFilePath = $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
 
             WindowLoadedCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = false);
             WindowClosingCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = true);
@@ -151,22 +141,37 @@ namespace WinTool.ViewModel
         {
             await _semaphore.WaitAsync();
 
+            Func<Task>? command = e.Shortcut switch
+            {
+                { Key: Key.F2, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.ChangeFileProperties,
+                { Key: Key.C, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.CopyFilePath,
+                { Key: Key.X, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.CopyFileName,
+                { Key: Key.E, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => () => _commandHandler.CreateFileFast(NewFileTemplate!),
+                { Key: Key.E, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.CreateFileInteractive,
+                { Key: Key.L, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.OpenInCmd,
+                { Key: Key.O, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.RunWithArgs,
+                _ => null
+            };
+
+            if (command is null)
+            {
+                _semaphore.Release();
+                return;
+            }
+
             Debug.WriteLine($"{e.Shortcut} // {e.Shortcut.State}");
 
-            if (_shortcuts.TryGetValue(e.Shortcut, out Func<Task>? operation) && operation is not null)
+            try
             {
-                try
-                {
-                    if (_shell.IsActive)
-                        e.IsHandled = true;
+                if (_shell.IsActive)
+                    e.IsHandled = true;
 
-                    await operation();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                    MessageBoxHelper.ShowError(ex.Message);
-                }
+                await command();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                MessageBoxHelper.ShowError(ex.Message);
             }
 
             _semaphore.Release();

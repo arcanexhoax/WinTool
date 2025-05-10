@@ -38,7 +38,7 @@ namespace WinTool.ViewModel
             OnLayoutsListChanged(_keyboardLayoutManager.AllCultures);
         }
 
-        public async Task StartAsync() => await _keyboardLayoutManager.StartAsync();
+        public void Start() => _keyboardLayoutManager.Start();
 
         public void Stop() => _keyboardLayoutManager.Stop();
 

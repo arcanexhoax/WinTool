@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using GlobalKeyInterceptor;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -30,6 +31,7 @@ namespace WinTool
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddSingleton<SwitchLanguageViewModel>();
             builder.Services.AddSingleton<CommandHandler>();
+            builder.Services.AddSingleton<KeyInterceptor>();
             builder.Services.AddSingleton<Shell>();
             builder.Services.AddSingleton<SettingsManager>();
             builder.Services.AddSingleton<KeyboardLayoutManager>();
