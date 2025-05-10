@@ -124,9 +124,13 @@ namespace WinTool.Services
 
         private nint GetCurrentKeyboardLayout()
         {
-            var foregroundWindow = NativeMethods.GetForegroundWindow();
-            var threadId = NativeMethods.GetWindowThreadProcessId(foregroundWindow, out _);
-            var currentLayout = NativeMethods.GetKeyboardLayout(threadId);
+            var threadInfo = NativeMethods.GetGuiThreadInfo();
+
+            if (threadInfo is null)
+                return nint.Zero;
+
+            var activeThreadId = NativeMethods.GetWindowThreadProcessId(threadInfo.Value.hwndFocus, out _);
+            var currentLayout = NativeMethods.GetKeyboardLayout(activeThreadId);
 
             return currentLayout;
         }

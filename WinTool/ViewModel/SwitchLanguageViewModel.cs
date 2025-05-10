@@ -5,8 +5,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using UIAutomationClient;
 using WinTool.Native;
 using WinTool.Services;
@@ -67,13 +65,12 @@ namespace WinTool.ViewModel
 
         private RECT? GetCaretRect()
         {
-            var info = new GUITHREADINFO();
-            info.cbSize = Marshal.SizeOf(info);
+            var info = NativeMethods.GetGuiThreadInfo();
 
-            if (!NativeMethods.GetGUIThreadInfo(0, ref info))
+            if (info == null)
                 return null;
 
-            var hwndFocus = info.hwndFocus;
+            var hwndFocus = info.Value.hwndFocus;
             var caretRect = GetAccessibleCaretRect(hwndFocus);
 
             if (RectValid(caretRect))

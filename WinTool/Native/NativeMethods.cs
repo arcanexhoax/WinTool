@@ -66,7 +66,7 @@ namespace WinTool.Native
         internal static extern int D2D1CreateFactory(D2D1_FACTORY_TYPE factoryType, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, IntPtr pFactoryOptions, out ID2D1Factory ppIFactory);
 
         [DllImport("user32.dll")]
-        internal static extern bool GetGUIThreadInfo(uint idThread, ref GUITHREADINFO lpgui);
+        private static extern bool GetGUIThreadInfo(uint idThread, ref GUITHREADINFO lpgui);
 
         [DllImport("oleacc.dll")]
         internal static extern int AccessibleObjectFromWindow(
@@ -106,6 +106,9 @@ namespace WinTool.Native
         [DllImport("user32.dll")]
         internal static extern int GetKeyboardLayoutList(int nBuff, [Out] IntPtr[]? lpList);
 
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetFocus();
+
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {
             string? text = null;
@@ -143,6 +146,15 @@ namespace WinTool.Native
 
             SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
             SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
+
+        public static GUITHREADINFO? GetGuiThreadInfo(uint threadId = 0)
+        {
+            var info = new GUITHREADINFO();
+            info.cbSize = Marshal.SizeOf(info);
+
+            var result = GetGUIThreadInfo(threadId, ref info);
+            return result ? info : null;
         }
     }
 }
