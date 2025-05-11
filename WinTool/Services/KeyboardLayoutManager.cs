@@ -42,16 +42,19 @@ namespace WinTool.Services
             if ((e.Shortcut.Key.IsAlt() && e.Shortcut.Modifier is KeyModifier.Shift
                 || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Alt
                 || e.Shortcut.Key.IsCtrl() && e.Shortcut.Modifier is KeyModifier.Shift
-                || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Ctrl)
+                || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Ctrl) 
                 && e.Shortcut.State is KeyState.Down)
             {
                 _waitingShortcut = e.Shortcut;
             }
+            // It could be Shift (Down), Shift + Alt (Down), Alt + Shift (Up), Alt (Up) sequence that changes the layout
             else if (_waitingShortcut is not null
-                && e.Shortcut.Key == _waitingShortcut.Key 
-                && e.Shortcut.Modifier == _waitingShortcut.Modifier
-                && e.Shortcut.State is KeyState.Up)
+                && e.Shortcut.State is KeyState.Up
+                && (e.Shortcut.Key == _waitingShortcut.Key && e.Shortcut.Modifier == _waitingShortcut.Modifier
+                    || AreKeyAndModifierEqual(e.Shortcut.Key, _waitingShortcut.Modifier) && AreKeyAndModifierEqual(_waitingShortcut.Key, e.Shortcut.Modifier)))
             {
+                _waitingShortcut = null;
+
                 _checkLayoutCts?.Cancel();
                 _checkLayoutCts = new CancellationTokenSource();
                 await CheckLayoutAsync(_checkLayoutCts.Token);
@@ -156,6 +159,14 @@ namespace WinTool.Services
             {
                 return CultureInfo.InvariantCulture;
             }
+        }
+
+        private bool AreKeyAndModifierEqual(Key key, KeyModifier modifier)
+        {
+            return key.IsAlt() && modifier == KeyModifier.Alt
+                || key.IsCtrl() && modifier == KeyModifier.Ctrl
+                || key.IsShift() && modifier == KeyModifier.Shift
+                || key.IsWin() && modifier == KeyModifier.Win;
         }
     }
 }
