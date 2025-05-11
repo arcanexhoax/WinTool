@@ -12,12 +12,14 @@ namespace WinTool.View
 {
     public partial class SwitchLanguageWindow : Window
     {
+        private Guid _currentHideAnimGuid;
         private Timer _hideTimer = new(1500) { AutoReset = false };
 
         public SwitchLanguageWindow(SwitchLanguageViewModel vm)
         {
             InitializeComponent();
             DataContext = vm;
+            Height = 0;
 
             _hideTimer.Elapsed += (s, e) => Dispatcher.Invoke(HidePopup);
 
@@ -25,6 +27,8 @@ namespace WinTool.View
             {
                 Dispatcher.Invoke(() =>
                 {
+                    _hideTimer.Stop();
+
                     var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretPos.X, caretPos.Y);
                     Left = caretPos.X * DpiUtils.DefaultDpiX / dpiAtPoint;
                     Top = caretPos.Y * DpiUtils.DefaultDpiY / dpiAtPoint;
@@ -32,7 +36,6 @@ namespace WinTool.View
                     ShiftWindowToScreen();
                     ShowPopup();
 
-                    _hideTimer.Stop();
                     _hideTimer.Start();
                 });
             };
@@ -48,14 +51,15 @@ namespace WinTool.View
 
         private void ShowPopup()
         {
-            if (Visibility == Visibility.Visible)
+            if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty)
                 return;
 
+            _currentHideAnimGuid = Guid.Empty;
             Show();
 
             var growAnimation = new DoubleAnimation
             {
-                From = 0,
+                From = ActualHeight,
                 To = 50,
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
@@ -69,6 +73,8 @@ namespace WinTool.View
             if (Visibility == Visibility.Hidden)
                 return;
 
+            var animGuid = _currentHideAnimGuid = Guid.NewGuid();
+
             var shrinkAnimation = new DoubleAnimation
             {
                 From = ActualHeight,
@@ -77,7 +83,14 @@ namespace WinTool.View
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
             };
 
-            shrinkAnimation.Completed += (s, e) => Hide();
+            shrinkAnimation.Completed += (s, e) =>
+            {
+                if (animGuid == _currentHideAnimGuid)
+                {
+                    _currentHideAnimGuid = Guid.Empty;
+                    Hide();
+                }
+            };
 
             BeginAnimation(HeightProperty, shrinkAnimation);
         }
