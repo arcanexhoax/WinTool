@@ -11,27 +11,39 @@ using WinTool.Native;
 
 namespace WinTool.Services
 {
-    public class KeyboardLayoutManager
+    public class KeyboardLayoutManager(KeyInterceptor keyInterceptor, RegistryManager registryManager) : IDisposable
     {
-        private readonly KeyInterceptor _keyInterceptor;
+        private readonly KeyInterceptor _keyInterceptor = keyInterceptor;
+        private readonly RegistryManager _registryManager = registryManager;
 
         private nint _lastLayout;
-        private IEnumerable<nint> _allLayouts;
         private CancellationTokenSource? _checkLayoutCts;
         private Shortcut? _waitingShortcut;
         private bool _waitingForWinRelease;
 
-        public IEnumerable<CultureInfo> AllCultures => _allLayouts.Select(ConvertToCultureInfo);
+        public IEnumerable<CultureInfo> AllCultures { get; private set; } = [];
 
         public event Action<CultureInfo>? LayoutChanged;
         public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
 
-        public KeyboardLayoutManager(KeyInterceptor keyInterceptor)
+        public void Start()
         {
-            _keyInterceptor = keyInterceptor;
-
             _lastLayout = GetCurrentKeyboardLayout();
-            _allLayouts = GetKeyboardLayouts();
+
+            _keyInterceptor.ShortcutPressed += OnShortcutPressed;
+
+            _registryManager.KeyboardLayoutsChanged += OnKeyboardLayoutsChanged;
+            _registryManager.Start();
+
+            AllCultures = _registryManager.KeyboardLayouts.Select(ConvertToCultureInfo);
+        }
+
+        public void Stop()
+        {
+            _checkLayoutCts?.Cancel();
+            _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
+            _registryManager.KeyboardLayoutsChanged -= OnKeyboardLayoutsChanged;
+            _registryManager.Stop();
         }
 
         private async void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
@@ -48,7 +60,7 @@ namespace WinTool.Services
                 _waitingShortcut = e.Shortcut;
             }
             else if (_waitingShortcut is not null
-                && e.Shortcut.Key == _waitingShortcut.Key 
+                && e.Shortcut.Key == _waitingShortcut.Key
                 && e.Shortcut.Modifier == _waitingShortcut.Modifier
                 && e.Shortcut.State is KeyState.Up)
             {
@@ -73,15 +85,10 @@ namespace WinTool.Services
             }
         }
 
-        public void Start()
+        private void OnKeyboardLayoutsChanged(long[] allLayouts)
         {
-            _keyInterceptor.ShortcutPressed += OnShortcutPressed;
-        }
-
-        public void Stop()
-        {
-            _checkLayoutCts?.Cancel();
-            _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
+            AllCultures = allLayouts.Select(ConvertToCultureInfo);
+            LayoutsListChanged?.Invoke(AllCultures);
         }
 
         private async Task CheckLayoutAsync(CancellationToken cancellationToken)
@@ -97,13 +104,6 @@ namespace WinTool.Services
                     if (currentLayout != _lastLayout)
                     {
                         _lastLayout = currentLayout;
-                        var allLayouts = GetKeyboardLayouts();
-
-                        if (!_allLayouts.SequenceEqual(allLayouts))
-                        {
-                            _allLayouts = allLayouts;
-                            LayoutsListChanged?.Invoke(allLayouts.Select(ConvertToCultureInfo));
-                        }
 
                         var currentCulture = ConvertToCultureInfo(currentLayout);
                         Debug.WriteLine($"New layout: {currentCulture.NativeName}");
@@ -135,18 +135,9 @@ namespace WinTool.Services
             return currentLayout;
         }
 
-        private nint[] GetKeyboardLayouts()
+        private CultureInfo ConvertToCultureInfo(long hkl)
         {
-            int count = NativeMethods.GetKeyboardLayoutList(0, null);
-            var keyboardLayouts = new nint[count];
-            NativeMethods.GetKeyboardLayoutList(keyboardLayouts.Length, keyboardLayouts);
-
-            return keyboardLayouts;
-        }
-
-        private CultureInfo ConvertToCultureInfo(nint hkl)
-        {
-            ushort langId = (ushort)((long)hkl & 0xFFFF);
+            ushort langId = (ushort)(hkl & 0xFFFF);
 
             try
             {
@@ -156,6 +147,13 @@ namespace WinTool.Services
             {
                 return CultureInfo.InvariantCulture;
             }
+        }
+
+        public void Dispose()
+        {
+            Stop();
+            LayoutChanged = null;
+            LayoutsListChanged = null;
         }
     }
 }

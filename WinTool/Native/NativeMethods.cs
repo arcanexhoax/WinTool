@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using WinTool.Services;
 using WinTool.Utils;
 
 namespace WinTool.Native
@@ -103,11 +104,8 @@ namespace WinTool.Native
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern IntPtr GetKeyboardLayout(uint idThread);
 
-        [DllImport("user32.dll")]
-        internal static extern int GetKeyboardLayoutList(int nBuff, [Out] IntPtr[]? lpList);
-
-        [DllImport("user32.dll")]
-        internal static extern IntPtr GetFocus();
+        [DllImport("advapi32.dll", SetLastError = true)]
+        internal static extern int RegNotifyChangeKeyValue(SafeHandle hKey, bool watchSubtree, RegChangeNotifyFilter notifyFilter, IntPtr hEvent, bool asynchronous);
 
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {

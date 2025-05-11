@@ -32,11 +32,13 @@ namespace WinTool.ViewModel
             _keyboardLayoutManager = keyboardLayoutManager;
             _keyboardLayoutManager.LayoutChanged += OnLayoutChanged;
             _keyboardLayoutManager.LayoutsListChanged += OnLayoutsListChanged;
-
-            OnLayoutsListChanged(_keyboardLayoutManager.AllCultures);
         }
 
-        public void Start() => _keyboardLayoutManager.Start();
+        public void Start()
+        {
+            _keyboardLayoutManager.Start();
+            OnLayoutsListChanged(_keyboardLayoutManager.AllCultures);
+        }
 
         public void Stop() => _keyboardLayoutManager.Stop();
 

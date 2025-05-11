@@ -34,6 +34,7 @@ namespace WinTool
             builder.Services.AddSingleton<KeyInterceptor>();
             builder.Services.AddSingleton<Shell>();
             builder.Services.AddSingleton<SettingsManager>();
+            builder.Services.AddSingleton<RegistryManager>();
             builder.Services.AddSingleton<KeyboardLayoutManager>();
             builder.Services.AddSingleton<MemoryCache>();
 

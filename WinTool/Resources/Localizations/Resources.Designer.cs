@@ -268,6 +268,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Monitor keyboard layouts error.
+        /// </summary>
+        public static string MonitorKeyboardLayoutsError {
+            get {
+                return ResourceManager.GetString("MonitorKeyboardLayoutsError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New file template.
         /// </summary>
         public static string NewFileTemplate {

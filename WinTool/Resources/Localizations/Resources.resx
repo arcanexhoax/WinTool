@@ -186,6 +186,9 @@
   <data name="MediaTags" xml:space="preserve">
     <value>Media tags</value>
   </data>
+  <data name="MonitorKeyboardLayoutsError" xml:space="preserve">
+    <value>Monitor keyboard layouts error</value>
+  </data>
   <data name="NewFileTemplate" xml:space="preserve">
     <value>New file template</value>
   </data>
