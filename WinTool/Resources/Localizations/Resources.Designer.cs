@@ -151,6 +151,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable switch language popup.
+        /// </summary>
+        public static string EnableSwitchLanguagePopup {
+            get {
+                return ResourceManager.GetString("EnableSwitchLanguagePopup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {

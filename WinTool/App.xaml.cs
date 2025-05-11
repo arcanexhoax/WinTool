@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using GlobalKeyInterceptor;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -8,6 +9,7 @@ using WinTool.CommandLine;
 using WinTool.Native;
 using WinTool.Services;
 using WinTool.Utils;
+using WinTool.View;
 using WinTool.ViewModel;
 
 namespace WinTool
@@ -25,10 +27,14 @@ namespace WinTool
             var builder = Host.CreateApplicationBuilder();
 
             builder.Services.AddSingleton<MainWindow>();
+            builder.Services.AddSingleton<SwitchLanguageWindow>();
             builder.Services.AddSingleton<MainViewModel>();
+            builder.Services.AddSingleton<SwitchLanguageViewModel>();
             builder.Services.AddSingleton<CommandHandler>();
+            builder.Services.AddSingleton<KeyInterceptor>();
             builder.Services.AddSingleton<Shell>();
             builder.Services.AddSingleton<SettingsManager>();
+            builder.Services.AddSingleton<KeyboardLayoutManager>();
             builder.Services.AddSingleton<MemoryCache>();
 
             _app = builder.Build();
@@ -38,6 +44,8 @@ namespace WinTool
         {
             await _app.StartAsync();
 
+            // activate the window
+            _app.Services.GetRequiredService<SwitchLanguageWindow>();
             var mainWindow = _app.Services.GetRequiredService<MainWindow>();
             var commandHandler = _app.Services.GetRequiredService<CommandHandler>();
 
