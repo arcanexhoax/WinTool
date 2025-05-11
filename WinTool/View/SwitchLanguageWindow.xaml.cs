@@ -33,7 +33,7 @@ namespace WinTool.View
                     Left = caretPos.X * DpiUtils.DefaultDpiX / dpiAtPoint;
                     Top = caretPos.Y * DpiUtils.DefaultDpiY / dpiAtPoint;
 
-                    ShiftWindowToScreen();
+                    //ShiftWindowToScreen();
                     ShowPopup();
 
                     _hideTimer.Start();

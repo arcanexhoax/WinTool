@@ -1,9 +1,9 @@
 ## WinTool
 ![NET](https://img.shields.io/badge/.NET%209-%23512BD4)
-![Version](https://img.shields.io/badge/Version-0.6.3-%230c7ebf)
-[![License](https://img.shields.io/github/license/arcanexhoax/GlobalKeyInterceptor.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/GlobalKeyInterceptor/master/LICENSE)
+![Version](https://img.shields.io/badge/Version-0.7.0-%230c7ebf)
+[![License](https://img.shields.io/github/license/arcanexhoax/WinTool.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/WinTool/master/LICENSE)
 
-WinTool is a utility that expands shortcuts for Windows and its apps, it adds shortcuts for useful functions that do not have it.
+WinTool is a utility that adds useful features and shortcuts to Windows, enhancing everyday experience.
 
 ## Shortcuts
 ### Windows Explorer
@@ -16,6 +16,7 @@ WinTool is a utility that expands shortcuts for Windows and its apps, it adds sh
 <br>`Ctrl + Shift + L` - Open current folder in cmd
 
 ## Features
+- Keyboard layout switching popup near active caret in any app
 - Launching utility on windows startup
 - Working from the tray
 
