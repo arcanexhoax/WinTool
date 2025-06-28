@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using WinTool.Native;
@@ -127,6 +128,13 @@ namespace WinTool.Services
 
         private nint GetCurrentKeyboardLayout()
         {
+            var hWnd = NativeMethods.GetForegroundWindow();
+
+            if (NativeMethods.GetClassName(hWnd) == "ConsoleWindowClass")
+            {
+                return GetConsoleKeyboardLayout(hWnd);
+            }
+
             var threadInfo = NativeMethods.GetGuiThreadInfo();
 
             if (threadInfo is null)
@@ -136,6 +144,56 @@ namespace WinTool.Services
             var currentLayout = NativeMethods.GetKeyboardLayout(activeThreadId);
 
             return currentLayout;
+        }
+
+        private nint GetConsoleKeyboardLayout(nint consoleHwnd)
+        {
+            var data = new EnumWindowsData
+            {
+                ConsoleWindow = consoleHwnd,
+                FoundIMEWindow = consoleHwnd
+            };
+
+            var dataPtr = Marshal.AllocHGlobal(Marshal.SizeOf(data));
+
+            try
+            {
+                Marshal.StructureToPtr(data, dataPtr, false);
+                NativeMethods.EnumWindows(CallBackEnumWnd, dataPtr);
+
+                data = Marshal.PtrToStructure<EnumWindowsData>(dataPtr);
+
+                if (data.FoundIMEWindow == consoleHwnd || !NativeMethods.IsWindow(data.FoundIMEWindow))
+                    return nint.Zero;
+                
+                var threadId = NativeMethods.GetWindowThreadProcessId(data.FoundIMEWindow, out _);
+                return NativeMethods.GetKeyboardLayout(threadId);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(dataPtr);
+            }
+        }
+
+        private bool CallBackEnumWnd(IntPtr hwnd, IntPtr lParam)
+        {
+            var className = NativeMethods.GetClassName(hwnd);
+
+            if (string.Equals(className, "IME", StringComparison.OrdinalIgnoreCase))
+            {
+                var data = Marshal.PtrToStructure<EnumWindowsData>(lParam);
+                var rootOwner = NativeMethods.GetAncestor(hwnd, NativeMethods.GA_ROOTOWNER);
+
+                if (data.ConsoleWindow == rootOwner)
+                {
+                    data.FoundIMEWindow = hwnd;
+                    Marshal.StructureToPtr(data, lParam, false);
+
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private nint[] GetKeyboardLayouts()
