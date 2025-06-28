@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GlobalKeyInterceptor;
+using GlobalKeyInterceptor.Utils;
+using System;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
@@ -12,15 +14,20 @@ namespace WinTool.View
 {
     public partial class SwitchLanguageWindow : Window
     {
+        private readonly KeyInterceptor _keyInterceptor;
+
+        private bool _isHiding;
         private Guid _currentHideAnimGuid;
         private Timer _hideTimer = new(1500) { AutoReset = false };
 
-        public SwitchLanguageWindow(SwitchLanguageViewModel vm)
+        public SwitchLanguageWindow(SwitchLanguageViewModel vm, KeyInterceptor keyInterceptor)
         {
             InitializeComponent();
             DataContext = vm;
             Height = 0;
 
+            _keyInterceptor = keyInterceptor;
+            _keyInterceptor.ShortcutPressed += OnShortcutPressed;
             _hideTimer.Elapsed += (s, e) => Dispatcher.Invoke(HidePopup);
 
             vm.ShowPopup += caretPos =>
@@ -40,6 +47,16 @@ namespace WinTool.View
                 });
             };
         }
+        
+        private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
+        {
+            if (e.Shortcut.Modifier is KeyModifier.Shift or KeyModifier.None
+                && !e.Shortcut.Key.IsCtrl() && !e.Shortcut.Key.IsShift() && !e.Shortcut.Key.IsAlt() && !e.Shortcut.Key.IsWin()
+                && e.Shortcut.State is KeyState.Down)
+            {
+                HidePopup();
+            }
+        }
 
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -54,6 +71,7 @@ namespace WinTool.View
             if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty)
                 return;
 
+            _isHiding = false;
             _currentHideAnimGuid = Guid.Empty;
             Show();
 
@@ -70,9 +88,10 @@ namespace WinTool.View
 
         private void HidePopup()
         {
-            if (Visibility == Visibility.Hidden)
+            if (Visibility == Visibility.Hidden || _isHiding)
                 return;
 
+            _isHiding = true;
             var animGuid = _currentHideAnimGuid = Guid.NewGuid();
 
             var shrinkAnimation = new DoubleAnimation
