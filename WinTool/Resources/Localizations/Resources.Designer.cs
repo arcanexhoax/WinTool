@@ -160,7 +160,7 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
+        ///   Looks up a localized string similar to WinTool. Error.
         /// </summary>
         public static string Error {
             get {

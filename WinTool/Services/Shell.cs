@@ -3,6 +3,8 @@ using Shell32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WinTool.Native;
@@ -127,7 +129,7 @@ namespace WinTool.Services
 
             foreach (InternetExplorer window in shellWindows)
             {
-                if (window.HWND == (int)handle)
+                if (window.HWND == handle.ToInt32())
                     return window;
             }
 
@@ -145,31 +147,30 @@ namespace WinTool.Services
             }
 
             ShellWindows shellWindows = new();
-            InternetExplorer? seekingWindow = null;
-            int pathLength = 0;
-            
+            List<InternetExplorer> tabs = [];
+
             foreach (InternetExplorer window in shellWindows)
             {
-                if (window.HWND != handle.ToInt32())
-                    continue;
-
-                if (window.LocationURL is null or [] || !Uri.TryCreate(window.LocationURL, UriKind.RelativeOrAbsolute, out var currentExplorerUri))
-                    continue;
-
-                string currentExplorerPath = currentExplorerUri.LocalPath;
-
-                // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle, so we need to compare 
-                // the title (indicates the path) of the current explorer window with the local path of each tab of this window. In recent Windows 11
-                // versions, the Explorer title format has changed to "C:\\folder - File Explorer" or "C:\\folder and X more tabs - File Explorer".
-                // So now it's unable to get current explorer window if it's Desktop/Downloads/Pictures etc
-                if (windowTitle.StartsWith(currentExplorerPath) && currentExplorerPath.Length > pathLength)
-                {
-                    seekingWindow = window;
-                    pathLength = currentExplorerPath.Length;
-                }
+                if (window.HWND == handle.ToInt32() && window.LocationURL is not null and not [])
+                    tabs.Add(window);
             }
 
-            return seekingWindow;
+            if (tabs.Count == 0)
+                return null;
+            if (tabs.Count == 1)
+                return tabs[0];
+
+            // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle, so we need to compare 
+            // the title (folder name in format "Folder - File Explorer" or "Folder and X more tabs - File Explorer") of the current explorer window with
+            // the local path of each tab of this window. So this way is not 100% accurate and doesn't work with Desktop/Downloads/Pictures etc folders
+            return tabs.MaxBy(t =>
+            {
+                if (!Uri.TryCreate(t.LocationURL, UriKind.RelativeOrAbsolute, out var uri))
+                    return 0;
+
+                var dirName = Path.GetFileName(uri.LocalPath);
+                return windowTitle.StartsWith(dirName) ? dirName.Length : 0;
+            });
         }
     }
 }

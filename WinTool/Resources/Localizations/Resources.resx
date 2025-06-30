@@ -151,7 +151,7 @@
     <value>Enable switch language popup</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Error</value>
+    <value>WinTool. Error</value>
   </data>
   <data name="FastFileCreation" xml:space="preserve">
     <value>Fast file creation</value>

@@ -44,8 +44,15 @@ namespace WinTool.Utils
                     WorkingDirectory = _appDirectory
                 };
 
-                Process.Start(psi);
-                App.Current.Shutdown();
+                try
+                {
+                    Process.Start(psi);
+                    App.Current.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    MessageBoxHelper.ShowError(ex.Message);
+                }
             }
         }
     }
