@@ -1,13 +1,12 @@
 ﻿using WinTool.ViewModel;
 
-namespace WinTool.View
+namespace WinTool.View;
+
+public partial class ChangeFilePropertiesView : ModalWindow
 {
-    public partial class ChangeFilePropertiesView : ModalWindow
+    public ChangeFilePropertiesView(ChangeFilePropertiesViewModel vm)
     {
-        public ChangeFilePropertiesView(ChangeFilePropertiesViewModel vm)
-        {
-            DataContext = vm;
-            InitializeComponent();
-        }
+        DataContext = vm;
+        InitializeComponent();
     }
 }

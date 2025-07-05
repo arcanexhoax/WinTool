@@ -1,13 +1,12 @@
 ﻿using System.Windows;
-using Resource = WinTool.Resources.Localizations.Resources;
+using WinTool.Properties;
 
-namespace WinTool.Utils
+namespace WinTool.Utils;
+
+public class MessageBoxHelper
 {
-    public class MessageBoxHelper
+    public static void ShowError(string? message)
     {
-        public static void ShowError(string? message)
-        {
-            MessageBox.Show(message, Resource.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        MessageBox.Show(message, Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WinTool.View"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:r="clr-namespace:WinTool.Resources.Localizations"
+        xmlns:r="clr-namespace:WinTool.Properties"
         xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
         xmlns:u="clr-namespace:WinTool.Utils"
         d:DataContext="{d:DesignInstance Type=viewmodel:CreateFileViewModel}"
