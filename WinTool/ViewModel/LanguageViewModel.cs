@@ -1,26 +1,25 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Globalization;
 
-namespace WinTool.ViewModel
+namespace WinTool.ViewModel;
+
+public class LanguageViewModel : ObservableObject
 {
-    public class LanguageViewModel : ObservableObject
+    public CultureInfo CultureInfo { get; }
+
+    public string Name
     {
-        public CultureInfo CultureInfo { get; }
+        get; set => SetProperty(ref field, value);
+    }
 
-        public string Name
-        {
-            get; set => SetProperty(ref field, value);
-        }
+    public bool IsSelected
+    {
+        get; set => SetProperty(ref field, value);
+    }
 
-        public bool IsSelected
-        {
-            get; set => SetProperty(ref field, value);
-        }
-
-        public LanguageViewModel(CultureInfo cultureInfo, string name)
-        {
-            CultureInfo = cultureInfo;
-            Name = name;
-        }
+    public LanguageViewModel(CultureInfo cultureInfo, string name)
+    {
+        CultureInfo = cultureInfo;
+        Name = name;
     }
 }

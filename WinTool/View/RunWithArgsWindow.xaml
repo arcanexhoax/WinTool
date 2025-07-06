@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:r="clr-namespace:WinTool.Resources.Localizations"
+        xmlns:r="clr-namespace:WinTool.Properties"
         xmlns:local="clr-namespace:WinTool.View"
         xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
         xmlns:u="clr-namespace:WinTool.Utils"
@@ -15,8 +15,7 @@
         SizeToContent="Height"
         Width="400"
         WindowStartupLocation="CenterScreen"
-        x:Name="runWithArgsWindow"
-        Topmost="True">
+        x:Name="runWithArgsWindow">
     <local:ModalWindow.InputBindings>
         <KeyBinding Command="{Binding RunCommand}"
                     Key="Return" />

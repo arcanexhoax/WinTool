@@ -120,6 +120,9 @@
   <data name="Album" xml:space="preserve">
     <value>Album</value>
   </data>
+  <data name="AlreadyRunnningAsAdminError" xml:space="preserve">
+    <value>Already running as admin but got: {0}</value>
+  </data>
   <data name="ChangeFileProperiesTitle" xml:space="preserve">
     <value>Change file '{0}' properties</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
+  </data>
+  <data name="CommandExecutionError" xml:space="preserve">
+    <value>Failed to execute command {0}: {1}</value>
   </data>
   <data name="ConvertToLowercase" xml:space="preserve">
     <value>Convert selected text to lowercase</value>
@@ -151,7 +157,7 @@
     <value>Enable switch language popup</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Error</value>
+    <value>WinTool. Error</value>
   </data>
   <data name="FastFileCreation" xml:space="preserve">
     <value>Fast file creation</value>
@@ -161,6 +167,9 @@
   </data>
   <data name="FileConsistsOnlyOfDots" xml:space="preserve">
     <value>File '{0}' consists only of dots</value>
+  </data>
+  <data name="FileCreationError" xml:space="preserve">
+    <value>Failed to create file '{0}': {1}</value>
   </data>
   <data name="FileHasForbiddenChars" xml:space="preserve">
     <value>File '{0}' has forbidden characters</value>
@@ -173,6 +182,9 @@
   </data>
   <data name="Genres" xml:space="preserve">
     <value>Genres</value>
+  </data>
+  <data name="GetSettingsError" xml:space="preserve">
+    <value>Failed to get settings: {0}</value>
   </data>
   <data name="LastWriteTime" xml:space="preserve">
     <value>Last write time</value>
@@ -212,6 +224,9 @@ Forbidden characters are ignored.</value>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
   </data>
+  <data name="RunAsAdminError" xml:space="preserve">
+    <value>Run WinTool as admin failed: {0}</value>
+  </data>
   <data name="RunFormat" xml:space="preserve">
     <value>Run '{0}'</value>
   </data>
@@ -247,6 +262,9 @@ Forbidden characters are ignored.</value>
   </data>
   <data name="TrayToolTip" xml:space="preserve">
     <value>Double click to open, right click - menu</value>
+  </data>
+  <data name="UpdateSettingsError" xml:space="preserve">
+    <value>Failed to update settings: {0}</value>
   </data>
   <data name="WinTool" xml:space="preserve">
     <value>WinTool</value>

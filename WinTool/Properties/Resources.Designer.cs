@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WinTool.Resources.Localizations {
+namespace WinTool.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace WinTool.Resources.Localizations {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WinTool.Resources.Localizations.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WinTool.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -70,6 +70,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Already running as admin but got: {0}.
+        /// </summary>
+        public static string AlreadyRunnningAsAdminError {
+            get {
+                return ResourceManager.GetString("AlreadyRunnningAsAdminError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change file &apos;{0}&apos; properties.
         /// </summary>
         public static string ChangeFileProperiesTitle {
@@ -93,6 +102,15 @@ namespace WinTool.Resources.Localizations {
         public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to execute command {0}: {1}.
+        /// </summary>
+        public static string CommandExecutionError {
+            get {
+                return ResourceManager.GetString("CommandExecutionError", resourceCulture);
             }
         }
         
@@ -160,7 +178,7 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
+        ///   Looks up a localized string similar to WinTool. Error.
         /// </summary>
         public static string Error {
             get {
@@ -192,6 +210,15 @@ namespace WinTool.Resources.Localizations {
         public static string FileConsistsOnlyOfDots {
             get {
                 return ResourceManager.GetString("FileConsistsOnlyOfDots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to create file &apos;{0}&apos;: {1}.
+        /// </summary>
+        public static string FileCreationError {
+            get {
+                return ResourceManager.GetString("FileCreationError", resourceCulture);
             }
         }
         
@@ -228,6 +255,15 @@ namespace WinTool.Resources.Localizations {
         public static string Genres {
             get {
                 return ResourceManager.GetString("Genres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to get settings: {0}.
+        /// </summary>
+        public static string GetSettingsError {
+            get {
+                return ResourceManager.GetString("GetSettingsError", resourceCulture);
             }
         }
         
@@ -342,6 +378,15 @@ namespace WinTool.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run WinTool as admin failed: {0}.
+        /// </summary>
+        public static string RunAsAdminError {
+            get {
+                return ResourceManager.GetString("RunAsAdminError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run &apos;{0}&apos;.
         /// </summary>
         public static string RunFormat {
@@ -446,6 +491,15 @@ namespace WinTool.Resources.Localizations {
         public static string TrayToolTip {
             get {
                 return ResourceManager.GetString("TrayToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update settings: {0}.
+        /// </summary>
+        public static string UpdateSettingsError {
+            get {
+                return ResourceManager.GetString("UpdateSettingsError", resourceCulture);
             }
         }
         

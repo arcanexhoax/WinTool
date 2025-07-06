@@ -10,6 +10,7 @@ namespace WinTool.Native
         private const int SW_NORMAL = 1;
         public const int CHILDID_SELF = 0;
         public const uint OBJID_CARET = 0xFFFFFFF8;
+        public const int GA_ROOTOWNER = 3;
 
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_NOACTIVATE = 0x08000000;
@@ -21,6 +22,8 @@ namespace WinTool.Native
         private const uint SWP_SHOWWINDOW = 0x0040;
 
         private static readonly IntPtr HWND_TOPMOST = new(-1);
+
+        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
         [DllImport("user32.dll")]
         internal static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
@@ -107,7 +110,13 @@ namespace WinTool.Native
         internal static extern int GetKeyboardLayoutList(int nBuff, [Out] IntPtr[]? lpList);
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr GetFocus();
+        public static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool IsWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
 
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {
