@@ -6,8 +6,6 @@ on:
     tags: [ "**"]
 
 env:
-  INSTALL_DOTNET_VERSION: 9.0.x
-  BUILD_DOTNET_VERSION: net9.0-windows
   PROJECT_NAME: WinTool
   PUBLISH_DIR: publish
 
@@ -19,14 +17,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '${{ env.INSTALL_DOTNET_VERSION }}'
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
 
     - name: Build
       run: |
-        msbuild ${{ env.PROJECT_NAME }} /t:publish /p:Configuration=Release /p:TargetFramework=${{ env.BUILD_DOTNET_VERSION }} /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
+        msbuild ${{ env.PROJECT_NAME }} /t:publish /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true -p:PublishSingleFile=true
 
     - name: Archive
       uses: actions/upload-artifact@v4
