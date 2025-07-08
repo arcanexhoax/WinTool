@@ -20,6 +20,12 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1
+
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.PROJECT_NAME }}.sln
+
     - name: Build
       run: |
         msbuild ${{ env.PROJECT_NAME }} /t:publish /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true -p:PublishSingleFile=true
