@@ -1,0 +1,49 @@
+name: WinTool
+
+on:
+  push:
+    branches: [ "**" ]
+    tags: [ "**"]
+
+env:
+  PROJECT_NAME: WinTool
+  PUBLISH_DIR: publish
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Build
+      run: |
+        msbuild ${{ env.PROJECT_NAME }} /t:Restore /t:publish /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
+
+    - name: Archive
+      uses: actions/upload-artifact@v4
+      if: github.ref_type == 'tag'
+      with:
+        name: ${{ env.PROJECT_NAME }}
+        path: ${{ env.PUBLISH_DIR }}/${{ env.PROJECT_NAME }}.exe
+
+  publish:
+    needs: build
+    runs-on: windows-latest
+    if: github.ref_type == 'tag'
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.PROJECT_NAME }}
+
+    - name: Create release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: ${{ env.PROJECT_NAME }}.exe
+        generateReleaseNotes: true
