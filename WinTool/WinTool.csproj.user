@@ -13,6 +13,15 @@
     <Compile Update="View\ChangeFilePropertiesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\FeaturesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\SettingsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ShortcutsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\SwitchLanguageWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

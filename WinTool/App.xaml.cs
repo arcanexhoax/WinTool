@@ -31,6 +31,9 @@ public partial class App : Application
         builder.Services.AddSingleton<SwitchLanguageWindow>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<SwitchLanguageViewModel>();
+        builder.Services.AddSingleton<ShortcutsViewModel>();
+        builder.Services.AddSingleton<FeaturesViewModel>();
+        builder.Services.AddSingleton<SettingsViewModel>();
         builder.Services.AddSingleton<CommandHandler>();
         builder.Services.AddSingleton<KeyInterceptor>();
         builder.Services.AddSingleton<Shell>();

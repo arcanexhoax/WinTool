@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+        xmlns:views="clr-namespace:WinTool.View"
         xmlns:r="clr-namespace:WinTool.Properties"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
@@ -44,108 +45,13 @@
 
         <TabControl>
             <TabItem Header="{x:Static r:Resources.Shortcuts}">
-                <Border Padding="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="Ctrl + F2"
-                                   FontWeight="SemiBold"
-                                   Grid.Row="0" />
-                        <TextBlock Text="{x:Static r:Resources.ChangeFileProperties}"
-                                   Margin="25 0 0 0"
-                                   Grid.Row="0"
-                                   Grid.Column="1" />
-                        <TextBlock Text="Ctrl + O"
-                                   FontWeight="SemiBold"
-                                   Grid.Row="1"/>
-                        <TextBlock Text="{x:Static r:Resources.RunWithArgs}"
-                                   Margin="25 0 0 0"
-                                   Grid.Row="1"
-                                   Grid.Column="1" />
-                        <TextBlock Text="Ctrl + E"
-                                   FontWeight="SemiBold"
-                                   Grid.Row="2"/>
-                        <TextBlock Text="{x:Static r:Resources.CreateFile}"
-                                   Margin="25 0 0 0"
-                                   Grid.Row="2"
-                                   Grid.Column="1" />
-                        <TextBlock Text="Ctrl + Shift + E"
-                                   FontWeight="SemiBold"
-                                   Grid.Row="3"/>
-                        <TextBlock Text="{x:Static r:Resources.FastFileCreation}"
-                                   Margin="25 0 0 0"
-                                   Grid.Row="3"
-                                   Grid.Column="1" />
-                        <TextBlock Text="Ctrl + Shift + C"
-                                   FontWeight="SemiBold"
-                                   Grid.Row="4" />
-                        <TextBlock Text="{x:Static r:Resources.SelectedItemCopyPath}"
-                                   Margin="25 0 0 0"
-                                   Grid.Row="4"
-                                   Grid.Column="1"
-                                   TextWrapping="Wrap" />
-                        <TextBlock Text="Ctrl + Shift + X"
-                                   FontWeight="SemiBold"
-                                   Grid.Row="5" />
-                        <TextBlock Text="{x:Static r:Resources.SelectedItemCopyName}"
-                                   Margin="25 0 0 0"
-                                   Grid.Row="5"
-                                   Grid.Column="1"
-                                   TextWrapping="Wrap" />
-                        <TextBlock Text="Ctrl + Shift + L"
-                                   FontWeight="SemiBold"
-                                   Grid.Row="6" />
-                        <TextBlock Text="{x:Static r:Resources.OpenFolderInCmd}"
-                                   Margin="25 0 0 0"
-                                   Grid.Row="6"
-                                   Grid.Column="1" />
-                    </Grid>
-                </Border>
+                <views:ShortcutsView DataContext="{Binding ShortcutsViewModel}" />
+            </TabItem>
+            <TabItem Header="{x:Static r:Resources.Features}">
+                <views:FeaturesView DataContext="{Binding FeaturesViewModel}" />
             </TabItem>
             <TabItem Header="{x:Static r:Resources.Settings}">
-                <Border Padding="10">
-                    <StackPanel>
-                        <CheckBox Content="{x:Static r:Resources.EnableSwitchLanguagePopup}"
-                                  IsChecked="{Binding EnableSwitchLanguagePopup}"
-                                  IsEnabled="{Binding AreUiElementsEnabled}"
-                                  VerticalAlignment="Top"
-                                  HorizontalAlignment="Left" />
-
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="0 20 0 0">
-                            <TextBlock Text="{x:Static r:Resources.NewFileTemplate}" />
-                            <TextBlock Text="(?)"
-                                       Margin="5 0 0 0"
-                                       ToolTip="{x:Static r:Resources.NewFileTemplateToolTip}"/>
-                        </StackPanel>
-                        <TextBox Text="{Binding NewFileTemplate, UpdateSourceTrigger=PropertyChanged}"
-                                 MinWidth="150"
-                                 HorizontalAlignment="Left"
-                                 Margin="0 5 0 0"
-                                 PreviewTextInput="OnTextInput" />
-
-                        <CheckBox Content="{x:Static r:Resources.LaunchOnStartup}"
-                                  IsChecked="{Binding LaunchOnWindowsStartup}"
-                                  IsEnabled="{Binding AreUiElementsEnabled}"
-                                  VerticalAlignment="Top"
-                                  HorizontalAlignment="Left"
-                                  Margin="0 20 0 0"/>
-                    </StackPanel>
-                </Border>
+                <views:SettingsView DataContext="{Binding SettingsViewModel}" />
             </TabItem>
         </TabControl>
     </Grid>

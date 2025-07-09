@@ -22,21 +22,4 @@ public partial class MainWindow : Window
         e.Cancel = true;
         Hide();
     }
-
-    private void OnTextInput(object sender, TextCompositionEventArgs e)
-    {
-        var chars = Path.GetInvalidFileNameChars();
-
-        foreach (char c in chars)
-        {
-            foreach (var t in e.Text)
-            {
-                if (t == c)
-                {
-                    e.Handled = true;
-                    return;
-                }
-            }
-        }
-    }
 }
