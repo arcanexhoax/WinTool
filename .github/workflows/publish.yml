@@ -34,7 +34,7 @@ jobs:
 
     - name: Build
       run: |
-        msbuild ${{ env.PROJECT_NAME }} /t:publish /t:Restore /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
+        msbuild ${{ env.PROJECT_NAME }} /t:Restore /t:publish /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
 
     - name: Archive
       uses: actions/upload-artifact@v4
