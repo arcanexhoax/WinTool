@@ -1,31 +1,27 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using WinTool.Model;
-using WinTool.Services;
+using WinTool.Options;
 
 namespace WinTool.ViewModel;
 
 public class ShortcutsViewModel : ObservableObject
 {
-    private readonly SettingsManager _settingsManager;
-    private readonly Settings _settings;
+    private readonly WritableOptions<ShortcutsOptions> _shortcutsOptions;
 
-    public string? NewFileTemplate
+    public string NewFileTemplate
     {
         get; set
         {
-            if (SetProperty(ref field, value))
+            if (value is not null && SetProperty(ref field, value))
             {
-                _settings.NewFileTemplate = value;
-                _settingsManager.UpdateSettings(_settings);
+                _shortcutsOptions.Value.FastFileCreation.NewFileTemplate = value;
+                _shortcutsOptions.Update();
             }
         }
     }
 
-    public ShortcutsViewModel(SettingsManager settingsManager)
+    public ShortcutsViewModel(WritableOptions<ShortcutsOptions> shortcutsOptions)
     {
-        _settingsManager = settingsManager;
-        _settings = _settingsManager.GetSettings() ?? new Settings();
-
-        NewFileTemplate = _settings.NewFileTemplate;
+        _shortcutsOptions = shortcutsOptions;
+        NewFileTemplate = _shortcutsOptions.Value.FastFileCreation.NewFileTemplate;
     }
 }

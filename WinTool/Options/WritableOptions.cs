@@ -7,42 +7,27 @@ using WinTool.Utils;
 
 namespace WinTool.Options;
 
-public class WritableOptions<T>(CustomFileConfigurationProvider provider, IOptionsMonitor<T> options)
+public class WritableOptions<T>(CustomFileConfigurationProvider provider, IOptionsMonitor<T> options, JsonSerializerOptions jsonOptions)
 {
     private readonly CustomFileConfigurationProvider _provider = provider;
+    private readonly JsonSerializerOptions _jsonOptions = jsonOptions;
 
-    public T Options => options.CurrentValue;
+    public T Value => options.CurrentValue;
 
     public void Update()
     {
-        var data = ToDictionary(Options);
+        var data = ToDictionary(Value);
         _provider.Set(data);
     }
 
-    public Dictionary<string, object?> ToDictionary(T obj)
+    private Dictionary<string, object?> ToDictionary(T obj)
     {
-        var json = JsonSerializer.Serialize(obj);
-        var dict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json)!;
+        var json = JsonSerializer.Serialize(obj, _jsonOptions);
+        var dict = JsonSerializer.Deserialize<Dictionary<string, object?>>(json)!;
 
         return dict.ToDictionary(
             kv => $"{typeof(T).Name}:{kv.Key}",
-            kv => GetValue(kv.Value)
+            kv => kv.Value
         );
-    }
-
-    private object? GetValue(JsonElement element)
-    {
-        return element.ValueKind switch
-        {
-            JsonValueKind.Object => element.EnumerateObject().ToDictionary(
-                p => p.Name,
-                p => GetValue(p.Value)),
-            JsonValueKind.Array => element.EnumerateArray().Select(GetValue).ToList(),
-            JsonValueKind.String => element.GetString(),
-            JsonValueKind.Number => element.TryGetInt64(out var l) ? l : element.GetDouble(),
-            JsonValueKind.True => true,
-            JsonValueKind.False => false,
-            _ => null
-        };
     }
 }

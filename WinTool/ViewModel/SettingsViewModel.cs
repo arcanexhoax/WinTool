@@ -3,9 +3,8 @@ using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using WinTool.CommandLine;
-using WinTool.Model;
+using WinTool.Options;
 using WinTool.Properties;
-using WinTool.Services;
 using WinTool.Utils;
 
 namespace WinTool.ViewModel;
@@ -15,8 +14,7 @@ public class SettingsViewModel : ObservableObject
     private const string RegKeyName = "WinTool";
 
     private readonly string _executionFilePath;
-    private readonly SettingsManager _settingsManager;
-    private readonly Settings _settings;
+    private readonly WritableOptions<SettingsOptions> _settingsOptions;
 
     public bool LaunchOnWindowsStartup
     {
@@ -37,10 +35,11 @@ public class SettingsViewModel : ObservableObject
                         runKey.DeleteValue(RegKeyName);
                 }
 
-                _settings.WindowsStartupEnabled = value;
-                _settingsManager.UpdateSettings(_settings);
-
-                SetProperty(ref field, value);
+                if (SetProperty(ref field, value))
+                {
+                    _settingsOptions.Value.WindowsStartupEnabled = value;
+                    _settingsOptions.Update();
+                }
             }
             catch (Exception ex)
             {
@@ -50,13 +49,12 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
-    public SettingsViewModel(SettingsManager settingsManager)
+    public SettingsViewModel(WritableOptions<SettingsOptions> settingsOptions)
     {
         // use arg "/background" to start app in background mode
         _executionFilePath = $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
-        _settingsManager = settingsManager;
-        _settings = _settingsManager.GetSettings() ?? new Settings();
+        _settingsOptions = settingsOptions;
 
-        LaunchOnWindowsStartup = _settings.WindowsStartupEnabled;
+        LaunchOnWindowsStartup = _settingsOptions.Value.WindowsStartupEnabled;
     }
 }

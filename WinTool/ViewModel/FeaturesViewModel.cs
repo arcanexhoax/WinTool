@@ -1,14 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using WinTool.Model;
-using WinTool.Services;
+using WinTool.Options;
 
 namespace WinTool.ViewModel;
 
 public class FeaturesViewModel : ObservableObject
 {
-    private readonly SettingsManager _settingsManager;
-    private readonly SwitchLanguageViewModel _switchLanguageVm;
-    private readonly Settings _settings;
+    private readonly WritableOptions<FeaturesOptions> _featuresOptions;
 
     public bool EnableSwitchLanguagePopup
     {
@@ -16,23 +13,15 @@ public class FeaturesViewModel : ObservableObject
         {
             if (SetProperty(ref field, value))
             {
-                _settings.EnableSwitchLanguagePopup = value;
-                _settingsManager.UpdateSettings(_settings);
-
-                if (value)
-                    _switchLanguageVm.Start();
-                else
-                    _switchLanguageVm.Stop();
+                _featuresOptions.Value.EnableSwitchLanguagePopup = value;
+                _featuresOptions.Update();
             }
         }
     }
 
-    public FeaturesViewModel(SettingsManager settingsManager, SwitchLanguageViewModel switchLanguageViewModel)
+    public FeaturesViewModel(WritableOptions<FeaturesOptions> featuresOptions)
     {
-        _settingsManager = settingsManager;
-        _switchLanguageVm = switchLanguageViewModel;
-        _settings = _settingsManager.GetSettings() ?? new Settings();
-
-        EnableSwitchLanguagePopup = _settings.EnableSwitchLanguagePopup;
+        _featuresOptions = featuresOptions;
+        EnableSwitchLanguagePopup = _featuresOptions.Value.EnableSwitchLanguagePopup;
     }
 }

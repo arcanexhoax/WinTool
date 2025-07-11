@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using UIAutomationClient;
 using WinTool.Native;
+using WinTool.Options;
 using WinTool.Services;
 
 namespace WinTool.ViewModel;
@@ -14,6 +16,7 @@ namespace WinTool.ViewModel;
 public class SwitchLanguageViewModel : ObservableObject
 {
     private readonly KeyboardLayoutManager _keyboardLayoutManager;
+    private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
 
     public string? CurrentLanguage
     {
@@ -27,11 +30,19 @@ public class SwitchLanguageViewModel : ObservableObject
 
     public event Action<Point>? ShowPopup;
 
-    public SwitchLanguageViewModel(KeyboardLayoutManager keyboardLayoutManager)
+    public SwitchLanguageViewModel(KeyboardLayoutManager keyboardLayoutManager, IOptionsMonitor<FeaturesOptions> featuresOptions)
     {
         _keyboardLayoutManager = keyboardLayoutManager;
         _keyboardLayoutManager.LayoutChanged += OnLayoutChanged;
         _keyboardLayoutManager.LayoutsListChanged += OnLayoutsListChanged;
+        _featuresOptions = featuresOptions;
+        _featuresOptions.OnChange((o, _) => 
+        {
+            if (o.EnableSwitchLanguagePopup)
+                Start();
+            else
+                Stop();
+        });
 
         OnLayoutsListChanged(_keyboardLayoutManager.AllCultures);
     }

@@ -33,6 +33,8 @@ public partial class App : Application
         builder.AddConfigurationFileProvider();
 
         builder.Services.Configure<SettingsOptions>(builder.Configuration.GetSection(nameof(SettingsOptions)));
+        builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection(nameof(FeaturesOptions)));
+        builder.Services.Configure<ShortcutsOptions>(builder.Configuration.GetSection(nameof(ShortcutsOptions)));
 
         builder.Services.AddSingleton<MainWindow>();
         builder.Services.AddSingleton<SwitchLanguageWindow>();
@@ -44,10 +46,11 @@ public partial class App : Application
         builder.Services.AddSingleton<CommandHandler>();
         builder.Services.AddSingleton<KeyInterceptor>();
         builder.Services.AddSingleton<Shell>();
-        builder.Services.AddSingleton<SettingsManager>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
         builder.Services.AddSingleton<MemoryCache>();
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
+        builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
+        builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
 
         _app = builder.Build();
     }

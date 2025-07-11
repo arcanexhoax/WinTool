@@ -20,11 +20,11 @@ public class CustomFileConfigurationSource(CustomFileConfigurationProvider provi
     }
 }
 
-public class CustomFileConfigurationProvider(string filePath) : ConfigurationProvider
+public class CustomFileConfigurationProvider(string filePath, JsonSerializerOptions jsonOptions) : ConfigurationProvider
 {
     private readonly string _filePath = filePath;
     private readonly Lock _lock = new();
-    private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+    private readonly JsonSerializerOptions _jsonOptions = jsonOptions;
 
     public override void Load()
     {
