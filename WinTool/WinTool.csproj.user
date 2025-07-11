@@ -13,6 +13,9 @@
     <Compile Update="View\ChangeFilePropertiesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\FastFileCreationShortcutView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\FeaturesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -20,6 +23,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\ShortcutsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ShortcutView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\SwitchLanguageWindow.xaml.cs">

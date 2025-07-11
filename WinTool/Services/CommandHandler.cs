@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -7,20 +8,22 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Options;
 using WinTool.Utils;
 using WinTool.View;
 using WinTool.ViewModel;
 
 namespace WinTool.Services;
 
-public class CommandHandler(Shell shell, MemoryCache memoryCache)
+public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonitor<ShortcutsOptions> shortcutsOptions)
 {
     private readonly Shell _shell = shell;
     private readonly MemoryCache _memoryCache = memoryCache;
+    private readonly IOptionsMonitor<ShortcutsOptions> _shortcutsOptions = shortcutsOptions;
 
     public bool IsBackgroundMode { get; set; } = true;
 
-    public async Task CreateFileFast(string newFileTemplate)
+    public async Task CreateFileFast()
     {
         string? path = await _shell.GetActiveExplorerPathAsync();
 
@@ -29,6 +32,8 @@ public class CommandHandler(Shell shell, MemoryCache memoryCache)
 
         DirectoryInfo di = new(path);
         int num = 0;
+
+        string newFileTemplate = _shortcutsOptions.CurrentValue.FastFileCreation.NewFileTemplate;
         string? fileName = Path.GetFileNameWithoutExtension(newFileTemplate);
         string? extension = Path.GetExtension(newFileTemplate);
 

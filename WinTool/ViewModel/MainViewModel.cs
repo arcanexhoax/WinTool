@@ -70,7 +70,7 @@ public class MainViewModel : ObservableObject
             { Key: Key.F2, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.ChangeFileProperties,
             { Key: Key.C, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.CopyFilePath,
             { Key: Key.X, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.CopyFileName,
-            { Key: Key.E, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => () => _commandHandler.CreateFileFast(ShortcutsViewModel.NewFileTemplate!),
+            { Key: Key.E, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.CreateFileFast,
             { Key: Key.E, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.CreateFileInteractive,
             { Key: Key.L, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.OpenInCmd,
             { Key: Key.O, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.RunWithArgs,

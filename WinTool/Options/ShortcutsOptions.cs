@@ -3,7 +3,7 @@
 public class ShortcutsOptions
 {
     public ShortcutOptions CreateFile { get; set; } = new() { Shortcut = "Ctrl + E" };
-    public FastFileCreationOptions FastFileCreation { get; set; } = new() { Shortcut = "Ctrl + Shift + E" };
+    public FastFileCreationShortcutOptions FastFileCreation { get; set; } = new() { Shortcut = "Ctrl + Shift + E" };
     public ShortcutOptions SelectedItemCopyPath { get; set; } = new() { Shortcut = "Ctrl + Shift + C" };
     public ShortcutOptions SelectedItemCopyName { get; set; } = new() { Shortcut = "Ctrl + Shift + X" };
     public ShortcutOptions RunWithArgs { get; set; } = new() { Shortcut = "Ctrl + O" };
@@ -16,7 +16,7 @@ public class ShortcutOptions
     public required string Shortcut { get; set; } 
 }
 
-public class FastFileCreationOptions : ShortcutOptions
+public class FastFileCreationShortcutOptions : ShortcutOptions
 {
     public string NewFileTemplate { get; set; } = "NewFile.txt";
 }
