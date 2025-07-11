@@ -1,5 +1,6 @@
 ﻿using GlobalKeyInterceptor;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -7,7 +8,9 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Extensions;
 using WinTool.Native;
+using WinTool.Options;
 using WinTool.Services;
 using WinTool.Utils;
 using WinTool.View;
@@ -27,6 +30,10 @@ public partial class App : Application
 
         var builder = Host.CreateApplicationBuilder();
 
+        builder.AddConfigurationFileProvider();
+
+        builder.Services.Configure<SettingsOptions>(builder.Configuration.GetSection(nameof(SettingsOptions)));
+
         builder.Services.AddSingleton<MainWindow>();
         builder.Services.AddSingleton<SwitchLanguageWindow>();
         builder.Services.AddSingleton<MainViewModel>();
@@ -40,6 +47,7 @@ public partial class App : Application
         builder.Services.AddSingleton<SettingsManager>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
         builder.Services.AddSingleton<MemoryCache>();
+        builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
 
         _app = builder.Build();
     }
