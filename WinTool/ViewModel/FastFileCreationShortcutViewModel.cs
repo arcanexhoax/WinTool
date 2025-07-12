@@ -1,4 +1,5 @@
-﻿using WinTool.Options;
+﻿using System;
+using WinTool.Options;
 
 namespace WinTool.ViewModel;
 
@@ -17,10 +18,11 @@ public class FastFileCreationShortcutViewModel : ShortcutViewModel
     }
 
     public FastFileCreationShortcutViewModel(
-        FastFileCreationShortcutOptions options,
+        Func<FastFileCreationShortcutOptions> optionsFactory,
         WritableOptions<ShortcutsOptions> shortcutsOptions,
-        string description) : base(options, shortcutsOptions, description)
+        EditShortcutViewModel editShortcutViewModel,
+        string description) : base(optionsFactory, shortcutsOptions, editShortcutViewModel, description)
     {
-        NewFileTemplate = options.NewFileTemplate;
+        NewFileTemplate = optionsFactory().NewFileTemplate;
     }
 }

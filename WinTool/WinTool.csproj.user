@@ -13,6 +13,9 @@
     <Compile Update="View\ChangeFilePropertiesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\EditShortcutWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\FastFileCreationShortcutView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -123,6 +123,9 @@
   <data name="AlreadyRunnningAsAdminError" xml:space="preserve">
     <value>Already running as admin but got: {0}</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="ChangeFileProperiesTitle" xml:space="preserve">
     <value>Change file '{0}' properties</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="EnableSwitchLanguagePopup" xml:space="preserve">
     <value>Enable switch language popup</value>
+  </data>
+  <data name="EnterNewShortcut" xml:space="preserve">
+    <value>Enter a new shortcut</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>WinTool. Error</value>
@@ -259,6 +265,9 @@ Forbidden characters are ignored.</value>
   </data>
   <data name="Size" xml:space="preserve">
     <value>Size</value>
+  </data>
+  <data name="EditShortcutTip" xml:space="preserve">
+    <value>The shortcut should start with at least one modifier (Ctrl, Shift, Alt, Win)</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Title</value>

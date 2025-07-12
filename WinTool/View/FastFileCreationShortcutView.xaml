@@ -13,9 +13,11 @@
         <Expander.Header>
             <StackPanel Orientation="Horizontal"
                         Height="32">
-                <TextBlock Text="{Binding BackingShortcut}"
+                <TextBlock Text="{Binding Shortcut}"
                            FontWeight="SemiBold"
                            Width="150" />
+                <Button Content="Edit"
+                        Command="{Binding EditShortcutCommand}" />
                 <TextBlock Text="{Binding Description}" />
             </StackPanel>
         </Expander.Header>

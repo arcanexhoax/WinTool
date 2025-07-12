@@ -79,6 +79,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change file &apos;{0}&apos; properties.
         /// </summary>
         public static string ChangeFileProperiesTitle {
@@ -169,11 +178,29 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The shortcut should start with at least one modifier (Ctrl, Shift, Alt, Win).
+        /// </summary>
+        public static string EditShortcutTip {
+            get {
+                return ResourceManager.GetString("EditShortcutTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable switch language popup.
         /// </summary>
         public static string EnableSwitchLanguagePopup {
             get {
                 return ResourceManager.GetString("EnableSwitchLanguagePopup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a new shortcut.
+        /// </summary>
+        public static string EnterNewShortcut {
+            get {
+                return ResourceManager.GetString("EnterNewShortcut", resourceCulture);
             }
         }
         
