@@ -17,12 +17,12 @@ public class ShortcutsViewModel : ObservableObject
 
     public ShortcutsViewModel(WritableOptions<ShortcutsOptions> shortcutsOptions, KeyInterceptor keyInterceptor, EditShortcutViewModel editShortcutViewModel)
     {
-        CreateFileViewModel = new ShortcutViewModel(() => shortcutsOptions.Value.CreateFile, shortcutsOptions, editShortcutViewModel, Resources.CreateFile);
-        FastFileCreationViewModel = new FastFileCreationShortcutViewModel(() => shortcutsOptions.Value.FastFileCreation, shortcutsOptions, editShortcutViewModel, Resources.FastFileCreation);
-        SelectedItemCopyPathViewModel = new ShortcutViewModel(() => shortcutsOptions.Value.SelectedItemCopyPath, shortcutsOptions, editShortcutViewModel, Resources.SelectedItemCopyPath);
-        SelectedItemCopyNameViewModel = new ShortcutViewModel(() => shortcutsOptions.Value.SelectedItemCopyName, shortcutsOptions, editShortcutViewModel, Resources.SelectedItemCopyName);
-        RunWithArgsViewModel = new ShortcutViewModel(() => shortcutsOptions.Value.RunWithArgs, shortcutsOptions, editShortcutViewModel, Resources.RunWithArgs);
-        OpenFolderInCmdViewModel = new ShortcutViewModel(() => shortcutsOptions.Value.OpenFolderInCmd, shortcutsOptions, editShortcutViewModel , Resources.OpenFolderInCmd);
-        ChangeFilePropertiesViewModel = new ShortcutViewModel(() => shortcutsOptions.Value.ChangeFileProperties, shortcutsOptions, editShortcutViewModel, Resources.ChangeFileProperties);
+        CreateFileViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.CreateFile, shortcutsOptions, editShortcutViewModel, Resources.CreateFile);
+        FastFileCreationViewModel = new FastFileCreationShortcutViewModel(() => shortcutsOptions.CurrentValue.FastFileCreation, shortcutsOptions, editShortcutViewModel, Resources.FastFileCreation);
+        SelectedItemCopyPathViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.SelectedItemCopyPath, shortcutsOptions, editShortcutViewModel, Resources.SelectedItemCopyPath);
+        SelectedItemCopyNameViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.SelectedItemCopyName, shortcutsOptions, editShortcutViewModel, Resources.SelectedItemCopyName);
+        RunWithArgsViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.RunWithArgs, shortcutsOptions, editShortcutViewModel, Resources.RunWithArgs);
+        OpenFolderInCmdViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.OpenFolderInCmd, shortcutsOptions, editShortcutViewModel , Resources.OpenFolderInCmd);
+        ChangeFilePropertiesViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.ChangeFileProperties, shortcutsOptions, editShortcutViewModel, Resources.ChangeFileProperties);
     }
 }

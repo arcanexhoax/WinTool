@@ -37,8 +37,7 @@ public class SettingsViewModel : ObservableObject
 
                 if (SetProperty(ref field, value))
                 {
-                    _settingsOptions.Value.WindowsStartupEnabled = value;
-                    _settingsOptions.Update();
+                    _settingsOptions.Update(() => _settingsOptions.CurrentValue.WindowsStartupEnabled = value);
                 }
             }
             catch (Exception ex)
@@ -55,6 +54,6 @@ public class SettingsViewModel : ObservableObject
         _executionFilePath = $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
         _settingsOptions = settingsOptions;
 
-        LaunchOnWindowsStartup = _settingsOptions.Value.WindowsStartupEnabled;
+        LaunchOnWindowsStartup = _settingsOptions.CurrentValue.WindowsStartupEnabled;
     }
 }

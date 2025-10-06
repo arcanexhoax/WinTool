@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Interop;
 using WinTool.Model;
 using WinTool.ViewModel;
@@ -19,7 +18,7 @@ public partial class EditShortcutWindow : Window
         var vm = (EditShortcutViewModel)DataContext;
         Result<string>? result = null;
 
-        SourceInitialized += (_, __) =>
+        SourceInitialized += (_, _) =>
         {
             var handle = new WindowInteropHelper(this).Handle;
 

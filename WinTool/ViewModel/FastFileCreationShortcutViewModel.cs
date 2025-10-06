@@ -9,10 +9,9 @@ public class FastFileCreationShortcutViewModel : ShortcutViewModel
     {
         get; set
         {
-            if (value is not null && SetProperty(ref field, value) && _shortcutsOptions.Value.FastFileCreation.NewFileTemplate != value)
+            if (value is not null && SetProperty(ref field, value) && _shortcutsOptions.CurrentValue.FastFileCreation.NewFileTemplate != value)
             {
-                _shortcutsOptions.Value.FastFileCreation.NewFileTemplate = value;
-                _shortcutsOptions.Update();
+                _shortcutsOptions.Update(() => _shortcutsOptions.CurrentValue.FastFileCreation.NewFileTemplate = value);
             }
         }
     }
