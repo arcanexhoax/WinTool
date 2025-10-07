@@ -1,9 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GlobalKeyInterceptor;
-using GlobalKeyInterceptor.Utils;
 using System;
-using System.Text;
 using WinTool.Model;
 using WinTool.Native;
 
@@ -30,19 +28,7 @@ public class EditShortcutViewModel : ObservableObject
         _keyInterceptor = keyInterceptor;
         _keyInterceptor.ShortcutPressed += OnShortcutPressed;
 
-        SaveCommand = new RelayCommand(() =>
-        {
-            if (_currentShortcut is null)
-            {
-                _onResult?.Invoke(new Result<string>(false));
-                return;
-            }
-
-            if (_currentShortcut.Modifier is KeyModifier.None)
-                return;
-
-            _onResult?.Invoke(new Result<string>(true, Shortcut));
-        });
+        SaveCommand = new RelayCommand(Save);
         CancelCommand = new RelayCommand(() => _onResult?.Invoke(new Result<string>(false)));
     }
 
@@ -60,6 +46,20 @@ public class EditShortcutViewModel : ObservableObject
     {
         _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
         _onResult = null;
+    }
+
+    private void Save()
+    {
+        if (_currentShortcut is null)
+        {
+            _onResult?.Invoke(new Result<string>(false));
+            return;
+        }
+
+        if (_currentShortcut.Modifier is KeyModifier.None)
+            return;
+
+        _onResult?.Invoke(new Result<string>(true, Shortcut));
     }
 
     private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)

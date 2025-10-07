@@ -2,9 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using GlobalKeyInterceptor;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using WinTool.Properties;
 using WinTool.Services;
@@ -15,8 +15,7 @@ namespace WinTool.ViewModel;
 public class MainViewModel : ObservableObject
 {
     private readonly KeyInterceptor _keyHooker;
-    private readonly SemaphoreSlim _semaphore = new(1);
-    private readonly CommandHandler _commandHandler;
+    private readonly ShellCommandHandler _commandHandler;
     private readonly Shell _shell;
 
     public ShortcutsViewModel ShortcutsViewModel { get; }
@@ -31,7 +30,7 @@ public class MainViewModel : ObservableObject
     public event EventHandler? ShowWindowRequested;
 
     public MainViewModel(
-        CommandHandler commandHandler,
+        ShellCommandHandler commandHandler,
         Shell shell,
         KeyInterceptor keyHooker,
         ShortcutsViewModel shortcutsViewModel,
@@ -41,7 +40,22 @@ public class MainViewModel : ObservableObject
         _commandHandler = commandHandler;
         _shell = shell;
         _keyHooker = keyHooker;
-        _keyHooker.ShortcutPressed += OnShortcutPressed;
+
+        var shortcuts = new Dictionary<Shortcut, Action>()
+        {
+            { new Shortcut(Key.F2, KeyModifier.Ctrl, KeyState.Down), _commandHandler.ChangeFileProperties },
+            { new Shortcut(Key.C, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), _commandHandler.CopyFilePath },
+            { new Shortcut(Key.X, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), _commandHandler.CopyFileName },
+            { new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), _commandHandler.CreateFileFast },
+            { new Shortcut(Key.E, KeyModifier.Ctrl, KeyState.Down), _commandHandler.CreateFileInteractive },
+            { new Shortcut(Key.L, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down), _commandHandler.OpenInCmd },
+            { new Shortcut(Key.O, KeyModifier.Ctrl, KeyState.Down), _commandHandler.RunWithArgs },
+        };
+
+        foreach (var (sc, handler) in shortcuts)
+        {
+            _keyHooker.RegisterShortcut(sc, () => ExecuteCommand(sc, handler));
+        }
 
         WindowLoadedCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = false);
         WindowClosingCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = true);
@@ -61,43 +75,29 @@ public class MainViewModel : ObservableObject
         SettingsViewModel = settingsViewModel;
     }
 
-    private async void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
+    private bool ExecuteCommand(Shortcut shortcut, Action command)
     {
-        await _semaphore.WaitAsync();
+        Debug.WriteLine($"Executing {shortcut}");
+        var shellActive = _shell.IsActive;
 
-        Func<Task>? command = e.Shortcut switch
+        // use new thread because it is unable to get shell windows from MTA thread
+        Thread t = new(() =>
         {
-            { Key: Key.F2, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.ChangeFileProperties,
-            { Key: Key.C, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.CopyFilePath,
-            { Key: Key.X, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.CopyFileName,
-            { Key: Key.E, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.CreateFileFast,
-            { Key: Key.E, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.CreateFileInteractive,
-            { Key: Key.L, Modifier: KeyModifier.Ctrl | KeyModifier.Shift, State: KeyState.Down } => _commandHandler.OpenInCmd,
-            { Key: Key.O, Modifier: KeyModifier.Ctrl, State: KeyState.Down } => _commandHandler.RunWithArgs,
-            _ => null
-        };
+            try
+            {
+                command();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to execute command {shortcut}: {ex.Message}");
+                // TODO fix: message box is minimized
+                MessageBoxHelper.ShowError(string.Format(Resources.CommandExecutionError, shortcut, ex.Message));
+            }
+        });
 
-        if (command is null)
-        {
-            _semaphore.Release();
-            return;
-        }
+        t.SetApartmentState(ApartmentState.STA);
+        t.Start();
 
-        Debug.WriteLine($"{e.Shortcut} // {e.Shortcut.State}");
-
-        try
-        {
-            if (_shell.IsActive)
-                e.IsHandled = true;
-
-            await command();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Failed to execute command {e.Shortcut}: {ex.Message}");
-            MessageBoxHelper.ShowError(string.Format(Resources.CommandExecutionError, e.Shortcut, ex.Message));
-        }
-
-        _semaphore.Release();
+        return shellActive;
     }
 }

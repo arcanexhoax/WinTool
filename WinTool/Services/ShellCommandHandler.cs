@@ -15,7 +15,7 @@ using WinTool.ViewModel;
 
 namespace WinTool.Services;
 
-public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonitor<ShortcutsOptions> shortcutsOptions)
+public class ShellCommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonitor<ShortcutsOptions> shortcutsOptions)
 {
     private readonly Shell _shell = shell;
     private readonly MemoryCache _memoryCache = memoryCache;
@@ -23,9 +23,9 @@ public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonito
 
     public bool IsBackgroundMode { get; set; } = true;
 
-    public async Task CreateFileFast()
+    public void CreateFileFast()
     {
-        string? path = await _shell.GetActiveExplorerPathAsync();
+        string? path = _shell.GetActiveExplorerPath();
 
         if (string.IsNullOrEmpty(path))
             return;
@@ -55,9 +55,9 @@ public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonito
         CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
     }
 
-    public async Task CreateFileInteractive()
+    public void CreateFileInteractive()
     {
-        string? path = await _shell.GetActiveExplorerPathAsync();
+        string? path = _shell.GetActiveExplorerPath();
 
         if (string.IsNullOrEmpty(path))
             return;
@@ -94,14 +94,14 @@ public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonito
         }, clp);
     }
 
-    public async Task CopyFilePath()
+    public void CopyFilePath()
     {
-        var selectedPaths = await _shell.GetSelectedItemsPathsAsync();
+        var selectedPaths = _shell.GetSelectedItemsPaths();
 
         // if there are no selections - copy folder path
         if (selectedPaths.Count == 0)
         {
-            string? folderPath = await _shell.GetActiveExplorerPathAsync();
+            string? folderPath = _shell.GetActiveExplorerPath();
 
             if (!string.IsNullOrEmpty(folderPath))
                 Clipboard.SetText(folderPath);
@@ -112,14 +112,14 @@ public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonito
         }
     }
 
-    public async Task CopyFileName()
+    public void CopyFileName()
     {
-        var selectedPaths = await _shell.GetSelectedItemsPathsAsync();
+        var selectedPaths = _shell.GetSelectedItemsPaths();
 
         // if there are no selections - copy folder name
         if (selectedPaths.Count == 0)
         {
-            string? folderPath = await _shell.GetActiveExplorerPathAsync();
+            string? folderPath = _shell.GetActiveExplorerPath();
 
             if (string.IsNullOrEmpty(folderPath))
                 return;
@@ -134,9 +134,9 @@ public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonito
         }
     }
 
-    public async Task RunWithArgs()
+    public void RunWithArgs()
     {
-        var selectedPaths = await _shell.GetSelectedItemsPathsAsync();
+        var selectedPaths = _shell.GetSelectedItemsPaths();
 
         if (selectedPaths.Count != 1 || Path.GetExtension(selectedPaths[0]) != ".exe")
             return;
@@ -154,9 +154,9 @@ public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonito
         runWithArgsWindow.Activate();
     }
 
-    public async Task OpenInCmd()
+    public void OpenInCmd()
     {
-        string? folderPath = await _shell.GetActiveExplorerPathAsync();
+        string? folderPath = _shell.GetActiveExplorerPath();
 
         if (string.IsNullOrEmpty(folderPath))
             return;
@@ -169,9 +169,9 @@ public class CommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonito
         })) { }
     }
 
-    public async Task ChangeFileProperties()
+    public void ChangeFileProperties()
     {
-        var selectedPaths = await _shell.GetSelectedItemsPathsAsync();
+        var selectedPaths = _shell.GetSelectedItemsPaths();
 
         if (selectedPaths.Count == 0)
             return;

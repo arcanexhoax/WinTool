@@ -44,14 +44,14 @@ public partial class App : Application
         builder.Services.AddSingleton<FeaturesViewModel>();
         builder.Services.AddSingleton<SettingsViewModel>();
         builder.Services.AddSingleton<EditShortcutViewModel>();
-        builder.Services.AddSingleton<CommandHandler>();
-        builder.Services.AddSingleton<KeyInterceptor>();
+        builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
         builder.Services.AddSingleton<MemoryCache>();
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
+        builder.Services.AddSingleton(new KeyInterceptor());
 
         _app = builder.Build();
     }
@@ -63,7 +63,7 @@ public partial class App : Application
         // activate the window
         _app.Services.GetRequiredService<SwitchLanguageWindow>();
         var mainWindow = _app.Services.GetRequiredService<MainWindow>();
-        var commandHandler = _app.Services.GetRequiredService<CommandHandler>();
+        var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
 
         var clp = CommandLineParameters.Parse(e.Args);
 
@@ -86,7 +86,7 @@ public partial class App : Application
             Environment.Exit(0);
     }
 
-    private void HandleOperations(CommandHandler commandHandler, CommandLineParameters clp)
+    private void HandleOperations(ShellCommandHandler commandHandler, CommandLineParameters clp)
     {
         if (clp.CreateFileParameter is { FilePath: not (null or [])} createFile)
         {

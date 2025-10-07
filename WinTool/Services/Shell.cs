@@ -32,53 +32,7 @@ public class Shell
         }
     }
 
-    public Task<string?> GetActiveExplorerPathAsync()
-    {
-        TaskCompletionSource<string?> tcs = new();
-        // use new thread because it is unable to get shell windows from MTA thread
-        Thread t = new(() =>
-        {
-            try
-            {
-                string? path = GetActiveExplorerPath();
-                tcs.TrySetResult(path);
-            }
-            catch (Exception ex)
-            {
-                tcs.TrySetException(ex);
-            }
-        });
-
-        t.SetApartmentState(ApartmentState.STA);
-        t.Start();
-
-        return tcs.Task;
-    }
-
-    public Task<List<string>> GetSelectedItemsPathsAsync()
-    {
-        TaskCompletionSource<List<string>> tcs = new();
-        // use new thread because it is unable to get shell windows from MTA thread
-        Thread t = new(() =>
-        {
-            try
-            {
-                var paths = GetSelectedItemsPaths();
-                tcs.TrySetResult(paths);
-            }
-            catch (Exception ex)
-            {
-                tcs.TrySetException(ex);
-            }
-        });
-
-        t.SetApartmentState(ApartmentState.STA);
-        t.Start();
-
-        return tcs.Task;
-    }
-
-    private string? GetActiveExplorerPath()
+    public string? GetActiveExplorerPath()
     {
         IntPtr handle = NativeMethods.GetForegroundWindow();
         InternetExplorer? window = GetActiveShellWindow(handle);
@@ -89,7 +43,7 @@ public class Shell
         return new Uri(window.LocationURL).LocalPath;
     }
 
-    private List<string> GetSelectedItemsPaths()
+    public List<string> GetSelectedItemsPaths()
     {
         List<string> selectedItemsPaths = [];
 
