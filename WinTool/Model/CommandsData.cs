@@ -1,9 +1,8 @@
 ﻿using System;
-using WinTool.ViewModel;
 
 namespace WinTool.Model;
 
-public record CreateFileInput(string FileName, uint Size, SizeUnit SizeUnit);
+public record CreateFileOutput(string FilePath, long Size = 0);
 
 public record ChangeFilePropertiesInput(string FilePath, bool MediaTagsSupported, string? Title, string[]? Performers, string? Album, string[]? Genres, string? Lyrics, uint Year, DateTime CreationTime, DateTime ChangeTime);
 

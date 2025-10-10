@@ -1,18 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.IO;
-using System.Windows;
 using WinTool.Model;
-using WinTool.Properties;
-using WinTool.Utils;
 
 namespace WinTool.ViewModel;
 
-public class RunWithArgsViewModel : ObservableObject
+public class RunWithArgsViewModel : ObservableObject, IModalViewModel<string, string?>
 {
-    private Window? _window;
+    private Action<Result<string?>>? _onResult;
 
     public string? FileName
     {
@@ -40,38 +36,25 @@ public class RunWithArgsViewModel : ObservableObject
     }
 
     public RelayCommand RunCommand { get; }
-    public RelayCommand<Window> WindowLoadedCommand { get; }
-    public RelayCommand WindowClosingCommand { get; }
     public RelayCommand CloseWindowCommand { get; }
 
-    public RunWithArgsViewModel(string filePath, MemoryCache memoryCache, Action<RunWithArgsResult> result)
+    public RunWithArgsViewModel()
     {
+        RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<string?>(true, Args)));
+        CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<string?>(false)));
+    }
+
+    public void OnShow(string filePath, Action<Result<string?>> onResult)
+    {
+        _onResult = onResult;
+
         FileName = Path.GetFileName(filePath);
         FullFilePath = filePath;
+        IsTextSelected = true;
 
         var folders = FullFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         ShortedFilePath = folders.Length > 3 ? Path.Combine(folders[0], folders[1], "...", folders[^1]) : FullFilePath;
-
-        if (memoryCache.TryGetValue(nameof(RunWithArgsViewModel), out string? lastArgs))
-        {
-            Args = lastArgs;
-            IsTextSelected = true;
-        }
-
-        var runWithArgsResult = new RunWithArgsResult(false, null);
-
-        RunCommand = new RelayCommand(() =>
-        {
-            if (!File.Exists(FullFilePath))
-                MessageBoxHelper.ShowError(string.Format(Resources.FileNotFound, FullFilePath));
-            else
-                runWithArgsResult = new RunWithArgsResult(true, Args);
-
-            memoryCache.Set(nameof(RunWithArgsViewModel), Args);
-            _window?.Close();
-        });
-        WindowLoadedCommand = new RelayCommand<Window>(w => _window = w);
-        WindowClosingCommand = new RelayCommand(() => result?.Invoke(runWithArgsResult));
-        CloseWindowCommand = new RelayCommand(() => _window?.Close());
     }
+
+    public void OnClose() => _onResult = null;
 }

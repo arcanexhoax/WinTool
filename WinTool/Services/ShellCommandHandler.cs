@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +8,7 @@ using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Model;
 using WinTool.Options;
+using WinTool.Properties;
 using WinTool.Utils;
 using WinTool.View;
 using WinTool.ViewModel;
@@ -16,11 +16,12 @@ using File = System.IO.File;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonitor<ShortcutsOptions> shortcutsOptions, ChangeFilePropertiesViewModel changeFilePropertiesViewModel)
+public class ShellCommandHandler(Shell shell, IOptionsMonitor<ShortcutsOptions> shortcutsOptions, CreateFileViewModel createFileViewModel, RunWithArgsViewModel runWithArgsViewModel, ChangeFilePropertiesViewModel changeFilePropertiesViewModel)
 {
     private readonly Shell _shell = shell;
-    private readonly MemoryCache _memoryCache = memoryCache;
     private readonly IOptionsMonitor<ShortcutsOptions> _shortcutsOptions = shortcutsOptions;
+    private readonly CreateFileViewModel _createFileViewModel = createFileViewModel;
+    private readonly RunWithArgsViewModel _runWithArgsViewModel = runWithArgsViewModel;
     private readonly ChangeFilePropertiesViewModel _changeFilePropertiesViewModel = changeFilePropertiesViewModel;
 
     public bool IsBackgroundMode { get; set; } = true;
@@ -64,17 +65,13 @@ public class ShellCommandHandler(Shell shell, MemoryCache memoryCache, IOptionsM
         if (string.IsNullOrEmpty(path))
             return;
 
-        CreateFileViewModel createFileVm = new(path, _memoryCache, r =>
-        {
-            if (!r.Success || r.FilePath is null or [])
-                return;
+        var createFileView = new CreateFileView(_createFileViewModel);
+        var result = createFileView.ShowDialog(path);
 
-            CreateFile(r.FilePath, r.Size);
-        });
+        if (result is not { Success: true, Data: { } data })
+            return;
 
-        CreateFileView createFileView = new(createFileVm);
-        createFileView.Show();
-        createFileView.Activate();
+        CreateFile(data.FilePath, data.Size);
     }
 
     public void CreateFile(string path, long size = 0)
@@ -145,15 +142,19 @@ public class ShellCommandHandler(Shell shell, MemoryCache memoryCache, IOptionsM
 
         string selectedItem = selectedPaths[0];
 
-        RunWithArgsViewModel runWithArgsVm = new(selectedItem, _memoryCache, r =>
-        {
-            if (r.Success)
-                using (Process.Start(selectedItem, r.Args ?? string.Empty)) { }
-        });
+        var runWithArgsWindow = new RunWithArgsWindow(_runWithArgsViewModel);
+        var result = runWithArgsWindow.ShowDialog(selectedItem);
 
-        RunWithArgsWindow runWithArgsWindow = new(runWithArgsVm);
-        runWithArgsWindow.Show();
-        runWithArgsWindow.Activate();
+        if (result is not { Success: true, Data: { } args })
+            return;
+
+        if (!File.Exists(selectedItem))
+        {
+            MessageBoxHelper.ShowError(string.Format(Resources.FileNotFound, selectedItem));
+            return;
+        }
+
+        Process.Start(selectedItem, args ?? string.Empty);
     }
 
     public void OpenInCmd()
@@ -210,7 +211,7 @@ public class ShellCommandHandler(Shell shell, MemoryCache memoryCache, IOptionsM
             File.GetCreationTime(selectedItemPath),
             File.GetLastAccessTime(selectedItemPath)));
 
-        if (!result.Success || result.Data is not { } data)
+        if (result is not { Success: true, Data: { } data })
         {
             if (result.Message is not (null or []))
                 MessageBoxHelper.ShowError(result.Message);

@@ -1,11 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using WinTool.Model;
 using WinTool.Properties;
 using WinTool.Utils;
@@ -21,9 +19,9 @@ public enum SizeUnit : long
     TB = 1_099_511_627_776,
 }
 
-public class CreateFileViewModel : ObservableObject
+public class CreateFileViewModel : ObservableObject, IModalViewModel<string, CreateFileOutput>
 {
-    private Window? _window;
+    private Action<Result<CreateFileOutput>>? _onResult;
 
     public string? FileName
     {
@@ -66,53 +64,46 @@ public class CreateFileViewModel : ObservableObject
     }
 
     public RelayCommand CreateCommand { get; }
-    public RelayCommand<Window> WindowLoadedCommand { get; }
-    public RelayCommand WindowClosingCommand { get; }
     public RelayCommand CloseWindowCommand { get; }
 
-    public CreateFileViewModel(string folderPath, MemoryCache memoryCache, Action<CreateFileResult> result)
+    public CreateFileViewModel()
     {
         SelectedSizeUnit = SizeUnit.B;
         SizeUnits = new ObservableCollection<SizeUnit>(Enum.GetValues<SizeUnit>());
-        FullFolderPath = folderPath;
+
+        CreateCommand = new RelayCommand(CreateFile);
+        CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<CreateFileOutput>(false)));
+    }
+
+    public void OnShow(string folderPath, Action<Result<CreateFileOutput>> onResult)
+    {
+        _onResult = onResult;
 
         var di = new DirectoryInfo(folderPath);
         RelativeFolderPath = di.Name.TrimEnd(Path.DirectorySeparatorChar);
 
-        if (memoryCache.TryGetValue(nameof(CreateFileViewModel), out CreateFileInput? createFileData))
-        {
-            FileName = createFileData!.FileName;
-            IsTextSelected = true;
+        FullFolderPath = folderPath;
+        IsTextSelected = true;
+        AreOptionsOpened = Size > 0;
+    }
 
-            Size = createFileData.Size;
-            SelectedSizeUnit = createFileData.SizeUnit;
-            AreOptionsOpened = Size > 0;
+    public void OnClose() => _onResult = null;
+
+    private void CreateFile()
+    {
+        if (FileName is null or [] || FullFolderPath is null or [])
+            return;
+
+        long sizeBytes = Size * (long)SelectedSizeUnit;
+        string filePath = Path.Combine(FullFolderPath, FileName);
+
+        if (!CheckIfFileValid(filePath, FileName, sizeBytes, out string? errorMessage))
+        {
+            MessageBoxHelper.ShowError(errorMessage);
+            return;
         }
 
-        var createFileResult = new CreateFileResult(false, null);
-
-        CreateCommand = new RelayCommand(() =>
-        {
-            if (string.IsNullOrEmpty(FileName))
-                return;
-
-            long sizeBytes = Size * (long)SelectedSizeUnit;
-            string filePath = Path.Combine(folderPath, FileName);
-
-            if (!CheckIfFileValid(filePath, FileName, sizeBytes, out string? errorMessage))
-            {
-                MessageBoxHelper.ShowError(errorMessage);
-                return;
-            }
-
-            memoryCache.Set(nameof(CreateFileViewModel), new CreateFileInput(FileName, Size, SelectedSizeUnit));
-            createFileResult = new CreateFileResult(true, filePath, sizeBytes);
-
-            _window?.Close();
-        });
-        WindowLoadedCommand = new RelayCommand<Window>(w => _window = w);
-        WindowClosingCommand = new RelayCommand(() => result?.Invoke(createFileResult));
-        CloseWindowCommand = new RelayCommand(() => _window?.Close());
+        _onResult?.Invoke(new Result<CreateFileOutput>(true, new CreateFileOutput(filePath, sizeBytes)));
     }
 
     private bool CheckIfFileValid(string filePath, string fileName, long sizeBytes, out string? errorMessage)

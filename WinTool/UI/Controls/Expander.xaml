@@ -4,7 +4,6 @@
     <c:ExpandArrowAngleConverter x:Key="ExpandArrowAngleConverter" />
 
     <Style TargetType="Expander">
-        <Setter Property="Padding" Value="0 40 0 0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Expander">

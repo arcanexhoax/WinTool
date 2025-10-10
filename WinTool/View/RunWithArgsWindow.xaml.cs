@@ -2,7 +2,7 @@
 
 namespace WinTool.View;
 
-public partial class RunWithArgsWindow : ModalWindow
+public partial class RunWithArgsWindow : DialogWindow<string, string?>
 {
     public RunWithArgsWindow(RunWithArgsViewModel runWithArgsVm)
     {

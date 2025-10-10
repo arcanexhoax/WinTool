@@ -1,6 +1,4 @@
 ﻿using GlobalKeyInterceptor;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -43,12 +41,13 @@ public partial class App : Application
         builder.Services.AddSingleton<ShortcutsViewModel>();
         builder.Services.AddSingleton<FeaturesViewModel>();
         builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<CreateFileViewModel>();
+        builder.Services.AddSingleton<RunWithArgsViewModel>();
         builder.Services.AddSingleton<ChangeFilePropertiesViewModel>();
         builder.Services.AddSingleton<EditShortcutViewModel>();
         builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
-        builder.Services.AddSingleton<MemoryCache>();
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
