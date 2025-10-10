@@ -3,74 +3,55 @@ using CommunityToolkit.Mvvm.Input;
 using GlobalKeyInterceptor;
 using System;
 using WinTool.Model;
-using WinTool.Native;
 
 namespace WinTool.ViewModel;
 
-public class EditShortcutViewModel : ObservableObject
+public class EditShortcutViewModel : ObservableObject, IModalViewModel<Shortcut?, Shortcut>
 {
-    private readonly KeyInterceptor _keyInterceptor;
+    private Action<Result<Shortcut>>? _onResult;
 
-    private Shortcut? _currentShortcut;
-    private Action<Result<string>>? _onResult;
-    private nint _handle;
-
-    public string? Shortcut
+    public Shortcut? Shortcut
     {
-        get; set => SetProperty(ref field, value);
+        get; set
+        {
+            if (value?.State is KeyState.Down)
+            {
+                SetProperty(ref field, value);
+            }
+        }
     }
 
     public RelayCommand SaveCommand { get; }
     public RelayCommand CancelCommand { get; }
 
-    public EditShortcutViewModel(KeyInterceptor keyInterceptor)
+    public EditShortcutViewModel()
     {
-        _keyInterceptor = keyInterceptor;
-        _keyInterceptor.ShortcutPressed += OnShortcutPressed;
-
         SaveCommand = new RelayCommand(Save);
-        CancelCommand = new RelayCommand(() => _onResult?.Invoke(new Result<string>(false)));
+        CancelCommand = new RelayCommand(() => _onResult?.Invoke(new Result<Shortcut>(false)));
     }
 
-    // TODO add this approach to another modal windows
-    public void StartEditing(nint handle, string shortcut, Action<Result<string>> onResult)
+    public void OnShow(Shortcut? input, Action<Result<Shortcut>> onResult)
     {
-        _keyInterceptor.ShortcutPressed += OnShortcutPressed;
-        _handle = handle;
+        Shortcut = input;
         _onResult = onResult;
-
-        Shortcut = shortcut;
     }
 
-    public void StopEditing()
+    public void OnClose()
     {
-        _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
         _onResult = null;
     }
 
     private void Save()
     {
-        if (_currentShortcut is null)
+        if (Shortcut is null)
         {
-            _onResult?.Invoke(new Result<string>(false));
+            _onResult?.Invoke(new Result<Shortcut>(false));
             return;
         }
 
-        if (_currentShortcut.Modifier is KeyModifier.None)
+        if (Shortcut.Modifier is KeyModifier.None)
             return;
 
-        _onResult?.Invoke(new Result<string>(true, Shortcut));
-    }
-
-    private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
-    {
-        if (_handle != NativeMethods.GetForegroundWindow())
-            return;
-
-        if (e.Shortcut.State is KeyState.Down)
-        {
-            _currentShortcut = e.Shortcut;
-            Shortcut = _currentShortcut.ToString();
-        }
+        _onResult?.Invoke(new Result<Shortcut>(true, Shortcut));
     }
 }

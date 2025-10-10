@@ -43,6 +43,7 @@ public partial class App : Application
         builder.Services.AddSingleton<ShortcutsViewModel>();
         builder.Services.AddSingleton<FeaturesViewModel>();
         builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<ChangeFilePropertiesViewModel>();
         builder.Services.AddSingleton<EditShortcutViewModel>();
         builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();

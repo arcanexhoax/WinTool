@@ -1,8 +1,9 @@
-﻿using WinTool.ViewModel;
+﻿using WinTool.Model;
+using WinTool.ViewModel;
 
 namespace WinTool.View;
 
-public partial class ChangeFilePropertiesView : ModalWindow
+public partial class ChangeFilePropertiesView : DialogWindow<ChangeFilePropertiesInput, ChangeFilePropertiesOutput>
 {
     public ChangeFilePropertiesView(ChangeFilePropertiesViewModel vm)
     {

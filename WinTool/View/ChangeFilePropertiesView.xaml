@@ -1,38 +1,34 @@
-﻿<local:ModalWindow x:Class="WinTool.View.ChangeFilePropertiesView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:r="clr-namespace:WinTool.Properties"
-        xmlns:local="clr-namespace:WinTool.View"
-        xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
-        xmlns:ui="clr-namespace:WinTool.UI.Controls"
-        xmlns:c="clr-namespace:Hoax.WpfConverters;assembly=Hoax.WpfConverters"
-        d:DataContext="{d:DesignInstance Type=viewmodel:ChangeFilePropertiesViewModel}"
-        mc:Ignorable="d"
-        Icon="/Resources/logo.png"
-        Title="{Binding FileName, StringFormat={x:Static r:Resources.ChangeFileProperiesTitle}}" 
-        SizeToContent="Height"
-        Width="400"
-        ResizeMode="NoResize"
-        WindowStartupLocation="CenterScreen"
-        x:Name="changeFilePropertiesView">
-    <local:ModalWindow.InputBindings>
+﻿<local:DialogWindow
+    x:Class="WinTool.View.ChangeFilePropertiesView"
+    x:TypeArguments="model:ChangeFilePropertiesInput,model:ChangeFilePropertiesOutput"
+    xmlns:model="clr-namespace:WinTool.Model"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:r="clr-namespace:WinTool.Properties"
+    xmlns:local="clr-namespace:WinTool.View"
+    xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+    xmlns:ui="clr-namespace:WinTool.UI.Controls"
+    xmlns:c="clr-namespace:Hoax.WpfConverters;assembly=Hoax.WpfConverters"
+    d:DataContext="{d:DesignInstance Type=viewmodel:ChangeFilePropertiesViewModel}"
+    mc:Ignorable="d"
+    Icon="/Resources/logo.png"
+    Title="{Binding FileName, StringFormat={x:Static r:Resources.ChangeFileProperiesTitle}}" 
+    SizeToContent="Height"
+    Width="400"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen">
+    <Window.InputBindings>
         <KeyBinding Command="{Binding SaveCommand}"
                     Key="Return" />
         <KeyBinding Command="{Binding CloseWindowCommand}"
                     Key="Esc" />
-    </local:ModalWindow.InputBindings>
-    <local:ModalWindow.Resources>
+    </Window.InputBindings>
+    <Window.Resources>
         <c:BoolToVisibilityConverter x:Key="boolToVis" />
-    </local:ModalWindow.Resources>
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}"
-                                   CommandParameter="{Binding ElementName=changeFilePropertiesView}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </Window.Resources>
 
     <Border Padding="20">
         <Grid>
@@ -159,4 +155,4 @@
                     HorizontalAlignment="Center" />
         </Grid>
     </Border>
-</local:ModalWindow>
+</local:DialogWindow>

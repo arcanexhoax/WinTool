@@ -1,17 +1,20 @@
-﻿<Window x:Class="WinTool.View.EditShortcutWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WinTool.View"
-        xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
-        xmlns:r="clr-namespace:WinTool.Properties"
-        d:DataContext="{d:DesignInstance Type=viewmodel:EditShortcutViewModel}"
-        mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
-        Title="{x:Static r:Resources.EnterNewShortcut}" 
-        Height="280" 
-        Width="450">
+﻿<local:DialogWindow 
+    x:Class="WinTool.View.EditShortcutWindow"
+    x:TypeArguments="gke:Shortcut,gke:Shortcut"
+    xmlns:gke="clr-namespace:GlobalKeyInterceptor;assembly=GlobalKeyInterceptor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:WinTool.View"
+    xmlns:viewmodel="clr-namespace:WinTool.ViewModel"
+    xmlns:r="clr-namespace:WinTool.Properties"
+    d:DataContext="{d:DesignInstance Type=viewmodel:EditShortcutViewModel}"
+    mc:Ignorable="d"
+    WindowStartupLocation="CenterScreen"
+    Title="{x:Static r:Resources.EnterNewShortcut}" 
+    Height="280" 
+    Width="450">
     <StackPanel>
         <TextBlock Text="{Binding Shortcut}"
                    FontSize="30"
@@ -36,4 +39,4 @@
                     Width="120"/>
         </StackPanel>
     </StackPanel>
-</Window>
+</local:DialogWindow>

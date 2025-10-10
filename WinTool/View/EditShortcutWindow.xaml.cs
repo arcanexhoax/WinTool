@@ -1,37 +1,40 @@
-﻿using System.Windows;
+﻿using GlobalKeyInterceptor;
+using System.Diagnostics;
 using System.Windows.Interop;
-using WinTool.Model;
+using WinTool.Native;
 using WinTool.ViewModel;
 
 namespace WinTool.View;
 
-public partial class EditShortcutWindow : Window
+public partial class EditShortcutWindow : DialogWindow<Shortcut?, Shortcut>
 {
-    public EditShortcutWindow(EditShortcutViewModel vm)
+    private readonly KeyInterceptor _keyInterceptor;
+
+    private nint _handle;
+
+    public EditShortcutWindow(EditShortcutViewModel vm, KeyInterceptor keyInterceptor)
     {
         DataContext = vm;
         InitializeComponent();
+
+        _keyInterceptor = keyInterceptor;
+        _keyInterceptor.ShortcutPressed += OnShortcutPressed;
+
+        SourceInitialized += (_, _) => _handle = new WindowInteropHelper(this).Handle;
     }
 
-    public Result<string> ShowDialog(string shortcut)
+    private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
     {
-        var vm = (EditShortcutViewModel)DataContext;
-        Result<string>? result = null;
-
-        SourceInitialized += (_, _) =>
+        if (_handle == NativeMethods.GetForegroundWindow())
         {
-            var handle = new WindowInteropHelper(this).Handle;
+            Debug.WriteLine(e.Shortcut);
+            (DataContext as EditShortcutViewModel)!.Shortcut = e.Shortcut;
+        }
+    }
 
-            vm.StartEditing(handle, shortcut, r =>
-            {
-                result = r;
-                Close();
-            });
-        };
-
-        ShowDialog();
-        vm.StopEditing();
-
-        return result ?? new Result<string>(false);
+    protected override void OnClosed(System.EventArgs e)
+    {
+        _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
+        base.OnClosed(e);
     }
 }

@@ -1,17 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Windows;
-using WinTool.Properties;
-using WinTool.Utils;
+using WinTool.Model;
 
 namespace WinTool.ViewModel;
 
-public class ChangeFilePropertiesViewModel : ObservableObject
+public class ChangeFilePropertiesViewModel : ObservableObject, IModalViewModel<ChangeFilePropertiesInput, ChangeFilePropertiesOutput>
 {
-    private Window? _window;
+    private Action<Result<ChangeFilePropertiesOutput>>? _onResult;
 
     public string? FileName
     {
@@ -63,55 +60,45 @@ public class ChangeFilePropertiesViewModel : ObservableObject
         get; set => SetProperty(ref field, value);
     }
 
-    public RelayCommand<Window> WindowLoadedCommand { get; }
     public RelayCommand SaveCommand { get; }
     public RelayCommand CloseWindowCommand { get; }
 
-    public ChangeFilePropertiesViewModel(string filePath, TagLib.File? tfile = null)
+    public ChangeFilePropertiesViewModel()
     {
-        FileName = Path.GetFileName(filePath);
-        CreationTime = File.GetCreationTime(filePath);
-        ChangeTime = File.GetLastWriteTime(filePath);
-
-        if (tfile != null)
-        {
-            MediaTagsSupported = true;
-            Title = tfile.Tag.Title;
-            Performers = string.Join(", ", tfile.Tag.Performers);
-            Album = tfile.Tag.Album;
-            Genres = string.Join(", ", tfile.Tag.Genres);
-            Lyrics = tfile.Tag.Lyrics;
-            Year = tfile.Tag.Year;
-        }
-
         SaveCommand = new RelayCommand(() =>
         {
-            try
-            {
-                if (MediaTagsSupported)
-                {
-                    tfile!.Tag.Title = Title;
-                    tfile.Tag.Performers = [Performers];
-                    tfile.Tag.Album = Album;
-                    tfile.Tag.Genres = [Genres];
-                    tfile.Tag.Lyrics = Lyrics;
-                    tfile.Tag.Year = Year;
-                    tfile.Save();
-                    tfile.Dispose();
-                }
-
-                File.SetCreationTime(filePath, CreationTime);
-                File.SetLastWriteTime(filePath, ChangeTime);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Save file properties error: " + ex.Message);
-                MessageBoxHelper.ShowError(string.Format(Resources.SaveFilePropertiesError, filePath, ex.Message));
-            }
-
-            _window?.Close();
+            _onResult?.Invoke(new Result<ChangeFilePropertiesOutput>(true, new ChangeFilePropertiesOutput( 
+                Title,
+                Performers?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+                Album,
+                Genres?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+                Lyrics,
+                Year,
+                CreationTime,
+                ChangeTime)));
         });
-        WindowLoadedCommand = new RelayCommand<Window>(w => _window = w);
-        CloseWindowCommand = new RelayCommand(() => _window?.Close());
+        CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<ChangeFilePropertiesOutput>(false)));
     }
+
+    public void OnShow(ChangeFilePropertiesInput input, Action<Result<ChangeFilePropertiesOutput>> onResult)
+    {
+        FileName = Path.GetFileName(input.FilePath);
+        CreationTime = File.GetCreationTime(input.FilePath);
+        ChangeTime = File.GetLastWriteTime(input.FilePath);
+
+        if (input.MediaTagsSupported)
+        {
+            MediaTagsSupported = true;
+            Title = input.Title;
+            Performers = string.Join(", ", input.Performers ?? []);
+            Album = input.Album;
+            Genres = string.Join(", ", input.Genres ?? []);
+            Lyrics = input.Lyrics;
+            Year = input.Year;
+        }
+
+        _onResult = onResult;
+    }
+
+    public void OnClose() => _onResult = null;
 }

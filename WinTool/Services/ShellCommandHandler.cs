@@ -5,21 +5,23 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Model;
 using WinTool.Options;
 using WinTool.Utils;
 using WinTool.View;
 using WinTool.ViewModel;
+using File = System.IO.File;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonitor<ShortcutsOptions> shortcutsOptions)
+public class ShellCommandHandler(Shell shell, MemoryCache memoryCache, IOptionsMonitor<ShortcutsOptions> shortcutsOptions, ChangeFilePropertiesViewModel changeFilePropertiesViewModel)
 {
     private readonly Shell _shell = shell;
     private readonly MemoryCache _memoryCache = memoryCache;
     private readonly IOptionsMonitor<ShortcutsOptions> _shortcutsOptions = shortcutsOptions;
+    private readonly ChangeFilePropertiesViewModel _changeFilePropertiesViewModel = changeFilePropertiesViewModel;
 
     public bool IsBackgroundMode { get; set; } = true;
 
@@ -195,10 +197,39 @@ public class ShellCommandHandler(Shell shell, MemoryCache memoryCache, IOptionsM
             throw;
         }
 
-        var changeFilePropertiesVm = new ChangeFilePropertiesViewModel(selectedItemPath, tfile);
-        var changeFilePropertiesView = new ChangeFilePropertiesView(changeFilePropertiesVm);
+        var changeFilePropertiesView = new ChangeFilePropertiesView(_changeFilePropertiesViewModel);
+        var result = changeFilePropertiesView.ShowDialog(new ChangeFilePropertiesInput(
+            selectedItemPath,
+            tfile != null,
+            tfile?.Tag.Title,
+            tfile?.Tag.Performers,
+            tfile?.Tag.Album,
+            tfile?.Tag.Genres,
+            tfile?.Tag.Lyrics,
+            tfile?.Tag.Year ?? 0,
+            File.GetCreationTime(selectedItemPath),
+            File.GetLastAccessTime(selectedItemPath)));
 
-        changeFilePropertiesView.Show();
-        changeFilePropertiesView.Activate();
+        if (!result.Success || result.Data is not { } data)
+        {
+            if (result.Message is not (null or []))
+                MessageBoxHelper.ShowError(result.Message);
+            return;
+        }
+            
+        if (tfile != null)
+        {
+            tfile!.Tag.Title = data.Title;
+            tfile.Tag.Performers = data.Performers;
+            tfile.Tag.Album = data.Album;
+            tfile.Tag.Genres = data.Genres;
+            tfile.Tag.Lyrics = data.Lyrics;
+            tfile.Tag.Year = data.Year;
+            tfile.Save();
+            tfile.Dispose();
+        }
+
+        File.SetCreationTime(selectedItemPath, data.CreationTime);
+        File.SetLastWriteTime(selectedItemPath, data.ChangeTime);
     }
 }

@@ -79,7 +79,7 @@ public class CreateFileViewModel : ObservableObject
         var di = new DirectoryInfo(folderPath);
         RelativeFolderPath = di.Name.TrimEnd(Path.DirectorySeparatorChar);
 
-        if (memoryCache.TryGetValue(nameof(CreateFileViewModel), out CreateFileData? createFileData))
+        if (memoryCache.TryGetValue(nameof(CreateFileViewModel), out CreateFileInput? createFileData))
         {
             FileName = createFileData!.FileName;
             IsTextSelected = true;
@@ -105,7 +105,7 @@ public class CreateFileViewModel : ObservableObject
                 return;
             }
 
-            memoryCache.Set(nameof(CreateFileViewModel), new CreateFileData(FileName, Size, SelectedSizeUnit));
+            memoryCache.Set(nameof(CreateFileViewModel), new CreateFileInput(FileName, Size, SelectedSizeUnit));
             createFileResult = new CreateFileResult(true, filePath, sizeBytes);
 
             _window?.Close();

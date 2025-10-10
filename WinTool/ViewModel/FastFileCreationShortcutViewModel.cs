@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobalKeyInterceptor;
+using System;
 using WinTool.Options;
 
 namespace WinTool.ViewModel;
@@ -20,7 +21,8 @@ public class FastFileCreationShortcutViewModel : ShortcutViewModel
         Func<FastFileCreationShortcutOptions> optionsFactory,
         WritableOptions<ShortcutsOptions> shortcutsOptions,
         EditShortcutViewModel editShortcutViewModel,
-        string description) : base(optionsFactory, shortcutsOptions, editShortcutViewModel, description)
+        KeyInterceptor keyInterceptor,
+        string description) : base(optionsFactory, shortcutsOptions, editShortcutViewModel, keyInterceptor, description)
     {
         NewFileTemplate = optionsFactory().NewFileTemplate;
     }
