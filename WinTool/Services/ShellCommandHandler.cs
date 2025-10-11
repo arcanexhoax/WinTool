@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Model;
-using WinTool.Options;
 using WinTool.Properties;
 using WinTool.Utils;
 using WinTool.View;
@@ -16,10 +14,11 @@ using File = System.IO.File;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(Shell shell, IOptionsMonitor<ShortcutsOptions> shortcutsOptions, CreateFileViewModel createFileViewModel, RunWithArgsViewModel runWithArgsViewModel, ChangeFilePropertiesViewModel changeFilePropertiesViewModel)
+public class ShellCommandHandler(Shell shell, CreateFileViewModel createFileViewModel, RunWithArgsViewModel runWithArgsViewModel, ChangeFilePropertiesViewModel changeFilePropertiesViewModel)
 {
+    private const string NewFileTemplate = "NewFile.txt";
+
     private readonly Shell _shell = shell;
-    private readonly IOptionsMonitor<ShortcutsOptions> _shortcutsOptions = shortcutsOptions;
     private readonly CreateFileViewModel _createFileViewModel = createFileViewModel;
     private readonly RunWithArgsViewModel _runWithArgsViewModel = runWithArgsViewModel;
     private readonly ChangeFilePropertiesViewModel _changeFilePropertiesViewModel = changeFilePropertiesViewModel;
@@ -36,9 +35,8 @@ public class ShellCommandHandler(Shell shell, IOptionsMonitor<ShortcutsOptions> 
         DirectoryInfo di = new(path);
         int num = 0;
 
-        string newFileTemplate = _shortcutsOptions.CurrentValue.FastFileCreation.NewFileTemplate;
-        string? fileName = Path.GetFileNameWithoutExtension(newFileTemplate);
-        string? extension = Path.GetExtension(newFileTemplate);
+        string? fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
+        string? extension = Path.GetExtension(NewFileTemplate);
 
         var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
         {

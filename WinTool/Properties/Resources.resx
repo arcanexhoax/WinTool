@@ -207,14 +207,6 @@
   <data name="MediaTags" xml:space="preserve">
     <value>Media tags</value>
   </data>
-  <data name="NewFileTemplate" xml:space="preserve">
-    <value>New file template</value>
-  </data>
-  <data name="NewFileTemplateToolTip" xml:space="preserve">
-    <value>A template for new file of 'Fast file creation' shortcut.
-Filenames will have number before extension or at the end of the name if file doesn't have extension.
-Forbidden characters are ignored.</value>
-  </data>
   <data name="Open" xml:space="preserve">
     <value>Open</value>
   </data>

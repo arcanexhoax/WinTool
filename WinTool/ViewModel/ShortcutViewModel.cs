@@ -35,7 +35,6 @@ public class ShortcutViewModel : ObservableObject
         Shortcut = ShortcutUtils.Parse(optionsFactory().Shortcut, KeyState.Down);
         Description = description;
 
-        // TODO move fast file creation shortcut view into shortcut view
         EditShortcutCommand = new RelayCommand(() =>
         {   
             var window = new EditShortcutWindow(_editShortcutViewModel, keyInterceptor);

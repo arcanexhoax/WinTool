@@ -14,7 +14,7 @@
             <views:ShortcutView DataContext="{Binding ChangeFilePropertiesViewModel}" />
             <views:ShortcutView DataContext="{Binding RunWithArgsViewModel}" />
             <views:ShortcutView DataContext="{Binding CreateFileViewModel}" />
-            <views:FastFileCreationShortcutView DataContext="{Binding FastFileCreationViewModel}" />
+            <views:ShortcutView DataContext="{Binding FastFileCreationViewModel}" />
             <views:ShortcutView DataContext="{Binding SelectedItemCopyPathViewModel}" />
             <views:ShortcutView DataContext="{Binding SelectedItemCopyNameViewModel}" />
             <views:ShortcutView DataContext="{Binding OpenFolderInCmdViewModel}" />

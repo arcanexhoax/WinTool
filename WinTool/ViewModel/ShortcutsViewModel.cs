@@ -8,7 +8,7 @@ namespace WinTool.ViewModel;
 public class ShortcutsViewModel : ObservableObject
 {
     public ShortcutViewModel CreateFileViewModel { get; }
-    public FastFileCreationShortcutViewModel FastFileCreationViewModel { get; }
+    public ShortcutViewModel FastFileCreationViewModel { get; }
     public ShortcutViewModel SelectedItemCopyPathViewModel { get; }
     public ShortcutViewModel SelectedItemCopyNameViewModel { get; }
     public ShortcutViewModel RunWithArgsViewModel { get; }
@@ -18,7 +18,7 @@ public class ShortcutsViewModel : ObservableObject
     public ShortcutsViewModel(WritableOptions<ShortcutsOptions> shortcutsOptions, KeyInterceptor keyInterceptor, EditShortcutViewModel editShortcutViewModel)
     {
         CreateFileViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.CreateFile, shortcutsOptions, editShortcutViewModel, keyInterceptor, Resources.CreateFile);
-        FastFileCreationViewModel = new FastFileCreationShortcutViewModel(() => shortcutsOptions.CurrentValue.FastFileCreation, shortcutsOptions, editShortcutViewModel, keyInterceptor, Resources.FastFileCreation);
+        FastFileCreationViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.FastFileCreation, shortcutsOptions, editShortcutViewModel, keyInterceptor, Resources.FastFileCreation);
         SelectedItemCopyPathViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.SelectedItemCopyPath, shortcutsOptions, editShortcutViewModel, keyInterceptor, Resources.SelectedItemCopyPath);
         SelectedItemCopyNameViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.SelectedItemCopyName, shortcutsOptions, editShortcutViewModel, keyInterceptor, Resources.SelectedItemCopyName);
         RunWithArgsViewModel = new ShortcutViewModel(() => shortcutsOptions.CurrentValue.RunWithArgs, shortcutsOptions, editShortcutViewModel, keyInterceptor, Resources.RunWithArgs);

@@ -340,26 +340,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New file template.
-        /// </summary>
-        public static string NewFileTemplate {
-            get {
-                return ResourceManager.GetString("NewFileTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A template for new file of &apos;Fast file creation&apos; shortcut.
-        ///Filenames will have number before extension or at the end of the name if file doesn&apos;t have extension.
-        ///Forbidden characters are ignored..
-        /// </summary>
-        public static string NewFileTemplateToolTip {
-            get {
-                return ResourceManager.GetString("NewFileTemplateToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         public static string Open {
