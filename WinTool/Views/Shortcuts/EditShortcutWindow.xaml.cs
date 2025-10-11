@@ -1,12 +1,13 @@
 ﻿using GlobalKeyInterceptor;
 using System.Diagnostics;
 using System.Windows.Interop;
+using WinTool.Models;
 using WinTool.Native;
 using WinTool.ViewModels.Shortcuts;
 
 namespace WinTool.Views.Shortcuts;
 
-public partial class EditShortcutWindow : DialogWindow<Shortcut?, Shortcut>
+public partial class EditShortcutWindow : DialogWindow<EditShortcutInput, Shortcut>
 {
     private readonly KeyInterceptor _keyInterceptor;
 

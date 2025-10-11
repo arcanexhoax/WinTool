@@ -4,6 +4,7 @@ using GlobalKeyInterceptor;
 using System;
 using System.Diagnostics;
 using System.Threading;
+using WinTool.Models;
 using WinTool.Options;
 using WinTool.Properties;
 using WinTool.Services;
@@ -19,6 +20,7 @@ public class ShortcutViewModel : ObservableObject
     private readonly KeyInterceptor _keyInterceptor;
     private readonly Shell _shell;
     private readonly Action _command;
+    private readonly ShortcutContext _shortcutContext;
     private readonly string _shortcutName;
 
     public Shortcut? Shortcut
@@ -36,6 +38,7 @@ public class ShortcutViewModel : ObservableObject
         KeyInterceptor keyInterceptor,
         Shell shell,
         Action command,
+        ShortcutContext shortcutContext,
         string shortcutName,
         string description)
     {
@@ -44,6 +47,7 @@ public class ShortcutViewModel : ObservableObject
         _keyInterceptor = keyInterceptor;
         _shell = shell;
         _command = command;
+        _shortcutContext = shortcutContext;
         _shortcutName = shortcutName;
 
         Shortcut = ShortcutUtils.Parse(_shortcutsOptions.CurrentValue.Shortcuts[shortcutName], KeyState.Down);
@@ -56,6 +60,9 @@ public class ShortcutViewModel : ObservableObject
 
     private bool ExecuteCommand()
     {
+        if (_shortcutContext.IsEditing)
+            return false;
+
         Debug.WriteLine($"Executing {_shortcutName}");
         var shellActive = _shell.IsActive;
 
@@ -82,8 +89,11 @@ public class ShortcutViewModel : ObservableObject
 
     private void Edit()
     {
+        if (Shortcut is null)
+            return;
+
         var window = _windowFactory.Create<EditShortcutWindow>();
-        var result = window.ShowDialog(Shortcut);
+        var result = window.ShowDialog(new EditShortcutInput(Shortcut, _shortcutName));
 
         if (result is not { Success: true, Data: { } newShortcut } || Shortcut == newShortcut)
             return;

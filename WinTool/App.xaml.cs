@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Extensions;
+using WinTool.Models;
 using WinTool.Native;
 using WinTool.Options;
 using WinTool.Services;
@@ -63,6 +64,7 @@ public partial class App : Application
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
         builder.Services.AddSingleton(new KeyInterceptor());
+        builder.Services.AddSingleton<ShortcutContext>();
 
         _app = builder.Build();
     }

@@ -475,6 +475,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The shortcut is already used for &quot;{0}&quot;..
+        /// </summary>
+        public static string ShortcutAlreadyUsed {
+            get {
+                return ResourceManager.GetString("ShortcutAlreadyUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shortcuts.
         /// </summary>
         public static string Shortcuts {
