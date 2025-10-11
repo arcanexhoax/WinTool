@@ -1,17 +1,28 @@
-﻿namespace WinTool.Options;
+﻿using System.Collections.Generic;
+
+namespace WinTool.Options;
 
 public class ShortcutsOptions
 {
-    public ShortcutOptions CreateFile { get; set; } = new() { Shortcut = "Ctrl + E" };
-    public ShortcutOptions FastFileCreation { get; set; } = new() { Shortcut = "Ctrl + Shift + E" };
-    public ShortcutOptions SelectedItemCopyPath { get; set; } = new() { Shortcut = "Ctrl + Shift + C" };
-    public ShortcutOptions SelectedItemCopyName { get; set; } = new() { Shortcut = "Ctrl + Shift + X" };
-    public ShortcutOptions RunWithArgs { get; set; } = new() { Shortcut = "Ctrl + O" };
-    public ShortcutOptions OpenFolderInCmd { get; set; } = new() { Shortcut = "Ctrl + Shift + L" };
-    public ShortcutOptions ChangeFileProperties { get; set; } = new() { Shortcut = "Ctrl + F2" };
+    public Dictionary<string, string> Shortcuts { get; set; } = new()
+    {
+        { ShortcutNames.CreateFile, "Ctrl + E" },
+        { ShortcutNames.FastFileCreation, "Ctrl + Shift + E" },
+        { ShortcutNames.SelectedItemCopyPath, "Ctrl + Shift + C" },
+        { ShortcutNames.SelectedItemCopyName, "Ctrl + Shift + X" },
+        { ShortcutNames.RunWithArgs, "Ctrl + O" },
+        { ShortcutNames.OpenFolderInCmd, "Ctrl + Shift + L" },
+        { ShortcutNames.ChangeFileProperties, "Ctrl + F2" }
+    };
 }
 
-public class ShortcutOptions
+public class ShortcutNames
 {
-    public required string Shortcut { get; set; } 
+    public const string CreateFile = nameof(CreateFile);
+    public const string FastFileCreation = nameof(FastFileCreation);
+    public const string SelectedItemCopyPath = nameof(SelectedItemCopyPath);
+    public const string SelectedItemCopyName = nameof(SelectedItemCopyName);
+    public const string RunWithArgs = nameof(RunWithArgs);
+    public const string OpenFolderInCmd = nameof(OpenFolderInCmd);
+    public const string ChangeFileProperties = nameof(ChangeFileProperties);
 }

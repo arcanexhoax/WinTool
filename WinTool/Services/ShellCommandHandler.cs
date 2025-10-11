@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using WinTool.CommandLine;
-using WinTool.Model;
+using WinTool.Models;
 using WinTool.Properties;
 using WinTool.Utils;
-using WinTool.View;
-using WinTool.ViewModel;
+using WinTool.ViewModels.Shortcuts;
+using WinTool.Views.Shortcuts;
 using File = System.IO.File;
 
 namespace WinTool.Services;

@@ -1,0 +1,60 @@
+﻿<Window x:Class="WinTool.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:vm="clr-namespace:WinTool.ViewModels"
+        xmlns:shortcuts="clr-namespace:WinTool.Views.Shortcuts"
+        xmlns:features="clr-namespace:WinTool.Views.Features"
+        xmlns:settings="clr-namespace:WinTool.Views.Settings"
+        xmlns:p="clr-namespace:WinTool.Properties"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+        Title="{x:Static p:Resources.WinTool}"
+        Icon="/Resources/logo.png"
+        mc:Ignorable="d"
+        Height="450"
+        Width="800"
+        x:Name="mainWindow"
+        WindowStartupLocation="CenterScreen"
+        Closing="OnWindowClosing"
+        Activated="OnWindowActivated">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding WindowClosingCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <tb:TaskbarIcon Visibility="Visible"
+                        ToolTipText="{x:Static p:Resources.TrayToolTip}"
+                        IconSource="/Resources/icon.ico"
+                        PopupActivation="RightClick"
+                        DoubleClickCommand="{Binding OpenWindowCommand}">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{x:Static p:Resources.Open}"
+                              Command="{Binding OpenWindowCommand}" />
+                    <Separator />
+                    <MenuItem Header="{x:Static p:Resources.Close}"
+                              Command="{Binding CloseWindowCommand}" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+
+        <TabControl>
+            <TabItem Header="{x:Static p:Resources.Shortcuts}">
+                <shortcuts:ShortcutsView DataContext="{Binding ShortcutsViewModel}" />
+            </TabItem>
+            <TabItem Header="{x:Static p:Resources.Features}">
+                <features:FeaturesView DataContext="{Binding FeaturesViewModel}" />
+            </TabItem>
+            <TabItem Header="{x:Static p:Resources.Settings}">
+                <settings:SettingsView DataContext="{Binding SettingsViewModel}" />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

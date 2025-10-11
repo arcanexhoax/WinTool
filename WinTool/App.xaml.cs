@@ -11,8 +11,12 @@ using WinTool.Native;
 using WinTool.Options;
 using WinTool.Services;
 using WinTool.Utils;
-using WinTool.View;
-using WinTool.ViewModel;
+using WinTool.ViewModels;
+using WinTool.ViewModels.Features;
+using WinTool.ViewModels.Settings;
+using WinTool.ViewModels.Shortcuts;
+using WinTool.Views;
+using WinTool.Views.Features;
 
 namespace WinTool;
 
