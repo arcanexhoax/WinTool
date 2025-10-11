@@ -7,7 +7,7 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class EditShortcutViewModel : ObservableObject, IModalViewModel<Shortcut?, Shortcut>
+public class EditShortcutViewModel : ObservableObject, IDialogViewModel<Shortcut?, Shortcut>
 {
     private Action<Result<Shortcut>>? _onResult;
 
@@ -31,9 +31,9 @@ public class EditShortcutViewModel : ObservableObject, IModalViewModel<Shortcut?
         CancelCommand = new RelayCommand(() => _onResult?.Invoke(new Result<Shortcut>(false)));
     }
 
-    public void OnShow(Shortcut? input, Action<Result<Shortcut>> onResult)
+    public void OnShow(Shortcut? shortcut, Action<Result<Shortcut>> onResult)
     {
-        Shortcut = input;
+        Shortcut = shortcut;
         _onResult = onResult;
     }
 
@@ -44,13 +44,7 @@ public class EditShortcutViewModel : ObservableObject, IModalViewModel<Shortcut?
 
     private void Save()
     {
-        if (Shortcut is null)
-        {
-            _onResult?.Invoke(new Result<Shortcut>(false));
-            return;
-        }
-
-        if (Shortcut.Modifier is KeyModifier.None)
+        if (Shortcut is not { Modifier: not KeyModifier.None })
             return;
 
         _onResult?.Invoke(new Result<Shortcut>(true, Shortcut));

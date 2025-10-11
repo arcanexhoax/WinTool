@@ -37,7 +37,7 @@ public class SettingsViewModel : ObservableObject
 
                 if (SetProperty(ref field, value))
                 {
-                    _settingsOptions.Update(() => _settingsOptions.CurrentValue.WindowsStartupEnabled = value);
+                    _settingsOptions.Update(o => o.WindowsStartupEnabled = value);
                 }
             }
             catch (Exception ex)

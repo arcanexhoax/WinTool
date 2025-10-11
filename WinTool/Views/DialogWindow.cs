@@ -37,7 +37,7 @@ public class DialogWindow<TIn, TOut> : ModalWindow
 {
     public Result<TOut> ShowDialog(TIn data)
     {
-        var vm = (IModalViewModel<TIn, TOut>)DataContext;
+        var vm = (IDialogViewModel<TIn, TOut>)DataContext;
         Result<TOut>? result = null;
 
         SourceInitialized += (_, _) =>

@@ -7,7 +7,7 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class ChangeFilePropertiesViewModel : ObservableObject, IModalViewModel<ChangeFilePropertiesInput, ChangeFilePropertiesOutput>
+public class ChangeFilePropertiesViewModel : ObservableObject, IDialogViewModel<ChangeFilePropertiesInput, ChangeFilePropertiesOutput>
 {
     private Action<Result<ChangeFilePropertiesOutput>>? _onResult;
 

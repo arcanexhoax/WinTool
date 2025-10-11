@@ -7,7 +7,7 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class RunWithArgsViewModel : ObservableObject, IModalViewModel<string, string?>
+public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, string?>
 {
     private Action<Result<string?>>? _onResult;
 

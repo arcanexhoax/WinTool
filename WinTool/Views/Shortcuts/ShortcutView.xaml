@@ -16,7 +16,7 @@
         <StackPanel Orientation="Horizontal"
                     Height="32">
             <StackPanel Orientation="Horizontal"
-                        Width="160"
+                        Width="240"
                         Background="Transparent">
                 <TextBlock Text="{Binding Shortcut}"
                            FontWeight="SemiBold" />

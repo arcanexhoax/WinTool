@@ -15,8 +15,10 @@ namespace WinTool.ViewModels.Shortcuts;
 public class ShortcutViewModel : ObservableObject
 {
     protected readonly WritableOptions<ShortcutsOptions> _shortcutsOptions;
+    private readonly WindowFactory _windowFactory;
     private readonly KeyInterceptor _keyInterceptor;
     private readonly Shell _shell;
+    private readonly Action _command;
     private readonly string _shortcutName;
 
     public Shortcut? Shortcut
@@ -38,23 +40,21 @@ public class ShortcutViewModel : ObservableObject
         string description)
     {
         _shortcutsOptions = shortcutsOptions;
+        _windowFactory = windowFactory;
         _keyInterceptor = keyInterceptor;
         _shell = shell;
+        _command = command;
         _shortcutName = shortcutName;
 
         Shortcut = ShortcutUtils.Parse(_shortcutsOptions.CurrentValue.Shortcuts[shortcutName], KeyState.Down);
         Description = description;
 
-        _keyInterceptor.RegisterShortcut(Shortcut, () => ExecuteCommand(command));
+        _keyInterceptor.RegisterShortcut(Shortcut, ExecuteCommand);
 
-        EditShortcutCommand = new RelayCommand(() =>
-        {   
-            var window = windowFactory.Create<EditShortcutWindow>();
-            window.ShowDialog(Shortcut);
-        });
+        EditShortcutCommand = new RelayCommand(Edit);
     }
 
-    private bool ExecuteCommand(Action command)
+    private bool ExecuteCommand()
     {
         Debug.WriteLine($"Executing {_shortcutName}");
         var shellActive = _shell.IsActive;
@@ -64,7 +64,7 @@ public class ShortcutViewModel : ObservableObject
         {
             try
             {
-                command();
+                _command();
             }
             catch (Exception ex)
             {
@@ -78,5 +78,20 @@ public class ShortcutViewModel : ObservableObject
         t.Start();
 
         return shellActive;
+    }
+
+    private void Edit()
+    {
+        var window = _windowFactory.Create<EditShortcutWindow>();
+        var result = window.ShowDialog(Shortcut);
+
+        if (result is not { Success: true, Data: { } newShortcut } || Shortcut == newShortcut)
+            return;
+
+        _keyInterceptor.UnregisterShortcut(Shortcut, ExecuteCommand);
+        Shortcut = newShortcut;
+        _keyInterceptor.RegisterShortcut(Shortcut, ExecuteCommand);
+
+        _shortcutsOptions.Update(o => o.Shortcuts[_shortcutName] = Shortcut.ToString());
     }
 }

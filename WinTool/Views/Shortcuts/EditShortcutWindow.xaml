@@ -14,7 +14,7 @@
     WindowStartupLocation="CenterScreen"
     Title="{x:Static p:Resources.EnterNewShortcut}" 
     Height="280" 
-    Width="450">
+    Width="500">
     <StackPanel>
         <TextBlock Text="{Binding Shortcut}"
                    FontSize="30"

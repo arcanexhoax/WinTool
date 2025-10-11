@@ -14,9 +14,9 @@ public class WritableOptions<T>(CustomFileConfigurationProvider provider, IOptio
 
     public T CurrentValue => options.CurrentValue;
 
-    public void Update(Action update)
+    public void Update(Action<T> update)
     {
-        update();
+        update(CurrentValue);
         var data = CurrentValue.ToDictionary(_jsonOptions);
         _provider.Set(data);
     }

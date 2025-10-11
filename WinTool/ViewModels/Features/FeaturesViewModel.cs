@@ -13,7 +13,7 @@ public class FeaturesViewModel : ObservableObject
         {
             if (SetProperty(ref field, value))
             {
-                _featuresOptions.Update(() => _featuresOptions.CurrentValue.EnableSwitchLanguagePopup = value);
+                _featuresOptions.Update(o => o.EnableSwitchLanguagePopup = value);
             }
         }
     }

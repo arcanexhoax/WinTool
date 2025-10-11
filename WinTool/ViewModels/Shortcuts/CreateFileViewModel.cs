@@ -20,7 +20,7 @@ public enum SizeUnit : long
     TB = 1_099_511_627_776,
 }
 
-public class CreateFileViewModel : ObservableObject, IModalViewModel<string, CreateFileOutput>
+public class CreateFileViewModel : ObservableObject, IDialogViewModel<string, CreateFileOutput>
 {
     private Action<Result<CreateFileOutput>>? _onResult;
 
