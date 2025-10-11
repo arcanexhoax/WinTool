@@ -31,7 +31,7 @@
     <Compile Update="Views\Features\SwitchLanguageWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Shortcuts\CreateFileView.xaml.cs">
+    <Compile Update="Views\Shortcuts\CreateFileWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\Shortcuts\RunWithArgsWindow.xaml.cs">
@@ -53,7 +53,7 @@
     <Page Update="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\Shortcuts\CreateFileView.xaml">
+    <Page Update="Views\Shortcuts\CreateFileWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Shortcuts\RunWithArgsWindow.xaml">

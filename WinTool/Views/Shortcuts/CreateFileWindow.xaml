@@ -1,5 +1,5 @@
 ﻿<view:DialogWindow 
-    x:Class="WinTool.Views.Shortcuts.CreateFileView"
+    x:Class="WinTool.Views.Shortcuts.CreateFileWindow"
     x:TypeArguments="sys:String,model:CreateFileOutput"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:model="clr-namespace:WinTool.Models"

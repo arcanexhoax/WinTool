@@ -8,20 +8,17 @@ using WinTool.CommandLine;
 using WinTool.Models;
 using WinTool.Properties;
 using WinTool.Utils;
-using WinTool.ViewModels.Shortcuts;
 using WinTool.Views.Shortcuts;
 using File = System.IO.File;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(Shell shell, CreateFileViewModel createFileViewModel, RunWithArgsViewModel runWithArgsViewModel, ChangeFilePropertiesViewModel changeFilePropertiesViewModel)
+public class ShellCommandHandler(Shell shell, WindowFactory windowFactory)
 {
     private const string NewFileTemplate = "NewFile.txt";
 
     private readonly Shell _shell = shell;
-    private readonly CreateFileViewModel _createFileViewModel = createFileViewModel;
-    private readonly RunWithArgsViewModel _runWithArgsViewModel = runWithArgsViewModel;
-    private readonly ChangeFilePropertiesViewModel _changeFilePropertiesViewModel = changeFilePropertiesViewModel;
+    private readonly WindowFactory _windowFactory = windowFactory;
 
     public bool IsBackgroundMode { get; set; } = true;
 
@@ -63,8 +60,8 @@ public class ShellCommandHandler(Shell shell, CreateFileViewModel createFileView
         if (string.IsNullOrEmpty(path))
             return;
 
-        var createFileView = new CreateFileView(_createFileViewModel);
-        var result = createFileView.ShowDialog(path);
+        var createFileWindow = _windowFactory.Create<CreateFileWindow>();
+        var result = createFileWindow.ShowDialog(path);
 
         if (result is not { Success: true, Data: { } data })
             return;
@@ -140,7 +137,7 @@ public class ShellCommandHandler(Shell shell, CreateFileViewModel createFileView
 
         string selectedItem = selectedPaths[0];
 
-        var runWithArgsWindow = new RunWithArgsWindow(_runWithArgsViewModel);
+        var runWithArgsWindow = _windowFactory.Create<RunWithArgsWindow>();
         var result = runWithArgsWindow.ShowDialog(selectedItem);
 
         if (result is not { Success: true, Data: { } args })
@@ -196,7 +193,7 @@ public class ShellCommandHandler(Shell shell, CreateFileViewModel createFileView
             throw;
         }
 
-        var changeFilePropertiesView = new ChangeFilePropertiesView(_changeFilePropertiesViewModel);
+        var changeFilePropertiesView = _windowFactory.Create<ChangeFilePropertiesView>();
         var result = changeFilePropertiesView.ShowDialog(new ChangeFilePropertiesInput(
             selectedItemPath,
             tfile != null,

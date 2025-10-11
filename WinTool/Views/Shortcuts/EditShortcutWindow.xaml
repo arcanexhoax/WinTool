@@ -9,7 +9,7 @@
     xmlns:view="clr-namespace:WinTool.Views"
     xmlns:vm="clr-namespace:WinTool.ViewModels.Shortcuts"
     xmlns:p="clr-namespace:WinTool.Properties"
-    d:DataContext="{d:DesignInstance Type=vml:EditShortcutViewModel}"
+    d:DataContext="{d:DesignInstance Type=vm:EditShortcutViewModel}"
     mc:Ignorable="d"
     WindowStartupLocation="CenterScreen"
     Title="{x:Static p:Resources.EnterNewShortcut}" 

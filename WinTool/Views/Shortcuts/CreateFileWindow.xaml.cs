@@ -3,9 +3,9 @@ using WinTool.ViewModels.Shortcuts;
 
 namespace WinTool.Views.Shortcuts;
 
-public partial class CreateFileView : DialogWindow<string, CreateFileOutput>
+public partial class CreateFileWindow : DialogWindow<string, CreateFileOutput>
 {
-    public CreateFileView(CreateFileViewModel createFileViewModel)
+    public CreateFileWindow(CreateFileViewModel createFileViewModel)
     {
         DataContext = createFileViewModel;
         InitializeComponent();

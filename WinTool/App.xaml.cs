@@ -17,6 +17,7 @@ using WinTool.ViewModels.Settings;
 using WinTool.ViewModels.Shortcuts;
 using WinTool.Views;
 using WinTool.Views.Features;
+using WinTool.Views.Shortcuts;
 
 namespace WinTool;
 
@@ -39,6 +40,11 @@ public partial class App : Application
         builder.Services.Configure<ShortcutsOptions>(builder.Configuration.GetSection(nameof(ShortcutsOptions)));
 
         builder.Services.AddSingleton<MainWindow>();
+        builder.Services.AddTransient<CreateFileWindow>();
+        builder.Services.AddTransient<RunWithArgsWindow>();
+        builder.Services.AddTransient<ChangeFilePropertiesView>();
+        builder.Services.AddTransient<EditShortcutWindow>();
+        builder.Services.AddSingleton<MainWindow>();
         builder.Services.AddSingleton<SwitchLanguageWindow>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<SwitchLanguageViewModel>();
@@ -52,6 +58,7 @@ public partial class App : Application
         builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
+        builder.Services.AddSingleton<WindowFactory>();
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
