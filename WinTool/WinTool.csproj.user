@@ -10,16 +10,31 @@
     <Compile Update="UI\Controls\DateTimePicker.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\ChangeFilePropertiesView.xaml.cs">
+    <Compile Update="Views\Shortcuts\ChangeFilePropertiesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\SwitchLanguageWindow.xaml.cs">
+    <Compile Update="Views\Shortcuts\EditShortcutWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\CreateFileView.xaml.cs">
+    <Compile Update="Views\Features\FeaturesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\RunWithArgsWindow.xaml.cs">
+    <Compile Update="Views\Settings\SettingsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Shortcuts\ShortcutsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Shortcuts\ShortcutView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Features\SwitchLanguageWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Shortcuts\CreateFileWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Shortcuts\RunWithArgsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -32,16 +47,16 @@
     <Page Update="UI\Controls\DateTimePicker.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\ChangeFilePropertiesView.xaml">
+    <Page Update="Views\Shortcuts\ChangeFilePropertiesView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\MainWindow.xaml">
+    <Page Update="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\CreateFileView.xaml">
+    <Page Update="Views\Shortcuts\CreateFileWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\RunWithArgsWindow.xaml">
+    <Page Update="Views\Shortcuts\RunWithArgsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

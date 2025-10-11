@@ -1,0 +1,89 @@
+﻿<view:DialogWindow 
+    x:Class="WinTool.Views.Shortcuts.CreateFileWindow"
+    x:TypeArguments="sys:String,model:CreateFileOutput"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:model="clr-namespace:WinTool.Models"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:view="clr-namespace:WinTool.Views"
+    xmlns:p="clr-namespace:WinTool.Properties"
+    xmlns:vm="clr-namespace:WinTool.ViewModels.Shortcuts"
+    xmlns:u="clr-namespace:WinTool.Utils"
+    d:DataContext="{d:DesignInstance Type=vm:CreateFileViewModel}"
+    Title="{x:Static p:Resources.CreateFile}"
+    Icon="/Resources/logo.png"
+    mc:Ignorable="d"
+    Width="300"
+    WindowStartupLocation="CenterScreen"
+    ResizeMode="NoResize"
+    SizeToContent="Height">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding CreateCommand}"
+                    Key="Return" />
+        <KeyBinding Command="{Binding CloseWindowCommand}"
+                    Key="Esc" />
+    </Window.InputBindings>
+
+    <Border Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding RelativeFolderPath}"
+                           ToolTip="{Binding FullFolderPath}"
+                           MaxWidth="95"
+                           TextTrimming="CharacterEllipsis"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="/"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"
+                     u:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}"
+                     Height="24"
+                     VerticalContentAlignment="Center"
+                     Grid.Row="0"
+                     Grid.Column="1"
+                     Margin="5 0 0 0"
+                     x:Name="textBox"/>
+
+            <Expander Header="{x:Static p:Resources.Options}"
+                      IsExpanded="{Binding AreOptionsOpened}"
+                      Margin="0 20 0 0"
+                      Padding="0 20 0 0"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{x:Static p:Resources.Size}"
+                               VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Size}"
+                             Width="150"
+                             Margin="16 0 0 0"/>
+                    <ComboBox ItemsSource="{Binding SizeUnits}"
+                              SelectedItem="{Binding SelectedSizeUnit, UpdateSourceTrigger=PropertyChanged}"
+                              Width="50"
+                              Margin="5 0 0 0"/>
+                </StackPanel>
+            </Expander>
+            
+            <Button Content="{x:Static p:Resources.Create}"
+                    Command="{Binding CreateCommand}"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Width="60"
+                    Height="24"
+                    Margin="0 30 0 0"/>
+        </Grid>
+    </Border>
+</view:DialogWindow>

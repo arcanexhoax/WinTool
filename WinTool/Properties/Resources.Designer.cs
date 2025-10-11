@@ -79,6 +79,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change file &apos;{0}&apos; properties.
         /// </summary>
         public static string ChangeFileProperiesTitle {
@@ -169,11 +178,29 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The shortcut should start with at least one modifier (Ctrl, Shift, Alt, Win).
+        /// </summary>
+        public static string EditShortcutTip {
+            get {
+                return ResourceManager.GetString("EditShortcutTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable switch language popup.
         /// </summary>
         public static string EnableSwitchLanguagePopup {
             get {
                 return ResourceManager.GetString("EnableSwitchLanguagePopup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a new shortcut.
+        /// </summary>
+        public static string EnterNewShortcut {
+            get {
+                return ResourceManager.GetString("EnterNewShortcut", resourceCulture);
             }
         }
         
@@ -192,6 +219,15 @@ namespace WinTool.Properties {
         public static string FastFileCreation {
             get {
                 return ResourceManager.GetString("FastFileCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Features.
+        /// </summary>
+        public static string Features {
+            get {
+                return ResourceManager.GetString("Features", resourceCulture);
             }
         }
         
@@ -300,26 +336,6 @@ namespace WinTool.Properties {
         public static string MediaTags {
             get {
                 return ResourceManager.GetString("MediaTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New file template.
-        /// </summary>
-        public static string NewFileTemplate {
-            get {
-                return ResourceManager.GetString("NewFileTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A template for new file of &apos;Fast file creation&apos; shortcut.
-        ///Filenames will have number before extension or at the end of the name if file doesn&apos;t have extension.
-        ///Forbidden characters are ignored..
-        /// </summary>
-        public static string NewFileTemplateToolTip {
-            get {
-                return ResourceManager.GetString("NewFileTemplateToolTip", resourceCulture);
             }
         }
         
@@ -455,6 +471,15 @@ namespace WinTool.Properties {
         public static string SetWindowsStartupError {
             get {
                 return ResourceManager.GetString("SetWindowsStartupError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The shortcut is already used for &quot;{0}&quot;..
+        /// </summary>
+        public static string ShortcutAlreadyUsed {
+            get {
+                return ResourceManager.GetString("ShortcutAlreadyUsed", resourceCulture);
             }
         }
         

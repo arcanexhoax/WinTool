@@ -1,5 +1,4 @@
 ﻿using GlobalKeyInterceptor;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -7,11 +6,19 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Extensions;
+using WinTool.Models;
 using WinTool.Native;
+using WinTool.Options;
 using WinTool.Services;
 using WinTool.Utils;
-using WinTool.View;
-using WinTool.ViewModel;
+using WinTool.ViewModels;
+using WinTool.ViewModels.Features;
+using WinTool.ViewModels.Settings;
+using WinTool.ViewModels.Shortcuts;
+using WinTool.Views;
+using WinTool.Views.Features;
+using WinTool.Views.Shortcuts;
 
 namespace WinTool;
 
@@ -27,16 +34,37 @@ public partial class App : Application
 
         var builder = Host.CreateApplicationBuilder();
 
+        builder.AddConfigurationFileProvider();
+
+        builder.Services.Configure<SettingsOptions>(builder.Configuration.GetSection(nameof(SettingsOptions)));
+        builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection(nameof(FeaturesOptions)));
+        builder.Services.Configure<ShortcutsOptions>(builder.Configuration.GetSection(nameof(ShortcutsOptions)));
+
+        builder.Services.AddSingleton<MainWindow>();
+        builder.Services.AddTransient<CreateFileWindow>();
+        builder.Services.AddTransient<RunWithArgsWindow>();
+        builder.Services.AddTransient<ChangeFilePropertiesView>();
+        builder.Services.AddTransient<EditShortcutWindow>();
         builder.Services.AddSingleton<MainWindow>();
         builder.Services.AddSingleton<SwitchLanguageWindow>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<SwitchLanguageViewModel>();
-        builder.Services.AddSingleton<CommandHandler>();
-        builder.Services.AddSingleton<KeyInterceptor>();
+        builder.Services.AddSingleton<ShortcutsViewModel>();
+        builder.Services.AddSingleton<FeaturesViewModel>();
+        builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<CreateFileViewModel>();
+        builder.Services.AddSingleton<RunWithArgsViewModel>();
+        builder.Services.AddSingleton<ChangeFilePropertiesViewModel>();
+        builder.Services.AddSingleton<EditShortcutViewModel>();
+        builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();
-        builder.Services.AddSingleton<SettingsManager>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
-        builder.Services.AddSingleton<MemoryCache>();
+        builder.Services.AddSingleton<WindowFactory>();
+        builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
+        builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
+        builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
+        builder.Services.AddSingleton(new KeyInterceptor());
+        builder.Services.AddSingleton<ShortcutContext>();
 
         _app = builder.Build();
     }
@@ -48,7 +76,7 @@ public partial class App : Application
         // activate the window
         _app.Services.GetRequiredService<SwitchLanguageWindow>();
         var mainWindow = _app.Services.GetRequiredService<MainWindow>();
-        var commandHandler = _app.Services.GetRequiredService<CommandHandler>();
+        var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
 
         var clp = CommandLineParameters.Parse(e.Args);
 
@@ -71,7 +99,7 @@ public partial class App : Application
             Environment.Exit(0);
     }
 
-    private void HandleOperations(CommandHandler commandHandler, CommandLineParameters clp)
+    private void HandleOperations(ShellCommandHandler commandHandler, CommandLineParameters clp)
     {
         if (clp.CreateFileParameter is { FilePath: not (null or [])} createFile)
         {
