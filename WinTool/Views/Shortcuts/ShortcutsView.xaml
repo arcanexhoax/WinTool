@@ -9,13 +9,26 @@
              d:DataContext="{d:DesignInstance Type=vm:ShortcutsViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Padding="10">
-        <ItemsControl ItemsSource="{Binding Shortcuts}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <shortcuts:ShortcutView DataContext="{Binding}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+    <Border Style="{DynamicResource MainContentBorderStyle}">
+        <StackPanel>
+            <TextBlock Text="{x:Static p:Resources.Shortcuts}"
+                       Style="{StaticResource ContentHeader}" />
+
+            <Border Style="{DynamicResource CardBorderStyle}"
+                    Padding="16 16 16 8">
+                <StackPanel>
+                    <TextBlock Text="{x:Static p:Resources.WindowsExplorer}"
+                               Style="{StaticResource CardHeader}" />
+                    
+                    <ItemsControl ItemsSource="{Binding Shortcuts}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <shortcuts:ShortcutView DataContext="{Binding}" Margin="0 0 0 8" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
     </Border>
 </UserControl>

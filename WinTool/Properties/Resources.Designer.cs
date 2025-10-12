@@ -124,6 +124,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Common.
+        /// </summary>
+        public static string Common {
+            get {
+                return ResourceManager.GetString("Common", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Convert selected text to lowercase.
         /// </summary>
         public static string ConvertToLowercase {
@@ -187,7 +196,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable switch language popup.
+        ///   Looks up a localized string similar to Enable Input Popup.
         /// </summary>
         public static string EnableSwitchLanguagePopup {
             get {
@@ -300,6 +309,15 @@ namespace WinTool.Properties {
         public static string GetSettingsError {
             get {
                 return ResourceManager.GetString("GetSettingsError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Popup.
+        /// </summary>
+        public static string InputPopup {
+            get {
+                return ResourceManager.GetString("InputPopup", resourceCulture);
             }
         }
         
@@ -439,7 +457,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy name of selected item (If no item is selected, the name of the open folder will be copied).
+        ///   Looks up a localized string similar to Copy name of selected/opened item.
         /// </summary>
         public static string SelectedItemCopyName {
             get {
@@ -448,7 +466,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy path to selected item (If no item is selected, the path to the open folder will be copied).
+        ///   Looks up a localized string similar to Copy path to selected/opened item.
         /// </summary>
         public static string SelectedItemCopyPath {
             get {
@@ -525,6 +543,15 @@ namespace WinTool.Properties {
         public static string UpdateSettingsError {
             get {
                 return ResourceManager.GetString("UpdateSettingsError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Explorer.
+        /// </summary>
+        public static string WindowsExplorer {
+            get {
+                return ResourceManager.GetString("WindowsExplorer", resourceCulture);
             }
         }
         

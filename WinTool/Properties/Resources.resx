@@ -157,7 +157,7 @@
     <value>Unable to find drive '{0}'.</value>
   </data>
   <data name="EnableSwitchLanguagePopup" xml:space="preserve">
-    <value>Enable switch language popup</value>
+    <value>Enable Input Popup</value>
   </data>
   <data name="EnterNewShortcut" xml:space="preserve">
     <value>Enter a new shortcut</value>
@@ -241,10 +241,10 @@
     <value>Save file '{0}' properties error: {1}</value>
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
-    <value>Copy name of selected item (If no item is selected, the name of the open folder will be copied)</value>
+    <value>Copy name of selected/opened item</value>
   </data>
   <data name="SelectedItemCopyPath" xml:space="preserve">
-    <value>Copy path to selected item (If no item is selected, the path to the open folder will be copied)</value>
+    <value>Copy path to selected/opened item</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -281,5 +281,14 @@
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>The shortcut is already used for "{0}".</value>
+  </data>
+  <data name="Common" xml:space="preserve">
+    <value>Common</value>
+  </data>
+  <data name="InputPopup" xml:space="preserve">
+    <value>Input Popup</value>
+  </data>
+  <data name="WindowsExplorer" xml:space="preserve">
+    <value>Windows Explorer</value>
   </data>
 </root>

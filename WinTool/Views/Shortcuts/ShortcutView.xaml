@@ -12,23 +12,30 @@
         <c:BoolToVisibilityConverter x:Key="BoolToVisConverter" />
     </UserControl.Resources>
 
-    <Border>
-        <StackPanel Orientation="Horizontal"
-                    Height="32">
+    <Grid Height="32">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.75*" />
+            <ColumnDefinition Width="0.25*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="{Binding Description}"/>
+
+        <Border Grid.Column="1">
             <StackPanel Orientation="Horizontal"
-                        Width="240"
-                        Background="Transparent">
+                        Background="Transparent"
+                        HorizontalAlignment="Right">
+                <Button x:Name="EditButton"
+                        Visibility="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=StackPanel}, Converter={StaticResource BoolToVisConverter}}"
+                        Command="{Binding EditShortcutCommand}"
+                        Margin="0 0 8 0">
+                    <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                               FontSize="12"
+                               Text="&#xE70F;" />
+                </Button>
+                
                 <TextBlock Text="{Binding Shortcut}"
                            FontWeight="SemiBold" />
-                <Button Content="Edit"
-                        x:Name="EditButton"
-                        Visibility="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=StackPanel}, Converter={StaticResource BoolToVisConverter}}"
-                        Margin="10 0 0 0"
-                        Height="22"
-                        Width="36"
-                        Command="{Binding EditShortcutCommand}" />
             </StackPanel>
-            <TextBlock Text="{Binding Description}" />
-        </StackPanel>
-    </Border>
+        </Border>
+    </Grid>
 </UserControl>

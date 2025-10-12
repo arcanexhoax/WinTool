@@ -5,8 +5,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
                 <ResourceDictionary Source="/UI/Controls/Expander.xaml" />
                 <ResourceDictionary Source="/UI/Controls/TextBlock.xaml" />
+                <ResourceDictionary Source="/UI/Controls/CardBorder.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

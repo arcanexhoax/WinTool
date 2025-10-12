@@ -45,7 +45,7 @@
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
 
-        <TabControl>
+        <TabControl TabStripPlacement="Left">
             <TabItem Header="{x:Static p:Resources.Shortcuts}">
                 <shortcuts:ShortcutsView DataContext="{Binding ShortcutsViewModel}" />
             </TabItem>

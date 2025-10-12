@@ -4,14 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:WinTool.Properties"
+             xmlns:settings="clr-namespace:WinTool.ViewModels.Settings"
+             d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Padding="10">
+    <Border Style="{DynamicResource MainContentBorderStyle}">
         <StackPanel>
-            <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
-                      IsChecked="{Binding LaunchOnWindowsStartup}"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left" />
+            <TextBlock Text="{x:Static p:Resources.Settings}"
+                       Style="{StaticResource ContentHeader}" />
+
+            <Border Style="{DynamicResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="{x:Static p:Resources.Common}"
+                               Style="{StaticResource CardHeader}" />
+                    <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
+                              IsChecked="{Binding LaunchOnWindowsStartup}"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
         </StackPanel>
     </Border>
 </UserControl>

@@ -6,12 +6,21 @@
              xmlns:p="clr-namespace:WinTool.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Padding="10">
+    <Border Style="{DynamicResource MainContentBorderStyle}">
         <StackPanel>
-            <CheckBox Content="{x:Static p:Resources.EnableSwitchLanguagePopup}"
-                      IsChecked="{Binding EnableSwitchLanguagePopup}"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left" />
+            <TextBlock Text="{x:Static p:Resources.Features}"
+                       Style="{StaticResource ContentHeader}" />
+
+            <Border Style="{DynamicResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="{x:Static p:Resources.InputPopup}"
+                               Style="{StaticResource CardHeader}" />
+                    <CheckBox Content="{x:Static p:Resources.EnableSwitchLanguagePopup}"
+                              IsChecked="{Binding EnableSwitchLanguagePopup}"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </Border>
 </UserControl>
