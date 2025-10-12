@@ -24,6 +24,6 @@ public class ShortcutsViewModel(
         new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.CopyFileName, shortcutContext, ShortcutNames.SelectedItemCopyName, Resources.SelectedItemCopyName),
         new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.RunWithArgs, shortcutContext, ShortcutNames.RunWithArgs, Resources.RunWithArgs),
         new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.OpenInCmd, shortcutContext, ShortcutNames.OpenFolderInCmd, Resources.OpenFolderInCmd),
-        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.ChangeFileProperties, shortcutContext, ShortcutNames.ChangeFileProperties, Resources.ChangeFileProperties)
+        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.ChangeFileProperties, shortcutContext, ShortcutNames.ChangeFileProperties, Resources.ChangeFileProperties) { IsLast = true }
     ];
 }

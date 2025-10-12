@@ -28,6 +28,11 @@ public class ShortcutViewModel : ObservableObject
         get; set => SetProperty(ref field, value);
     }
 
+    public bool IsLast
+    {
+        get; set => SetProperty(ref field, value);
+    }
+
     public string Description { get; }
 
     public RelayCommand EditShortcutCommand { get; }
