@@ -16,7 +16,7 @@ namespace WinTool.ViewModels.Shortcuts;
 public class ShortcutViewModel : ObservableObject
 {
     protected readonly WritableOptions<ShortcutsOptions> _shortcutsOptions;
-    private readonly WindowFactory _windowFactory;
+    private readonly ViewFactory _viewFactory;
     private readonly KeyInterceptor _keyInterceptor;
     private readonly Shell _shell;
     private readonly Action _command;
@@ -39,7 +39,7 @@ public class ShortcutViewModel : ObservableObject
 
     public ShortcutViewModel(
         WritableOptions<ShortcutsOptions> shortcutsOptions,
-        WindowFactory windowFactory,
+        ViewFactory viewFactory,
         KeyInterceptor keyInterceptor,
         Shell shell,
         Action command,
@@ -48,7 +48,7 @@ public class ShortcutViewModel : ObservableObject
         string description)
     {
         _shortcutsOptions = shortcutsOptions;
-        _windowFactory = windowFactory;
+        _viewFactory = viewFactory;
         _keyInterceptor = keyInterceptor;
         _shell = shell;
         _command = command;
@@ -97,7 +97,7 @@ public class ShortcutViewModel : ObservableObject
         if (Shortcut is null)
             return;
 
-        var window = _windowFactory.Create<EditShortcutWindow>();
+        var window = _viewFactory.Create<EditShortcutWindow>();
         var result = window.ShowDialog(new EditShortcutInput(Shortcut, _shortcutName));
 
         if (result is not { Success: true, Data: { } newShortcut } || Shortcut == newShortcut)

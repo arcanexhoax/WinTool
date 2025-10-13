@@ -10,7 +10,7 @@ namespace WinTool.ViewModels.Shortcuts;
 
 public class ShortcutsViewModel(
     WritableOptions<ShortcutsOptions> options,
-    WindowFactory windowFactory,
+    ViewFactory viewFactory,
     KeyInterceptor keyInterceptor,
     Shell shell,
     ShellCommandHandler ch,
@@ -18,12 +18,12 @@ public class ShortcutsViewModel(
 {
     public ObservableCollection<ShortcutViewModel> Shortcuts { get; } =
     [
-        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.CreateFileInteractive, shortcutContext, ShortcutNames.CreateFile, Resources.CreateFile),
-        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.CreateFileFast, shortcutContext, ShortcutNames.FastFileCreation,  Resources.FastFileCreation),
-        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.CopyFilePath, shortcutContext, ShortcutNames.SelectedItemCopyPath, Resources.SelectedItemCopyPath),
-        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.CopyFileName, shortcutContext, ShortcutNames.SelectedItemCopyName, Resources.SelectedItemCopyName),
-        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.RunWithArgs, shortcutContext, ShortcutNames.RunWithArgs, Resources.RunWithArgs),
-        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.OpenInCmd, shortcutContext, ShortcutNames.OpenFolderInCmd, Resources.OpenFolderInCmd),
-        new ShortcutViewModel(options, windowFactory, keyInterceptor, shell, ch.ChangeFileProperties, shortcutContext, ShortcutNames.ChangeFileProperties, Resources.ChangeFileProperties) { IsLast = true }
+        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.CreateFileInteractive, shortcutContext, ShortcutNames.CreateFile, Resources.CreateFile),
+        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.CreateFileFast, shortcutContext, ShortcutNames.FastFileCreation,  Resources.FastFileCreation),
+        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.CopyFilePath, shortcutContext, ShortcutNames.SelectedItemCopyPath, Resources.SelectedItemCopyPath),
+        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.CopyFileName, shortcutContext, ShortcutNames.SelectedItemCopyName, Resources.SelectedItemCopyName),
+        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.RunWithArgs, shortcutContext, ShortcutNames.RunWithArgs, Resources.RunWithArgs),
+        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.OpenInCmd, shortcutContext, ShortcutNames.OpenFolderInCmd, Resources.OpenFolderInCmd),
+        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.ChangeFileProperties, shortcutContext, ShortcutNames.ChangeFileProperties, Resources.ChangeFileProperties) { IsLast = true }
     ];
 }

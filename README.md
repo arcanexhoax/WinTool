@@ -1,6 +1,6 @@
 ## WinTool
 ![NET](https://img.shields.io/badge/.NET%209-%23512BD4)
-![Version](https://img.shields.io/badge/Version-0.8.0-%230c7ebf)
+![Version](https://img.shields.io/badge/Version-0.9.0-%230c7ebf)
 [![License](https://img.shields.io/github/license/arcanexhoax/WinTool.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/WinTool/master/LICENSE)
 
 WinTool is a utility that adds useful features and shortcuts to Windows, enhancing everyday experience.
@@ -19,9 +19,6 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 - Keyboard layout switching popup near active caret in any app
 - Launching utility on windows startup
 - Working from the tray
-
-## Warning
-The utility is under development, **unstable operation is possible**. Shortcuts will be added as well as other features. UI will be improved.
 
 ## Related libraries
 - [GlobalKeyInterceptor](https://github.com/arcanexhoax/GlobalKeyInterceptor) - a library used to intercept keyboard shortcuts

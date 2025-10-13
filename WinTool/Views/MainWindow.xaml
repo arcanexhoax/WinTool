@@ -17,7 +17,7 @@
         Height="600"
         Width="1000"
         MinHeight="400"
-        MinWidth="760"
+        MinWidth="900"
         x:Name="mainWindow"
         WindowStartupLocation="CenterScreen"
         Closing="OnWindowClosing"
@@ -30,33 +30,41 @@
             <i:InvokeCommandAction Command="{Binding WindowClosingCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid>
-        <tb:TaskbarIcon Visibility="Visible"
-                        ToolTipText="{x:Static p:Resources.TrayToolTip}"
-                        IconSource="/Resources/icon.ico"
-                        PopupActivation="RightClick"
-                        DoubleClickCommand="{Binding OpenWindowCommand}">
-            <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="{x:Static p:Resources.Open}"
-                              Command="{Binding OpenWindowCommand}" />
-                    <Separator />
-                    <MenuItem Header="{x:Static p:Resources.Close}"
-                              Command="{Binding CloseWindowCommand}" />
-                </ContextMenu>
-            </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>
+    <Border Padding="10 20">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <TabControl TabStripPlacement="Left">
-            <TabItem Header="{x:Static p:Resources.Shortcuts}">
-                <shortcuts:ShortcutsView DataContext="{Binding ShortcutsViewModel}" />
-            </TabItem>
-            <TabItem Header="{x:Static p:Resources.Features}">
-                <features:FeaturesView DataContext="{Binding FeaturesViewModel}" />
-            </TabItem>
-            <TabItem Header="{x:Static p:Resources.Settings}">
-                <settings:SettingsView DataContext="{Binding SettingsViewModel}" />
-            </TabItem>
-        </TabControl>
-    </Grid>
+            <tb:TaskbarIcon Visibility="Visible"
+                            ToolTipText="{x:Static p:Resources.TrayToolTip}"
+                            IconSource="/Resources/icon.ico"
+                            PopupActivation="RightClick"
+                            DoubleClickCommand="{Binding OpenWindowCommand}">
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{x:Static p:Resources.Open}"
+                                  Command="{Binding OpenWindowCommand}" />
+                        <Separator />
+                        <MenuItem Header="{x:Static p:Resources.Close}"
+                                  Command="{Binding CloseWindowCommand}" />
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
+
+            <ListView x:Name="Tabs"
+                      SelectionChanged="OnTabSelected">
+                <ListViewItem Content="{x:Static p:Resources.Shortcuts}"
+                              x:Name="ShortcutsTab" />
+                <ListViewItem Content="{x:Static p:Resources.Features}"
+                              x:Name="FeaturesTab" />
+                <ListViewItem Content="{x:Static p:Resources.Settings}"
+                              x:Name="SettingsTab" />
+            </ListView>
+
+            <ContentControl x:Name="TabContent"
+                            Grid.Column="1" />
+        </Grid>
+    </Border>
 </Window>

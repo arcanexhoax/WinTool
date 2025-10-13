@@ -10,7 +10,7 @@
     <Compile Update="UI\Controls\DateTimePicker.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Shortcuts\ChangeFilePropertiesView.xaml.cs">
+    <Compile Update="Views\Shortcuts\ChangeFilePropertiesWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\Shortcuts\EditShortcutWindow.xaml.cs">
@@ -47,7 +47,7 @@
     <Page Update="UI\Controls\DateTimePicker.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\Shortcuts\ChangeFilePropertiesView.xaml">
+    <Page Update="Views\Shortcuts\ChangeFilePropertiesWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\MainWindow.xaml">
