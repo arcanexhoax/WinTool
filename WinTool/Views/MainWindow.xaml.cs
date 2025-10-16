@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +11,7 @@ using WinTool.Views.Shortcuts;
 
 namespace WinTool.Views;
 
-public partial class MainWindow : Window
+public partial class MainWindow : FluentWindow
 {
     private readonly Dictionary<string, FrameworkElement> _tabCache = [];
     private readonly ViewFactory _viewFactory;
@@ -25,10 +26,11 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    protected override void OnSourceInitialized(System.EventArgs e)
+    protected override void OnSourceInitialized(EventArgs e)
     {
-        Tabs.SelectedIndex = 0;
         base.OnSourceInitialized(e);
+
+        Tabs.SelectedIndex = 0;
     }
 
     private void OnTabSelected(object sender, SelectionChangedEventArgs e)

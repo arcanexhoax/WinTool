@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Interop;
 using WinTool.Utils;
 
 namespace WinTool.Native
@@ -117,6 +118,8 @@ namespace WinTool.Native
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetWindowAttribute([In] IntPtr hWnd, [In] DWMWINDOWATTRIBUTE dwAttribute, [In] ref uint pvAttribute, [In] int cbAttribute);
 
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {
@@ -155,6 +158,20 @@ namespace WinTool.Native
 
             SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
             SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
+
+        public static void RemoveTitlebarBackground(nint handle)
+        {
+            var windowSource = HwndSource.FromHwnd(handle);
+
+            if ((windowSource?.Handle) == nint.Zero || (windowSource?.CompositionTarget) == null)
+                return;
+
+            // NOTE: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+            // Specifying DWMWA_COLOR_DEFAULT (value 0xFFFFFFFF) for the color will reset the window back to using the system's default behavior for the caption color.
+            uint titlebarPvAttribute = 0xFFFFFFFE;
+
+            DwmSetWindowAttribute(windowSource.Handle, DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, ref titlebarPvAttribute, sizeof(uint));
         }
 
         public static GUITHREADINFO? GetGuiThreadInfo(uint threadId = 0)
