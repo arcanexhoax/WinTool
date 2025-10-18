@@ -17,7 +17,7 @@
     mc:Ignorable="d"
     Width="340"
     WindowStartupLocation="CenterScreen"
-    ResizeMode="NoResize"
+    
     SizeToContent="Height">
     <Window.InputBindings>
         <KeyBinding Command="{Binding CreateCommand}"

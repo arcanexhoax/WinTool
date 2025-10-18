@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media;
 using WinTool.Models;
 using WinTool.Native;
 using WinTool.ViewModel;
@@ -19,30 +19,33 @@ public enum WindowBackdropType
 
 public class FluentWindow : Window
 {
-    public FluentWindow()
+    protected nint _handle;
+    protected HwndSource? _handleSource;
+
+    protected override void OnSourceInitialized(EventArgs e)
     {
-        SourceInitialized += (_, _) =>
-        {
-            var handle = new WindowInteropHelper(this).Handle;
-            NativeMethods.RemoveTitlebarBackground(handle);
-        };
+        base.OnSourceInitialized(e);
+
+        _handle = new WindowInteropHelper(this).Handle;
+        _handleSource = HwndSource.FromHwnd(_handle);
+
+        RemoveTitlebarBackground();
     }
 
-    protected void ApplyBackdrop(nint handle, WindowBackdropType backdropType)
+    protected void ApplyBackdrop(WindowBackdropType backdropType)
     {
         var pvAttr = 1u;
-        var dwmWinAttr = DWMWINDOWATTRIBUTE.DWMWA_MICA_EFFECT;
+        var dwmAttr = DWMWINDOWATTRIBUTE.DWMWA_MICA_EFFECT;
 
-        // 22H1
         if (Environment.OSVersion.Version.Build < 22053)
         {
             if (backdropType != WindowBackdropType.None)
-                ApplyBackdrop(pvAttr, handle, dwmWinAttr);
+                ApplyWindowAttribute(dwmAttr, pvAttr);
 
             return;
         }
 
-        dwmWinAttr = DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE;
+        dwmAttr = DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE;
         pvAttr = (uint)(backdropType switch
         {
             WindowBackdropType.Auto => DWMSBT.AUTO,
@@ -52,12 +55,49 @@ public class FluentWindow : Window
             _ => DWMSBT.DISABLE,        
         });
 
-        ApplyBackdrop(pvAttr, handle, dwmWinAttr);
+        ApplyWindowAttribute(dwmAttr, pvAttr);
     }
 
-    private void ApplyBackdrop(uint pvAttr, nint handle, DWMWINDOWATTRIBUTE dwmAttr)
+    protected void ApplyDarkMode()
     {
-        NativeMethods.DwmSetWindowAttribute(handle, dwmAttr, ref pvAttr, Marshal.SizeOf<int>());
+        var pvAttr = 1u; // 1 to enable, 0 to disable
+        var dwmAttr = Environment.OSVersion.Version.Build >= 22523 
+            ? DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE 
+            : DWMWINDOWATTRIBUTE.DMWA_USE_IMMERSIVE_DARK_MODE_OLD;
+
+        ApplyWindowAttribute(dwmAttr, pvAttr);
+    }
+
+    protected void RemoveBackdrop()
+    {
+        if (_handleSource?.CompositionTarget != null)
+        {
+            _handleSource.CompositionTarget.BackgroundColor = SystemColors.WindowColor;
+        }
+
+        if (_handleSource?.RootVisual is Window window)
+        {
+            window.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x20, 0x20, 0x20));
+        }
+    }
+
+    protected void RemoveTitlebar() => NativeMethods.RemoveTitlebar(_handle);
+
+    protected void RemoveTitlebarBackground()
+    {
+        if (_handleSource?.Handle == nint.Zero || _handleSource?.CompositionTarget == null)
+            return;
+
+        // NOTE: https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+        // Specifying DWMWA_COLOR_DEFAULT (value 0xFFFFFFFF) for the color will reset the window back to using the system's default behavior for the caption color.
+        uint titlebarPvAttribute = 0xFFFFFFFE;
+
+        ApplyWindowAttribute(DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, titlebarPvAttribute);
+    }
+
+    private void ApplyWindowAttribute(DWMWINDOWATTRIBUTE dwmAttr, uint pvAttr)
+    {
+        NativeMethods.DwmSetWindowAttribute(_handle, dwmAttr, ref pvAttr, sizeof(uint));
     }
 }
 
@@ -96,18 +136,23 @@ public class DialogWindow<TIn, TOut> : ModalWindow
         var vm = (IDialogViewModel<TIn, TOut>)DataContext;
         Result<TOut>? result = null;
 
-        SourceInitialized += (_, _) =>
+        vm.OnShow(data, r =>
         {
-            vm.OnShow(data, r =>
-            {
-                result = r;
-                Close();
-            });
-        };
+            result = r;
+            Close();
+        });
 
         ShowDialog();
         vm.OnClose();
 
         return result ?? new Result<TOut>(false);
+    }
+
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+
+        RemoveTitlebar();
+        RemoveBackdrop();
     }
 }

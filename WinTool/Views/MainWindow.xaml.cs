@@ -57,7 +57,7 @@ public partial class MainWindow : FluentWindow
         TabContent.Content = view;
     }
 
-    private void OnWindowActivated(object? sender, System.EventArgs e) => Show();
+    private void OnWindowActivated(object? sender, EventArgs e) => Show();
 
     private void OnWindowClosing(object sender, CancelEventArgs e)
     {
