@@ -154,7 +154,7 @@ namespace WinTool.Native
         public static void RemoveTitlebar(nint handle)
         {
             var ws = GetWindowLong(handle, GWL.GWL_STYLE);
-            ws &= ~(int)WS.CAPTION;
+            ws &= ~(int)WS.SYSMENU;
 
             SetWindowLong(handle, GWL.GWL_STYLE, ws);
         }

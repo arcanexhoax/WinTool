@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Shell;
 using WinTool.Models;
 using WinTool.Native;
 using WinTool.ViewModel;
@@ -81,7 +83,20 @@ public class FluentWindow : Window
         }
     }
 
-    protected void RemoveTitlebar() => NativeMethods.RemoveTitlebar(_handle);
+    protected void RemoveTitlebar()
+    {
+        // to restore focus frame remove it and WS.CAPTION style
+        WindowChrome.SetWindowChrome(this, new WindowChrome
+        {
+            CaptionHeight = 0,
+            CornerRadius = default,
+            GlassFrameThickness = new Thickness(-1),
+            ResizeBorderThickness = ResizeMode == ResizeMode.NoResize ? default : new Thickness(4),
+            UseAeroCaptionButtons = false,
+        });
+
+        NativeMethods.RemoveTitlebar(_handle);
+    }
 
     protected void RemoveTitlebarBackground()
     {
@@ -131,6 +146,15 @@ public class ModalWindow : FluentWindow
 
 public class DialogWindow<TIn, TOut> : ModalWindow
 {
+    public DialogWindow()
+    {
+        MouseDown += (_, e) =>
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
+        };
+    }
+
     public Result<TOut> ShowDialog(TIn data)
     {
         var vm = (IDialogViewModel<TIn, TOut>)DataContext;

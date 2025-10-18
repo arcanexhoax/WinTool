@@ -5,6 +5,12 @@
         <Setter Property="Padding" Value="20 0" />
     </Style>
 
+    <Style x:Key="DialogContentBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource LayerOnMicaBaseAltFillColorDefaultBrush}" />
+        <Setter Property="Padding" Value="26" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
     <Style x:Key="CardBorderStyle" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
