@@ -421,7 +421,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Run &quot;{0}&quot; with arguments.
         /// </summary>
         public static string RunFormat {
             get {
@@ -561,15 +561,6 @@ namespace WinTool.Properties {
         public static string WinTool {
             get {
                 return ResourceManager.GetString("WinTool", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to with args:.
-        /// </summary>
-        public static string WithArgs {
-            get {
-                return ResourceManager.GetString("WithArgs", resourceCulture);
             }
         }
         

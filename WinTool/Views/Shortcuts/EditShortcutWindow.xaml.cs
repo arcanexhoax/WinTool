@@ -11,8 +11,6 @@ public partial class EditShortcutWindow : DialogWindow<EditShortcutInput, Shortc
 {
     private readonly KeyInterceptor _keyInterceptor;
 
-    private nint _handle;
-
     public EditShortcutWindow(EditShortcutViewModel vm, KeyInterceptor keyInterceptor)
     {
         DataContext = vm;
@@ -20,8 +18,6 @@ public partial class EditShortcutWindow : DialogWindow<EditShortcutInput, Shortc
 
         _keyInterceptor = keyInterceptor;
         _keyInterceptor.ShortcutPressed += OnShortcutPressed;
-
-        SourceInitialized += (_, _) => _handle = new WindowInteropHelper(this).Handle;
     }
 
     private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)

@@ -59,7 +59,7 @@
 
                 <Expander Header="{x:Static p:Resources.Options}"
                           IsExpanded="{Binding AreOptionsOpened}"
-                          Margin="0 20 0 20">
+                          Margin="0 20 0 0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />

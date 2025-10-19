@@ -229,7 +229,7 @@
     <value>Run WinTool as admin failed: {0}</value>
   </data>
   <data name="RunFormat" xml:space="preserve">
-    <value>Run '{0}'</value>
+    <value>Run "{0}" with arguments</value>
   </data>
   <data name="RunWithArgs" xml:space="preserve">
     <value>Run selected exe-file with arguments</value>
@@ -272,9 +272,6 @@
   </data>
   <data name="WinTool" xml:space="preserve">
     <value>WinTool</value>
-  </data>
-  <data name="WithArgs" xml:space="preserve">
-    <value>with args:</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>Year</value>

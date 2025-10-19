@@ -23,7 +23,7 @@ public class ShortcutsViewModel(
         new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.CopyFilePath, shortcutContext, ShortcutNames.SelectedItemCopyPath, Resources.SelectedItemCopyPath),
         new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.CopyFileName, shortcutContext, ShortcutNames.SelectedItemCopyName, Resources.SelectedItemCopyName),
         new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.RunWithArgs, shortcutContext, ShortcutNames.RunWithArgs, Resources.RunWithArgs),
-        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.OpenInCmd, shortcutContext, ShortcutNames.OpenFolderInCmd, Resources.OpenFolderInCmd),
-        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.ChangeFileProperties, shortcutContext, ShortcutNames.ChangeFileProperties, Resources.ChangeFileProperties) { IsLast = true }
+        new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.OpenInCmd, shortcutContext, ShortcutNames.OpenFolderInCmd, Resources.OpenFolderInCmd) { IsLast = true },
+        //new ShortcutViewModel(options, viewFactory, keyInterceptor, shell, ch.ChangeFileProperties, shortcutContext, ShortcutNames.ChangeFileProperties, Resources.ChangeFileProperties) { IsLast = true }
     ];
 }
