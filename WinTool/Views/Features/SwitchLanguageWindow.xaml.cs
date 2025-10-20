@@ -3,7 +3,6 @@ using GlobalKeyInterceptor.Utils;
 using System;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using WinTool.Native;
 using WinTool.Utils;
@@ -12,19 +11,22 @@ using Timer = System.Timers.Timer;
 
 namespace WinTool.Views.Features;
 
-public partial class SwitchLanguageWindow : Window
+public partial class SwitchLanguageWindow : FluentWindow
 {
+    private const double AnimTimeMs = 200;
+    private const double OffsetY = 20;
+
     private readonly KeyInterceptor _keyInterceptor;
+    private readonly Timer _hideTimer = new(1500) { AutoReset = false };
 
     private bool _isHiding;
+    private (double X, double Y) _lastPosition;
     private Guid _currentHideAnimGuid;
-    private Timer _hideTimer = new(1500) { AutoReset = false };
 
     public SwitchLanguageWindow(SwitchLanguageViewModel vm, KeyInterceptor keyInterceptor)
     {
         InitializeComponent();
         DataContext = vm;
-        Height = 0;
 
         _keyInterceptor = keyInterceptor;
         _keyInterceptor.ShortcutPressed += OnShortcutPressed;
@@ -37,11 +39,10 @@ public partial class SwitchLanguageWindow : Window
                 _hideTimer.Stop();
 
                 var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretPos.X, caretPos.Y);
-                Left = caretPos.X * DpiUtils.DefaultDpiX / dpiAtPoint;
-                Top = caretPos.Y * DpiUtils.DefaultDpiY / dpiAtPoint;
+                var x = caretPos.X * DpiUtils.DefaultDpiX / dpiAtPoint;
+                var y = caretPos.Y * DpiUtils.DefaultDpiY / dpiAtPoint;
 
-                //ShiftWindowToScreen();
-                ShowPopup();
+                ShowPopup(x, y);
 
                 _hideTimer.Start();
             });
@@ -62,28 +63,34 @@ public partial class SwitchLanguageWindow : Window
     {
         base.OnSourceInitialized(e);
 
-        var hwnd = new WindowInteropHelper(this).Handle;
-        NativeMethods.ShowWindowAsPopup(hwnd);
+        NativeMethods.ShowWindowAsPopup(_handle);
+        RemoveTitlebar();
+        ApplyBackdrop(WindowBackdropType.Acrylic);
     }
 
-    private void ShowPopup()
+    private void ShowPopup(double x, double y)
     {
-        if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty)
+        if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty && (x, y) == _lastPosition)
             return;
 
+        Left = x;
+        Top = y - OffsetY;
+
+        _lastPosition = (x, y);
         _isHiding = false;
         _currentHideAnimGuid = Guid.Empty;
+
         Show();
 
-        var growAnimation = new DoubleAnimation
+        var slide = new DoubleAnimation
         {
-            From = ActualHeight,
-            To = 50,
-            Duration = TimeSpan.FromMilliseconds(250),
+            From = y - OffsetY,
+            To = y,
+            Duration = TimeSpan.FromMilliseconds(AnimTimeMs),
             EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
         };
 
-        BeginAnimation(HeightProperty, growAnimation);
+        BeginAnimation(TopProperty, slide);
     }
 
     private void HidePopup()
@@ -94,24 +101,27 @@ public partial class SwitchLanguageWindow : Window
         _isHiding = true;
         var animGuid = _currentHideAnimGuid = Guid.NewGuid();
 
-        var shrinkAnimation = new DoubleAnimation
+        var slide = new DoubleAnimation
         {
-            From = ActualHeight,
-            To = 0,
-            Duration = TimeSpan.FromMilliseconds(250),
+            From = _lastPosition.Y,
+            To = _lastPosition.Y - OffsetY,
+            Duration = TimeSpan.FromMilliseconds(AnimTimeMs),
             EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
         };
 
-        shrinkAnimation.Completed += (s, e) =>
+        slide.Completed += (s, e) =>
         {
             if (animGuid == _currentHideAnimGuid)
             {
                 _currentHideAnimGuid = Guid.Empty;
+                _isHiding = false;
+
                 Hide();
+                BeginAnimation(TopProperty, null);
             }
         };
 
-        BeginAnimation(HeightProperty, shrinkAnimation);
+        BeginAnimation(TopProperty, slide);
     }
 
     public void ShiftWindowToScreen()
