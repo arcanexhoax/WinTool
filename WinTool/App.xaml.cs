@@ -62,6 +62,7 @@ public partial class App : Application
         builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
+        builder.Services.AddSingleton<StaThreadService>();
         builder.Services.AddSingleton<ViewFactory>();
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();

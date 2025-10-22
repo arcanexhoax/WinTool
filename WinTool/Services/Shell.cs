@@ -11,8 +11,10 @@ using WinTool.Native;
 
 namespace WinTool.Services;
 
-public class Shell
+public class Shell(StaThreadService staThreadService)
 {
+    private readonly StaThreadService _staThreadService = staThreadService;
+
     public bool IsActive
     {
         get
@@ -34,6 +36,16 @@ public class Shell
 
     public string? GetActiveExplorerPath()
     {
+        return _staThreadService.Invoke(GetActiveExplorerPathInternal);
+    }
+
+    public List<string> GetSelectedItemsPaths()
+    {
+        return _staThreadService.Invoke(GetSelectedItemsPathsInternal);
+    }
+
+    private string? GetActiveExplorerPathInternal()
+    {
         IntPtr handle = NativeMethods.GetForegroundWindow();
         InternetExplorer? window = GetActiveShellWindow(handle);
 
@@ -43,7 +55,7 @@ public class Shell
         return new Uri(window.LocationURL).LocalPath;
     }
 
-    public List<string> GetSelectedItemsPaths()
+    private List<string> GetSelectedItemsPathsInternal()
     {
         List<string> selectedItemsPaths = [];
 

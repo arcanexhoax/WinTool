@@ -69,27 +69,22 @@ public class ShortcutViewModel : ObservableObject
             return false;
 
         Debug.WriteLine($"Executing {_shortcutName}");
-        var shellActive = _shell.IsActive;
 
-        // use a new thread because it is unable to get shell windows from MTA thread
-        Thread t = new(() =>
+        if (!_shell.IsActive)
+            return false;
+
+        try
         {
-            try
-            {
-                _command();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to execute command {_shortcutName}: {ex.Message}");
-                // TODO fix: message box is minimized
-                MessageBoxHelper.ShowError(string.Format(Resources.CommandExecutionError, _shortcutName, ex.Message));
-            }
-        });
+            _command();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to execute command {_shortcutName}: {ex.Message}");
+            // TODO fix: message box is minimized
+            MessageBoxHelper.ShowError(string.Format(Resources.CommandExecutionError, _shortcutName, ex.Message));
+        }
 
-        t.SetApartmentState(ApartmentState.STA);
-        t.Start();
-
-        return shellActive;
+        return true;
     }
 
     private void Edit()
