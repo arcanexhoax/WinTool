@@ -14,13 +14,20 @@
 
     <Grid Height="32">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="0.75*" />
             <ColumnDefinition Width="0.25*" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="{Binding Description}"/>
+        <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                   FontSize="18"
+                   Margin="0 0 16 0"
+                   Text="{Binding Icon}" />
 
-        <Border Grid.Column="1">
+        <TextBlock Text="{Binding Description}"
+                   Grid.Column="1"/>
+
+        <Border Grid.Column="2">
             <StackPanel Orientation="Horizontal"
                         Background="Transparent"
                         HorizontalAlignment="Right">

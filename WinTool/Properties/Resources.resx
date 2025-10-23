@@ -279,13 +279,13 @@
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>The shortcut is already used for "{0}".</value>
   </data>
-  <data name="Common" xml:space="preserve">
-    <value>Common</value>
-  </data>
   <data name="InputPopup" xml:space="preserve">
     <value>Input Popup</value>
   </data>
   <data name="WindowsExplorer" xml:space="preserve">
     <value>Windows Explorer</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
   </data>
 </root>

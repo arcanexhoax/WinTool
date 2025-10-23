@@ -33,6 +33,8 @@ public class ShortcutViewModel : ObservableObject
         get; set => SetProperty(ref field, value);
     }
 
+    public string Icon { get; }
+
     public string Description { get; }
 
     public RelayCommand EditShortcutCommand { get; }
@@ -45,6 +47,7 @@ public class ShortcutViewModel : ObservableObject
         Action command,
         ShortcutContext shortcutContext,
         string shortcutName,
+        string icon,
         string description)
     {
         _shortcutsOptions = shortcutsOptions;
@@ -56,6 +59,7 @@ public class ShortcutViewModel : ObservableObject
         _shortcutName = shortcutName;
 
         Shortcut = ShortcutUtils.Parse(_shortcutsOptions.CurrentValue.Shortcuts[shortcutName], KeyState.Down);
+        Icon = icon;
         Description = description;
 
         _keyInterceptor.RegisterShortcut(Shortcut, ExecuteCommand);
@@ -65,13 +69,10 @@ public class ShortcutViewModel : ObservableObject
 
     private bool ExecuteCommand()
     {
-        if (_shortcutContext.IsEditing)
+        if (_shortcutContext.IsEditing || !_shell.IsActive)
             return false;
 
         Debug.WriteLine($"Executing {_shortcutName}");
-
-        if (!_shell.IsActive)
-            return false;
 
         try
         {

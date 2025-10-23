@@ -124,15 +124,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Common.
-        /// </summary>
-        public static string Common {
-            get {
-                return ResourceManager.GetString("Common", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Convert selected text to lowercase.
         /// </summary>
         public static string ConvertToLowercase {
@@ -291,6 +282,15 @@ namespace WinTool.Properties {
         public static string FilePathInvalid {
             get {
                 return ResourceManager.GetString("FilePathInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string General {
+            get {
+                return ResourceManager.GetString("General", resourceCulture);
             }
         }
         

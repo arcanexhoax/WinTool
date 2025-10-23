@@ -25,8 +25,13 @@
                 <StackPanel MaxWidth="1000">
                     <Border Style="{DynamicResource CardBorderStyle}"
                             CornerRadius="6 6 0 0">
-                        <TextBlock Text="{x:Static p:Resources.Common}"
-                                   Style="{StaticResource CardHeader}" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Text="&#xE713;" />
+                            <TextBlock Text="{x:Static p:Resources.General}"
+                                       Margin="20 0 0 0" />
+                        </StackPanel>
                     </Border>
 
                     <Border Style="{DynamicResource CardBorderStyle}"
