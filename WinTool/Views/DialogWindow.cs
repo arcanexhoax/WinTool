@@ -79,8 +79,7 @@ public class FluentWindow : Window
 
         if (_handleSource?.RootVisual is Window window)
         {
-            // TODO move to theme
-            window.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x20, 0x20, 0x20));
+            window.Background = (SolidColorBrush)Application.Current.Resources["EmptyBackdropBrush"];
         }
     }
 

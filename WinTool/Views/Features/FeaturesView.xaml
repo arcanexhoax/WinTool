@@ -35,7 +35,7 @@
                     <Border Style="{DynamicResource CardBorderStyle}"
                             CornerRadius="0 0 6 6"
                             BorderThickness="1 0 1 1"
-                            Padding="16 10">
+                            Padding="58 10">
                         <CheckBox Content="{x:Static p:Resources.EnableSwitchLanguagePopup}"
                                   IsChecked="{Binding EnableSwitchLanguagePopup}"
                                   Height="32"

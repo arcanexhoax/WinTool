@@ -19,10 +19,7 @@ public class MainViewModel : ObservableObject
     public event EventHandler? ShowWindowRequested;
 
     public MainViewModel(
-        ShellCommandHandler commandHandler,
-        ShortcutsViewModel shortcutsViewModel,
-        FeaturesViewModel featuresViewModel,
-        SettingsViewModel settingsViewModel)
+        ShellCommandHandler commandHandler)
     {
         WindowLoadedCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = false);
         WindowClosingCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = true);

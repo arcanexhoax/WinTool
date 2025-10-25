@@ -45,6 +45,9 @@ public class SwitchLanguageViewModel : ObservableObject
         });
 
         OnLayoutsListChanged(_keyboardLayoutManager.AllCultures);
+
+        if (_featuresOptions.CurrentValue.EnableSwitchLanguagePopup)
+            Start();
     }
 
     public void Start() => _keyboardLayoutManager.Start();

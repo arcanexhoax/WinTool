@@ -34,7 +34,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="1 0 1 1"
-                                        Padding="16 10">
+                                        Padding="20 10">
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource CardBorderStyle}">
                                             <Setter Property="CornerRadius" Value="0"/>

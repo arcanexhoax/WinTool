@@ -8,6 +8,7 @@
                 <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
                 <ResourceDictionary Source="/UI/Controls/TextBlock.xaml" />
                 <ResourceDictionary Source="/UI/Controls/Border.xaml" />
+                <ResourceDictionary Source="/UI/Controls/Colors.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

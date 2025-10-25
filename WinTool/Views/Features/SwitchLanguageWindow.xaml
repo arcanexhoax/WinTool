@@ -11,8 +11,7 @@
                     ShowInTaskbar="False"
                     SizeToContent="Width"
                     Height="40">
-    <!--// TODO move it to theme-->
-    <Border Background="#99000000" 
+    <Border Background="{DynamicResource AcrylicLayoutBrush}" 
             BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
             BorderThickness="1">
         <ItemsControl ItemsSource="{Binding AllLanguages}">

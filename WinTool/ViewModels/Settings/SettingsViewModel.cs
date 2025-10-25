@@ -9,6 +9,13 @@ using WinTool.Utils;
 
 namespace WinTool.ViewModels.Settings;
 
+public enum AppTheme
+{
+    System,
+    Light,
+    Dark
+}
+
 public class SettingsViewModel : ObservableObject
 {
     private const string RegKeyName = "WinTool";
@@ -16,12 +23,19 @@ public class SettingsViewModel : ObservableObject
     private readonly string _executionFilePath;
     private readonly WritableOptions<SettingsOptions> _settingsOptions;
 
+    private bool _isInitializing;
+
     public bool LaunchOnWindowsStartup
     {
         get; set
         {
             try
             {
+                if (SetProperty(ref field, value) && !_isInitializing)
+                {
+                    _settingsOptions.Update(o => o.WindowsStartupEnabled = value);
+                }
+
                 using RegistryKey runKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true) ??
                     throw new InvalidOperationException("Unable to open registry.");
 
@@ -34,11 +48,6 @@ public class SettingsViewModel : ObservableObject
                     if (runKey.GetValue(RegKeyName) is not null)
                         runKey.DeleteValue(RegKeyName);
                 }
-
-                if (SetProperty(ref field, value))
-                {
-                    _settingsOptions.Update(o => o.WindowsStartupEnabled = value);
-                }
             }
             catch (Exception ex)
             {
@@ -48,12 +57,27 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
+    public AppTheme SelectedAppTheme
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.AppTheme = value);
+            }
+        }
+    }
+
     public SettingsViewModel(WritableOptions<SettingsOptions> settingsOptions)
     {
         // use arg "/background" to start app in background mode
         _executionFilePath = $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
         _settingsOptions = settingsOptions;
+        _isInitializing = true;
 
         LaunchOnWindowsStartup = _settingsOptions.CurrentValue.WindowsStartupEnabled;
+        SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
+
+        _isInitializing = false;
     }
 }

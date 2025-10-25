@@ -16,6 +16,6 @@
         <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="16 24" />
+        <Setter Property="Padding" Value="20 24" />
     </Style>
 </ResourceDictionary>
