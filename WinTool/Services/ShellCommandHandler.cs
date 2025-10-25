@@ -13,12 +13,12 @@ using File = System.IO.File;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(Shell shell, WindowFactory windowFactory)
+public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 {
     private const string NewFileTemplate = "NewFile.txt";
 
     private readonly Shell _shell = shell;
-    private readonly WindowFactory _windowFactory = windowFactory;
+    private readonly ViewFactory _viewFactory = viewFactory;
 
     public bool IsBackgroundMode { get; set; } = true;
 
@@ -60,7 +60,7 @@ public class ShellCommandHandler(Shell shell, WindowFactory windowFactory)
         if (string.IsNullOrEmpty(path))
             return;
 
-        var createFileWindow = _windowFactory.Create<CreateFileWindow>();
+        var createFileWindow = _viewFactory.Create<CreateFileWindow>();
         var result = createFileWindow.ShowDialog(path);
 
         if (result is not { Success: true, Data: { } data })
@@ -137,7 +137,7 @@ public class ShellCommandHandler(Shell shell, WindowFactory windowFactory)
 
         string selectedItem = selectedPaths[0];
 
-        var runWithArgsWindow = _windowFactory.Create<RunWithArgsWindow>();
+        var runWithArgsWindow = _viewFactory.Create<RunWithArgsWindow>();
         var result = runWithArgsWindow.ShowDialog(selectedItem);
 
         if (result is not { Success: true, Data: { } args })
@@ -193,7 +193,7 @@ public class ShellCommandHandler(Shell shell, WindowFactory windowFactory)
             throw;
         }
 
-        var changeFilePropertiesView = _windowFactory.Create<ChangeFilePropertiesView>();
+        var changeFilePropertiesView = _viewFactory.Create<ChangeFilePropertiesWindow>();
         var result = changeFilePropertiesView.ShowDialog(new ChangeFilePropertiesInput(
             selectedItemPath,
             tfile != null,

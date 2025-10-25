@@ -1,5 +1,5 @@
 ﻿<view:DialogWindow
-    x:Class="WinTool.Views.Shortcuts.ChangeFilePropertiesView"
+    x:Class="WinTool.Views.Shortcuts.ChangeFilePropertiesWindow"
     x:TypeArguments="model:ChangeFilePropertiesInput,model:ChangeFilePropertiesOutput"
     xmlns:model="clr-namespace:WinTool.Models"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -18,7 +18,6 @@
     Title="{Binding FileName, StringFormat={x:Static p:Resources.ChangeFileProperiesTitle}}" 
     SizeToContent="Height"
     Width="400"
-    ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen">
     <Window.InputBindings>
         <KeyBinding Command="{Binding SaveCommand}"

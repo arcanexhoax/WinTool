@@ -157,7 +157,7 @@
     <value>Unable to find drive '{0}'.</value>
   </data>
   <data name="EnableSwitchLanguagePopup" xml:space="preserve">
-    <value>Enable switch language popup</value>
+    <value>Enable Input Popup</value>
   </data>
   <data name="EnterNewShortcut" xml:space="preserve">
     <value>Enter a new shortcut</value>
@@ -229,7 +229,7 @@
     <value>Run WinTool as admin failed: {0}</value>
   </data>
   <data name="RunFormat" xml:space="preserve">
-    <value>Run '{0}'</value>
+    <value>Run "{0}" with arguments</value>
   </data>
   <data name="RunWithArgs" xml:space="preserve">
     <value>Run selected exe-file with arguments</value>
@@ -241,10 +241,10 @@
     <value>Save file '{0}' properties error: {1}</value>
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
-    <value>Copy name of selected item (If no item is selected, the name of the open folder will be copied)</value>
+    <value>Copy name of selected/opened item</value>
   </data>
   <data name="SelectedItemCopyPath" xml:space="preserve">
-    <value>Copy path to selected item (If no item is selected, the path to the open folder will be copied)</value>
+    <value>Copy path to selected/opened item</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -273,13 +273,34 @@
   <data name="WinTool" xml:space="preserve">
     <value>WinTool</value>
   </data>
-  <data name="WithArgs" xml:space="preserve">
-    <value>with args:</value>
-  </data>
   <data name="Year" xml:space="preserve">
     <value>Year</value>
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>The shortcut is already used for "{0}".</value>
+  </data>
+  <data name="InputPopup" xml:space="preserve">
+    <value>Input Popup</value>
+  </data>
+  <data name="WindowsExplorer" xml:space="preserve">
+    <value>Windows Explorer</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="AppTheme" xml:space="preserve">
+    <value>App theme</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>System</value>
   </data>
 </root>

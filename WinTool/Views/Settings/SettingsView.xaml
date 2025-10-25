@@ -1,17 +1,83 @@
 ﻿<UserControl x:Class="WinTool.Views.Settings.SettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:WinTool.Properties"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Border Padding="10">
-        <StackPanel>
-            <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
-                      IsChecked="{Binding LaunchOnWindowsStartup}"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left" />
-        </StackPanel>
+             xmlns:settings="clr-namespace:WinTool.ViewModels.Settings"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <Border Style="{DynamicResource MainContentBorderStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Style="{StaticResource ContentHeader}"
+                       Text="{x:Static p:Resources.Settings}"
+                       MaxWidth="1000" />
+
+            <ScrollViewer Margin="0 24 0 0"
+                          Padding="0 0 20 0"
+                          Grid.Row="1">
+                <StackPanel MaxWidth="1000">
+                    <Border CornerRadius="6 6 0 0"
+                            Style="{DynamicResource CardBorderStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Text="&#xE713;" />
+                            <TextBlock Text="{x:Static p:Resources.General}"
+                                       Margin="20 0 0 0" />
+                        </StackPanel>
+                    </Border>
+                    <Border BorderThickness="1 0 1 1"
+                            CornerRadius="0 0 6 6"
+                            Style="{DynamicResource CardBorderStyle}"
+                            Padding="58 10">
+                        <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
+                                  IsChecked="{Binding LaunchOnWindowsStartup}"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top" />
+                    </Border>
+
+                    <Border CornerRadius="6 6 0 0"
+                            Margin="0 8 0 0"
+                            Style="{DynamicResource CardBorderStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Text="&#xE790;" />
+                            <TextBlock Text="{x:Static p:Resources.Appearance}"
+                                       Margin="20 0 0 0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border BorderThickness="1 0 1 1"
+                            CornerRadius="0 0 6 6"
+                            Style="{DynamicResource CardBorderStyle}"
+                            Padding="58 10 40 10">
+                        <Grid>
+                            <TextBlock Text="{x:Static p:Resources.AppTheme}"
+                                       HorizontalAlignment="Left" />
+                            <ComboBox Width="150"
+                                      HorizontalAlignment="Right"
+                                      SelectedValue="{Binding SelectedAppTheme}"
+                                      SelectedValuePath="Tag">
+                                <ComboBoxItem Tag="{x:Static settings:AppTheme.System}"
+                                              Content="{x:Static p:Resources.System}" />
+                                <ComboBoxItem Tag="{x:Static settings:AppTheme.Light}"
+                                              Content="{x:Static p:Resources.Light}" />
+                                <ComboBoxItem Tag="{x:Static settings:AppTheme.Dark}"
+                                              Content="{x:Static p:Resources.Dark}" />
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Border>
 </UserControl>

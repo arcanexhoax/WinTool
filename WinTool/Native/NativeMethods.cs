@@ -12,10 +12,6 @@ namespace WinTool.Native
         public const uint OBJID_CARET = 0xFFFFFFF8;
         public const int GA_ROOTOWNER = 3;
 
-        private const int GWL_EXSTYLE = -20;
-        private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const int WS_EX_TOOLWINDOW = 0x00000080;
-
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOACTIVATE = 0x0010;
@@ -66,18 +62,13 @@ namespace WinTool.Native
         internal static extern IntPtr GetShellWindow();
 
         [DllImport("d2d1")]
-        internal static extern int D2D1CreateFactory(D2D1_FACTORY_TYPE factoryType, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, IntPtr pFactoryOptions, out ID2D1Factory ppIFactory);
+        internal static extern int D2D1CreateFactory(D2D1_FACTORY_TYPE factoryType, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, nint pFactoryOptions, out ID2D1Factory ppIFactory);
 
         [DllImport("user32.dll")]
         private static extern bool GetGUIThreadInfo(uint idThread, ref GUITHREADINFO lpgui);
 
         [DllImport("oleacc.dll")]
-        internal static extern int AccessibleObjectFromWindow(
-         IntPtr hwnd,
-         uint id,
-         ref Guid iid,
-         [In, Out, MarshalAs(UnmanagedType.IUnknown)] ref object? ppvObject);
-
+        internal static extern int AccessibleObjectFromWindow(nint hwnd, uint id, ref Guid iid, [In, Out, MarshalAs(UnmanagedType.IUnknown)] ref object? ppvObject);
 
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
@@ -95,10 +86,10 @@ namespace WinTool.Native
         internal static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
         [DllImport("user32.dll")]
-        static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+        static extern IntPtr GetWindowLong(IntPtr hWnd, GWL nIndex);
 
         [DllImport("user32.dll")]
-        static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+        static extern IntPtr SetWindowLong(IntPtr hWnd, GWL nIndex, IntPtr dwNewLong);
 
         [DllImport("user32.dll")]
         static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
@@ -117,6 +108,9 @@ namespace WinTool.Native
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetWindowAttribute([In] nint hWnd, [In] DWMWINDOWATTRIBUTE dwAttribute, [In] ref uint pvAttribute, [In] int cbAttribute);
 
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {
@@ -148,13 +142,21 @@ namespace WinTool.Native
 
         public static void ShowWindowAsPopup(nint hwnd)
         {
-            int exStyle = (int)GetWindowLong(hwnd, GWL_EXSTYLE);
+            int exStyle = (int)GetWindowLong(hwnd, GWL.GWL_EXSTYLE);
 
-            exStyle |= WS_EX_TOOLWINDOW;
-            exStyle |= WS_EX_NOACTIVATE;
+            exStyle |= (int)WS_EX.TOOLWINDOW;
+            exStyle |= (int)WS_EX.NOACTIVATE;
 
-            SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
+            SetWindowLong(hwnd, GWL.GWL_EXSTYLE, exStyle);
             SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
+
+        public static void RemoveTitlebar(nint handle)
+        {
+            var ws = GetWindowLong(handle, GWL.GWL_STYLE);
+            ws &= ~(int)WS.SYSMENU;
+
+            SetWindowLong(handle, GWL.GWL_STYLE, ws);
         }
 
         public static GUITHREADINFO? GetGuiThreadInfo(uint threadId = 0)

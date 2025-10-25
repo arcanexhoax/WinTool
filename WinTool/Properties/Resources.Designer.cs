@@ -79,6 +79,24 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Appearance.
+        /// </summary>
+        public static string Appearance {
+            get {
+                return ResourceManager.GetString("Appearance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App theme.
+        /// </summary>
+        public static string AppTheme {
+            get {
+                return ResourceManager.GetString("AppTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -169,6 +187,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string Dark {
+            get {
+                return ResourceManager.GetString("Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to find drive &apos;{0}&apos;..
         /// </summary>
         public static string DriveNotFound {
@@ -187,7 +214,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable switch language popup.
+        ///   Looks up a localized string similar to Enable Input Popup.
         /// </summary>
         public static string EnableSwitchLanguagePopup {
             get {
@@ -286,6 +313,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string General {
+            get {
+                return ResourceManager.GetString("General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Genres.
         /// </summary>
         public static string Genres {
@@ -304,6 +340,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input Popup.
+        /// </summary>
+        public static string InputPopup {
+            get {
+                return ResourceManager.GetString("InputPopup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last write time.
         /// </summary>
         public static string LastWriteTime {
@@ -318,6 +363,15 @@ namespace WinTool.Properties {
         public static string LaunchOnStartup {
             get {
                 return ResourceManager.GetString("LaunchOnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string Light {
+            get {
+                return ResourceManager.GetString("Light", resourceCulture);
             }
         }
         
@@ -403,7 +457,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Run &quot;{0}&quot; with arguments.
         /// </summary>
         public static string RunFormat {
             get {
@@ -439,7 +493,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy name of selected item (If no item is selected, the name of the open folder will be copied).
+        ///   Looks up a localized string similar to Copy name of selected/opened item.
         /// </summary>
         public static string SelectedItemCopyName {
             get {
@@ -448,7 +502,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy path to selected item (If no item is selected, the path to the open folder will be copied).
+        ///   Looks up a localized string similar to Copy path to selected/opened item.
         /// </summary>
         public static string SelectedItemCopyPath {
             get {
@@ -502,6 +556,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to System.
+        /// </summary>
+        public static string System {
+            get {
+                return ResourceManager.GetString("System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
         public static string Title {
@@ -529,20 +592,20 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Windows Explorer.
+        /// </summary>
+        public static string WindowsExplorer {
+            get {
+                return ResourceManager.GetString("WindowsExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to WinTool.
         /// </summary>
         public static string WinTool {
             get {
                 return ResourceManager.GetString("WinTool", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to with args:.
-        /// </summary>
-        public static string WithArgs {
-            get {
-                return ResourceManager.GetString("WithArgs", resourceCulture);
             }
         }
         

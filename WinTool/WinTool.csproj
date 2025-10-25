@@ -6,7 +6,7 @@
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
-		<Version>0.8.0</Version>
+		<Version>0.9.0</Version>
 		<Authors>hoax</Authors>
 		<Copyright>Copyright (c) hoax 2023-2025</Copyright>
 		<PackageProjectUrl>https://github.com/arcanexhoax/WinTool</PackageProjectUrl>
@@ -18,6 +18,9 @@
 	<ItemGroup>
 		<None Remove="Resources\calendar.png" />
 		<None Remove="Resources\icon.ico" />
+		<None Remove="Resources\Icons\idea.png" />
+		<None Remove="Resources\Icons\keyboard.png" />
+		<None Remove="Resources\Icons\settings.png" />
 		<None Remove="Resources\logo.png" />
 	</ItemGroup>
 
@@ -54,6 +57,9 @@
 	<ItemGroup>
 		<Resource Include="Resources\calendar.png" />
 		<Resource Include="Resources\icon.ico" />
+		<Resource Include="Resources\Icons\idea.png" />
+		<Resource Include="Resources\Icons\keyboard.png" />
+		<Resource Include="Resources\Icons\settings.png" />
 		<Resource Include="Resources\logo.png" />
 	</ItemGroup>
 

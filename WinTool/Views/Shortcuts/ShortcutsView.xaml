@@ -9,13 +9,49 @@
              d:DataContext="{d:DesignInstance Type=vm:ShortcutsViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Padding="10">
-        <ItemsControl ItemsSource="{Binding Shortcuts}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <shortcuts:ShortcutView DataContext="{Binding}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+    <Border Style="{DynamicResource MainContentBorderStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="{x:Static p:Resources.Shortcuts}"
+                       Style="{StaticResource ContentHeader}"
+                       MaxWidth="1000"/>
+
+            <ScrollViewer Grid.Row="1"
+                          Margin="0 24 0 0"
+                          Padding="0 0 20 0">
+                <StackPanel MaxWidth="1000">
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            CornerRadius="6 6 0 0">
+                        <TextBlock Text="{x:Static p:Resources.WindowsExplorer}"
+                                   Style="{StaticResource CardHeader}" />
+                    </Border>
+            
+                    <ItemsControl ItemsSource="{Binding Shortcuts}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="1 0 1 1"
+                                        Padding="20 10">
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource CardBorderStyle}">
+                                            <Setter Property="CornerRadius" Value="0"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsLast}" Value="true">
+                                                    <Setter Property="CornerRadius" Value="0 0 6 6"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <shortcuts:ShortcutView DataContext="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Border>
 </UserControl>

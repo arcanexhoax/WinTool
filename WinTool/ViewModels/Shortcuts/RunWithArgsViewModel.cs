@@ -21,11 +21,6 @@ public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, s
         get; set => SetProperty(ref field, value);
     }
 
-    public string? ShortedFilePath
-    {
-        get; set => SetProperty(ref field, value);
-    }
-
     public string? Args
     {
         get; set => SetProperty(ref field, value);
@@ -52,9 +47,6 @@ public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, s
         FileName = Path.GetFileName(filePath);
         FullFilePath = filePath;
         IsTextSelected = true;
-
-        var folders = FullFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        ShortedFilePath = folders.Length > 3 ? Path.Combine(folders[0], folders[1], "...", folders[^1]) : FullFilePath;
     }
 
     public void OnClose() => _onResult = null;

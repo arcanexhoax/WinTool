@@ -11,10 +11,6 @@ namespace WinTool.ViewModels;
 
 public class MainViewModel : ObservableObject
 {
-    public ShortcutsViewModel ShortcutsViewModel { get; }
-    public FeaturesViewModel FeaturesViewModel { get; }
-    public SettingsViewModel SettingsViewModel { get; }
-
     public RelayCommand WindowLoadedCommand { get; }
     public RelayCommand WindowClosingCommand { get; }
     public RelayCommand OpenWindowCommand { get; }
@@ -23,15 +19,8 @@ public class MainViewModel : ObservableObject
     public event EventHandler? ShowWindowRequested;
 
     public MainViewModel(
-        ShellCommandHandler commandHandler,
-        ShortcutsViewModel shortcutsViewModel,
-        FeaturesViewModel featuresViewModel,
-        SettingsViewModel settingsViewModel)
+        ShellCommandHandler commandHandler)
     {
-        ShortcutsViewModel = shortcutsViewModel;
-        FeaturesViewModel = featuresViewModel;
-        SettingsViewModel = settingsViewModel;
-
         WindowLoadedCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = false);
         WindowClosingCommand = new RelayCommand(() => commandHandler.IsBackgroundMode = true);
         OpenWindowCommand = new RelayCommand(() =>
