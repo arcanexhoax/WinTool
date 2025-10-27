@@ -113,9 +113,10 @@ public class Shell(StaThreadService staThreadService)
         ShellWindows shellWindows = new();
         List<InternetExplorer> tabs = [];
 
+        // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle
         foreach (InternetExplorer window in shellWindows)
         {
-            if (window.HWND == handle.ToInt32() && window.LocationURL is not null and not [])
+            if (window.HWND == handle.ToInt32() && window.LocationName is not (null or []))
                 tabs.Add(window);
         }
 
@@ -124,16 +125,13 @@ public class Shell(StaThreadService staThreadService)
         if (tabs.Count == 1)
             return tabs[0];
 
-        // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle, so we need to compare 
-        // the title (folder name in format "Folder - File Explorer" or "Folder and X more tabs - File Explorer") of the current explorer window with
-        // the local path of each tab of this window. So this way is not 100% accurate and doesn't work with Desktop/Downloads/Pictures etc folders
+        // To find proper tab we need to match location name of each tab (folder name or its special name, like "Downloads")
+        // with the window title (format "Folder - File Explorer" or "Folder and X more tabs - File Explorer")
+        // If user has multiple tabs opened in the same folder we will select the first one
         return tabs.MaxBy(t =>
         {
-            if (!Uri.TryCreate(t.LocationURL, UriKind.RelativeOrAbsolute, out var uri))
-                return 0;
-
-            var dirName = Path.GetFileName(uri.LocalPath);
-            return windowTitle.StartsWith(dirName) ? dirName.Length : 0;
+            var locationName = t.LocationName;
+            return windowTitle.StartsWith(locationName) ? locationName.Length : 0;
         });
     }
 }
