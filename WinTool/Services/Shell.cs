@@ -2,136 +2,120 @@
 using Shell32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using WinTool.Native;
+using WinTool.Native.Shell;
+using IServiceProvider = WinTool.Native.Shell.IServiceProvider;
 
 namespace WinTool.Services;
+
+using ShellWindow = (IWebBrowserApp WebBrowserApp, IShellBrowser ShellBrowser);
 
 public class Shell(StaThreadService staThreadService)
 {
     private readonly StaThreadService _staThreadService = staThreadService;
+    private readonly Guid SID_STopLevelBrowser = new("4C96BE40-915C-11CF-99D3-00AA004AE837");
 
-    public bool IsActive
-    {
-        get
-        {
-            try
-            {
-                var handle = NativeMethods.GetForegroundWindow();
-                var className = NativeMethods.GetClassName(handle);
-
-                return className is "CabinetWClass" or "ExploreWClass";
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"Failed to check if Explorer is active: {ex.Message}");
-                return false;
-            }
-        }
-    }
+    public bool IsActive => GetActiveExplorerWindowHandle() is not null;
 
     public string? GetActiveExplorerPath()
     {
-        return _staThreadService.Invoke(GetActiveExplorerPathInternal);
+        return _staThreadService.Invoke(() =>
+        {
+            if (GetActiveExplorerWindow() is not (var webBrowser, _))
+                return null;
+
+            return new Uri(webBrowser.LocationURL).LocalPath;
+        });
     }
 
     public List<string> GetSelectedItemsPaths()
     {
-        return _staThreadService.Invoke(GetSelectedItemsPathsInternal);
+        return _staThreadService.Invoke(() =>
+        {
+            if (GetActiveExplorerWindow() is not (_, var shellBrowser))
+                return [];
+
+            return GetSelectedItems(shellBrowser);
+        });
     }
 
-    private string? GetActiveExplorerPathInternal()
+    private ShellWindow? GetActiveExplorerWindow()
     {
-        IntPtr handle = NativeMethods.GetForegroundWindow();
-        InternetExplorer? window = GetActiveShellWindow(handle);
-
-        if (window is null)
+        if (GetActiveExplorerWindowHandle() is not nint handle)
             return null;
 
-        return new Uri(window.LocationURL).LocalPath;
-    }
+        var activeTab = GetActiveTab(handle);
+        var shell = new Shell32.Shell();
+        ShellWindows shellWindows = shell.Windows();
 
-    private List<string> GetSelectedItemsPathsInternal()
-    {
-        List<string> selectedItemsPaths = [];
-
-        IntPtr handle = NativeMethods.GetForegroundWindow();
-        InternetExplorer? window = GetActiveShellWindow(handle);
-
-        if (window is null)
-            return selectedItemsPaths;
-
-        FolderItems folderItems = ((IShellFolderViewDual2)window.Document).SelectedItems();
-
-        foreach (var folderItem in folderItems)
+        foreach (IWebBrowserApp webBrowserApp in shellWindows)
         {
-            string selectedItemPath = ((FolderItem)folderItem).Path;
+            if (webBrowserApp.HWND != handle || webBrowserApp.Document is not IShellFolderViewDual2 shellFolderView)
+                continue;
 
-            if (!string.IsNullOrEmpty(selectedItemPath))
-                selectedItemsPaths.Add(selectedItemPath);
-        }
+            var serviceProvider = (IServiceProvider)webBrowserApp;
+            var shellBrowser = (IShellBrowser)serviceProvider.QueryService(SID_STopLevelBrowser, typeof(IShellBrowser).GUID);
+            shellBrowser.GetWindow(out IntPtr shellBrowserHandle);
 
-        return selectedItemsPaths;
-    }
-
-    private InternetExplorer? GetActiveShellWindow(IntPtr handle)
-    {
-        // check if current Windows version is 11
-        if (Environment.OSVersion.Version.Build >= 22000)
-            return GetActiveShellWindow11(handle);
-        else
-            return GetActiveShellWindow10(handle);
-    }
-
-    private InternetExplorer? GetActiveShellWindow10(IntPtr handle)
-    {
-        ShellWindows shellWindows = new();
-
-        foreach (InternetExplorer window in shellWindows)
-        {
-            if (window.HWND == handle.ToInt32())
-                return window;
+            if (activeTab == shellBrowserHandle)
+                return (webBrowserApp, shellBrowser);
         }
 
         return null;
     }
 
-    private InternetExplorer? GetActiveShellWindow11(IntPtr handle)
+    private List<string> GetSelectedItems(IShellBrowser shellBrowser)
     {
-        string? windowTitle = NativeMethods.GetWindowText(handle);
+        if (shellBrowser.QueryActiveShellView() is not IFolderView shellView)
+            return [];
 
-        if (windowTitle is null or [])
+        var selectionFlag = (uint)SVGIO.SELECTION;
+        shellView.ItemCount(selectionFlag, out var countItems);
+
+        if (countItems <= 0)
+            return [];
+
+        shellView.Items(selectionFlag, typeof(IShellItemArray).GUID, out var items);
+
+        if (items is not IShellItemArray shellItemArray)
+            return [];
+
+        var count = shellItemArray.GetCount();
+
+        if (count < 0)
+            return [];
+
+        List<string> itemsPaths = new(count);
+
+        for (int i = 0; i < count; i++)
         {
-            Trace.WriteLine("Failed to get window title of current Explorer window");
-            return null;
+            var itemPath = shellItemArray.GetItemAt(i).GetDisplayName(SIGDN.SIGDN_FILESYSPATH);
+            itemsPaths.Add(itemPath);
         }
 
-        ShellWindows shellWindows = new();
-        List<InternetExplorer> tabs = [];
+        return itemsPaths;
+    }
 
-        // The explorer window in Windows 11 supports multiple tabs, these tabs will have the same window handle
-        foreach (InternetExplorer window in shellWindows)
-        {
-            if (window.HWND == handle.ToInt32() && window.LocationName is not (null or []))
-                tabs.Add(window);
-        }
+    private nint GetActiveTab(nint handle)
+    {
+        var activeTab = FindChildWindow(handle, "ShellTabWindowClass");
 
-        if (tabs.Count == 0)
-            return null;
-        if (tabs.Count == 1)
-            return tabs[0];
+        if (activeTab == nint.Zero)
+            activeTab = FindChildWindow(handle, "TabWindowClass");
 
-        // To find proper tab we need to match location name of each tab (folder name or its special name, like "Downloads")
-        // with the window title (format "Folder - File Explorer" or "Folder and X more tabs - File Explorer")
-        // If user has multiple tabs opened in the same folder we will select the first one
-        return tabs.MaxBy(t =>
-        {
-            var locationName = t.LocationName;
-            return windowTitle.StartsWith(locationName) ? locationName.Length : 0;
-        });
+        return activeTab;
+    }
+
+    private nint FindChildWindow(nint handle, string className)
+    {
+        return NativeMethods.FindWindowEx(handle, nint.Zero, className, null);
+    }
+
+    private nint? GetActiveExplorerWindowHandle()
+    {
+        var handle = NativeMethods.GetForegroundWindow();
+        var className = NativeMethods.GetClassName(handle);
+
+        return className is "CabinetWClass" or "ExploreWClass" ? handle : null;
     }
 }

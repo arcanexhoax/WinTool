@@ -6,7 +6,7 @@
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
-		<Version>0.9.0</Version>
+		<Version>0.9.1</Version>
 		<Authors>hoax</Authors>
 		<Copyright>Copyright (c) hoax 2023-2025</Copyright>
 		<PackageProjectUrl>https://github.com/arcanexhoax/WinTool</PackageProjectUrl>
