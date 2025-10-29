@@ -24,7 +24,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
     public void CreateFileFast()
     {
-        string? path = _shell.GetActiveExplorerPath();
+        string? path = _shell.GetActiveShellPath();
 
         if (string.IsNullOrEmpty(path))
             return;
@@ -55,7 +55,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
     public void CreateFileInteractive()
     {
-        string? path = _shell.GetActiveExplorerPath();
+        string? path = _shell.GetActiveShellPath();
 
         if (string.IsNullOrEmpty(path))
             return;
@@ -95,7 +95,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         // if there are no selections - copy folder path
         if (selectedPaths.Count == 0)
         {
-            string? folderPath = _shell.GetActiveExplorerPath();
+            string? folderPath = _shell.GetActiveShellPath();
 
             if (!string.IsNullOrEmpty(folderPath))
                 Clipboard.SetText(folderPath);
@@ -113,7 +113,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         // if there are no selections - copy folder name
         if (selectedPaths.Count == 0)
         {
-            string? folderPath = _shell.GetActiveExplorerPath();
+            string? folderPath = _shell.GetActiveShellPath();
 
             if (string.IsNullOrEmpty(folderPath))
                 return;
@@ -154,7 +154,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
     public void OpenInCmd()
     {
-        string? folderPath = _shell.GetActiveExplorerPath();
+        string? folderPath = _shell.GetActiveShellPath();
 
         if (string.IsNullOrEmpty(folderPath))
             return;

@@ -8,23 +8,33 @@ using IServiceProvider = WinTool.Native.Shell.IServiceProvider;
 
 namespace WinTool.Services;
 
-using ShellWindow = (IWebBrowserApp WebBrowserApp, IShellBrowser ShellBrowser);
+using ShellWindow = (string Path, IShellBrowser Browser);
 
 public class Shell(StaThreadService staThreadService)
 {
+    private const int SWC_DESKTOP = 8;
+    private const int SWFO_NEEDDISPATCH = 1;
+
     private readonly StaThreadService _staThreadService = staThreadService;
     private readonly Guid SID_STopLevelBrowser = new("4C96BE40-915C-11CF-99D3-00AA004AE837");
 
-    public bool IsActive => GetActiveExplorerWindowHandle() is not null;
+    public bool IsActive
+    {
+        get
+        {
+            var foregroundWindow = NativeMethods.GetForegroundWindow();
+            return IsExplorer(foregroundWindow) || IsDesktop(foregroundWindow);
+        }
+    }
 
-    public string? GetActiveExplorerPath()
+    public string? GetActiveShellPath()
     {
         return _staThreadService.Invoke(() =>
         {
-            if (GetActiveExplorerWindow() is not (var webBrowser, _))
+            if (GetActiveShellWindow() is not (var path, _))
                 return null;
 
-            return new Uri(webBrowser.LocationURL).LocalPath;
+            return path;
         });
     }
 
@@ -32,19 +42,28 @@ public class Shell(StaThreadService staThreadService)
     {
         return _staThreadService.Invoke(() =>
         {
-            if (GetActiveExplorerWindow() is not (_, var shellBrowser))
+            if (GetActiveShellWindow() is not (_, var browser))
                 return [];
 
-            return GetSelectedItems(shellBrowser);
+            return GetSelectedItems(browser);
         });
     }
 
-    private ShellWindow? GetActiveExplorerWindow()
+    private ShellWindow? GetActiveShellWindow()
     {
-        if (GetActiveExplorerWindowHandle() is not nint handle)
-            return null;
+        var handle = NativeMethods.GetForegroundWindow();
 
-        var activeTab = GetActiveTab(handle);
+        if (IsExplorer(handle))
+            return GetActiveExplorerWindow(handle);
+        else if (IsDesktop(handle))
+            return GetActiveDesktopWindow(handle);
+        else
+            return null;
+    }
+
+    private ShellWindow? GetActiveExplorerWindow(nint handle)
+    {
+        var activeTab = GetActiveExplorerTab(handle);
         var shell = new Shell32.Shell();
         ShellWindows shellWindows = shell.Windows();
 
@@ -58,10 +77,24 @@ public class Shell(StaThreadService staThreadService)
             shellBrowser.GetWindow(out IntPtr shellBrowserHandle);
 
             if (activeTab == shellBrowserHandle)
-                return (webBrowserApp, shellBrowser);
+                return (new Uri(webBrowserApp.LocationURL).LocalPath, shellBrowser);
         }
 
         return null;
+    }
+
+    private ShellWindow? GetActiveDesktopWindow(nint handle)
+    {
+        var shell = new Shell32.Shell();
+        ShellWindows shellWindows = shell.Windows();
+
+        object? obj1 = null;
+        object? obj2 = null;
+
+        var serviceProvider = (IServiceProvider)shellWindows.FindWindowSW(ref obj1, ref obj2, SWC_DESKTOP, out int pHWND, SWFO_NEEDDISPATCH);
+        var shellBrowser = (IShellBrowser)serviceProvider.QueryService(SID_STopLevelBrowser, typeof(IShellBrowser).GUID);
+
+        return (Environment.GetFolderPath(Environment.SpecialFolder.Desktop), shellBrowser);
     }
 
     private List<string> GetSelectedItems(IShellBrowser shellBrowser)
@@ -96,7 +129,7 @@ public class Shell(StaThreadService staThreadService)
         return itemsPaths;
     }
 
-    private nint GetActiveTab(nint handle)
+    private nint GetActiveExplorerTab(nint handle)
     {
         var activeTab = FindChildWindow(handle, "ShellTabWindowClass");
 
@@ -106,16 +139,24 @@ public class Shell(StaThreadService staThreadService)
         return activeTab;
     }
 
+    private bool IsExplorer(nint handle)
+    {
+        var className = NativeMethods.GetClassName(handle);
+        return className is "CabinetWClass" or "ExploreWClass";
+    }
+
+    private bool IsDesktop(nint handle)
+    {
+        var className = NativeMethods.GetClassName(handle);
+
+        if (className is not "Progman" and not "WorkerW")
+            return false;
+
+        return FindChildWindow(handle, "SHELLDLL_DefView") != nint.Zero;
+    }
+
     private nint FindChildWindow(nint handle, string className)
     {
         return NativeMethods.FindWindowEx(handle, nint.Zero, className, null);
-    }
-
-    private nint? GetActiveExplorerWindowHandle()
-    {
-        var handle = NativeMethods.GetForegroundWindow();
-        var className = NativeMethods.GetClassName(handle);
-
-        return className is "CabinetWClass" or "ExploreWClass" ? handle : null;
     }
 }
