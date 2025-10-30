@@ -2,13 +2,15 @@
 using Shell32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using WinTool.Models;
 using WinTool.Native;
 using WinTool.Native.Shell;
 using IServiceProvider = WinTool.Native.Shell.IServiceProvider;
 
 namespace WinTool.Services;
 
-using ShellWindow = (string Path, IShellBrowser Browser);
+using ShellWindow = (string? Path, IShellBrowser Browser);
 
 public class Shell(StaThreadService staThreadService)
 {
@@ -38,7 +40,7 @@ public class Shell(StaThreadService staThreadService)
         });
     }
 
-    public List<string> GetSelectedItemsPaths()
+    public List<ItemInfo> GetSelectedItems()
     {
         return _staThreadService.Invoke(() =>
         {
@@ -67,17 +69,20 @@ public class Shell(StaThreadService staThreadService)
         var shell = new Shell32.Shell();
         ShellWindows shellWindows = shell.Windows();
 
-        foreach (IWebBrowserApp webBrowserApp in shellWindows)
+        foreach (IWebBrowserApp webBrowser in shellWindows)
         {
-            if (webBrowserApp.HWND != handle || webBrowserApp.Document is not IShellFolderViewDual2 shellFolderView)
+            if (webBrowser.HWND != handle || webBrowser.Document is not IShellFolderViewDual2 shellFolderView)
                 continue;
 
-            var serviceProvider = (IServiceProvider)webBrowserApp;
+            var serviceProvider = (IServiceProvider)webBrowser;
             var shellBrowser = (IShellBrowser)serviceProvider.QueryService(SID_STopLevelBrowser, typeof(IShellBrowser).GUID);
             shellBrowser.GetWindow(out IntPtr shellBrowserHandle);
 
             if (activeTab == shellBrowserHandle)
-                return (new Uri(webBrowserApp.LocationURL).LocalPath, shellBrowser);
+            {
+                Uri.TryCreate(webBrowser.LocationURL, UriKind.Absolute, out var uri);
+                return (uri?.LocalPath, shellBrowser);
+            }
         }
 
         return null;
@@ -97,7 +102,7 @@ public class Shell(StaThreadService staThreadService)
         return (Environment.GetFolderPath(Environment.SpecialFolder.Desktop), shellBrowser);
     }
 
-    private List<string> GetSelectedItems(IShellBrowser shellBrowser)
+    private List<ItemInfo> GetSelectedItems(IShellBrowser shellBrowser)
     {
         if (shellBrowser.QueryActiveShellView() is not IFolderView shellView)
             return [];
@@ -118,12 +123,28 @@ public class Shell(StaThreadService staThreadService)
         if (count < 0)
             return [];
 
-        List<string> itemsPaths = new(count);
+        List<ItemInfo> itemsPaths = new(count);
 
         for (int i = 0; i < count; i++)
         {
-            var itemPath = shellItemArray.GetItemAt(i).GetDisplayName(SIGDN.SIGDN_FILESYSPATH);
-            itemsPaths.Add(itemPath);
+            string? name = null;
+            string? path = null;
+
+            try
+            {
+                var itemPath = shellItemArray.GetItemAt(i);
+                name = itemPath.GetDisplayName(SIGDN.NORMALDISPLAY);
+                path = itemPath.GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error getting selected item at index {i}: {ex}");
+            }
+
+            if (path is null)
+                continue;
+
+            itemsPaths.Add(new ItemInfo(name, path));
         }
 
         return itemsPaths;
