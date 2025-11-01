@@ -18,10 +18,14 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 - Copy name of selected/opened item
 - Open current folder in cmd
 
+<br>
+
 ## Features
 - Keyboard layout switching popup near active caret in any app
 
 <img src="./docs/input-popup.png" />
+
+<br>
 
 ## Related libraries
 - [GlobalKeyInterceptor](https://github.com/arcanexhoax/GlobalKeyInterceptor) - a library used to intercept keyboard shortcuts

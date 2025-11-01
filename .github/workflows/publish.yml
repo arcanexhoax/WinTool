@@ -7,7 +7,9 @@ on:
 
 env:
   PROJECT_NAME: WinTool
-  PUBLISH_DIR: publish
+  PROJECT_DIR: src/WinTool
+  OUTPUT_DIR: output
+  ARTIFACTS_DIR: artifacts
 
 jobs:
   build:
@@ -22,14 +24,14 @@ jobs:
 
     - name: Build
       run: |
-        msbuild src/${{ env.PROJECT_NAME }} /t:Restore /t:publish /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
+        msbuild ${{ env.PROJECT_DIR }} /t:Restore /t:publish /p:OutputPath="$(pwd)/${{ env.OUTPUT_DIR }}/" /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
 
     - name: Archive
       uses: actions/upload-artifact@v4
       if: github.ref_type == 'tag'
       with:
         name: ${{ env.PROJECT_NAME }}
-        path: ${{ env.PUBLISH_DIR }}/${{ env.PROJECT_NAME }}.exe
+        path: ./${{ env.OUTPUT_DIR }}/publish/${{ env.PROJECT_NAME }}.exe
 
   publish:
     needs: build
@@ -41,10 +43,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: ${{ env.PROJECT_NAME }}
+        path: ${{ env.ARTIFACTS_DIR }}
 
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ${{ env.PROJECT_NAME }}.exe
+        artifacts: ${{ env.ARTIFACTS_DIR }}/${{ env.PROJECT_NAME }}.exe
         generateReleaseNotes: true
         token: ${{ secrets.GH_USER_TOKEN }}
