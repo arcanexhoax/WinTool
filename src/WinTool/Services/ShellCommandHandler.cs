@@ -24,7 +24,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
     public void CreateFileFast()
     {
-        string? path = _shell.GetActiveExplorerPath();
+        string? path = _shell.GetActiveShellPath();
 
         if (string.IsNullOrEmpty(path))
             return;
@@ -55,7 +55,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
     public void CreateFileInteractive()
     {
-        string? path = _shell.GetActiveExplorerPath();
+        string? path = _shell.GetActiveShellPath();
 
         if (string.IsNullOrEmpty(path))
             return;
@@ -90,30 +90,31 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
     public void CopyFilePath()
     {
-        var selectedPaths = _shell.GetSelectedItemsPaths();
+        var selectedItems = _shell.GetSelectedItems();
 
         // if there are no selections - copy folder path
-        if (selectedPaths.Count == 0)
+        if (selectedItems.Count == 0)
         {
-            string? folderPath = _shell.GetActiveExplorerPath();
+            string? folderPath = _shell.GetActiveShellPath();
 
             if (!string.IsNullOrEmpty(folderPath))
                 Clipboard.SetText(folderPath);
         }
         else
         {
-            Clipboard.SetText(string.Join(Environment.NewLine, selectedPaths));
+            var filePaths = selectedItems.Select(i => i.Path);
+            Clipboard.SetText(string.Join(Environment.NewLine, filePaths));
         }
     }
 
     public void CopyFileName()
     {
-        var selectedPaths = _shell.GetSelectedItemsPaths();
+        var selectedItems = _shell.GetSelectedItems();
 
         // if there are no selections - copy folder name
-        if (selectedPaths.Count == 0)
+        if (selectedItems.Count == 0)
         {
-            string? folderPath = _shell.GetActiveExplorerPath();
+            string? folderPath = _shell.GetActiveShellPath();
 
             if (string.IsNullOrEmpty(folderPath))
                 return;
@@ -123,19 +124,19 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         }
         else
         {
-            var fileNames = selectedPaths.Select(p => Path.GetFileName(p));
+            var fileNames = selectedItems.Select(i => i.Name ?? i.Path);
             Clipboard.SetText(string.Join(Environment.NewLine, fileNames));
         }
     }
 
     public void RunWithArgs()
     {
-        var selectedPaths = _shell.GetSelectedItemsPaths();
+        var selectedItems = _shell.GetSelectedItems();
 
-        if (selectedPaths.Count != 1 || Path.GetExtension(selectedPaths[0]) != ".exe")
+        if (selectedItems.Count != 1 || Path.GetExtension(selectedItems[0].Path) != ".exe")
             return;
 
-        string selectedItem = selectedPaths[0];
+        string selectedItem = selectedItems[0].Path;
 
         var runWithArgsWindow = _viewFactory.Create<RunWithArgsWindow>();
         var result = runWithArgsWindow.ShowDialog(selectedItem);
@@ -154,7 +155,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
     public void OpenInCmd()
     {
-        string? folderPath = _shell.GetActiveExplorerPath();
+        string? folderPath = _shell.GetActiveShellPath();
 
         if (string.IsNullOrEmpty(folderPath))
             return;
@@ -169,12 +170,12 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
     public void ChangeFileProperties()
     {
-        var selectedPaths = _shell.GetSelectedItemsPaths();
+        var selectedItems = _shell.GetSelectedItems();
 
-        if (selectedPaths.Count == 0)
+        if (selectedItems.Count == 0)
             return;
 
-        var selectedItemPath = selectedPaths[0];
+        var selectedItemPath = selectedItems[0].Path;
 
         if (!File.Exists(selectedItemPath))
             return;
