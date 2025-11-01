@@ -22,7 +22,7 @@ jobs:
 
     - name: Build
       run: |
-        msbuild ${{ env.PROJECT_NAME }} /t:Restore /t:publish /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
+        msbuild src/${{ env.PROJECT_NAME }} /t:Restore /t:publish /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
 
     - name: Archive
       uses: actions/upload-artifact@v4
@@ -47,3 +47,4 @@ jobs:
       with:
         artifacts: ${{ env.PROJECT_NAME }}.exe
         generateReleaseNotes: true
+        token: ${{ secrets.GH_USER_TOKEN }}

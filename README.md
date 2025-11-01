@@ -6,9 +6,8 @@
 
 WinTool is a utility that adds useful features and shortcuts to Windows, enhancing everyday experience.
 
-<picture>
-    <img src="./docs/main-window.png" />
-</picture>
+<br>
+<img src="./docs/main-window.png" />
 
 ## Shortcuts
 ### Windows Explorer
@@ -22,9 +21,7 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 ## Features
 - Keyboard layout switching popup near active caret in any app
 
-<picture>
-    <img src="./docs/input-popup.png" />
-</picture>
+<img src="./docs/input-popup.png" />
 
 ## Related libraries
 - [GlobalKeyInterceptor](https://github.com/arcanexhoax/GlobalKeyInterceptor) - a library used to intercept keyboard shortcuts
