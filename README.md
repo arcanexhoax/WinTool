@@ -8,6 +8,7 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 
 <br>
 <img src="./docs/main-window.png" />
+<br>
 
 ## Shortcuts
 ### Windows Explorer
