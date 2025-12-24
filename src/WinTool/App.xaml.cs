@@ -1,6 +1,7 @@
 ﻿using GlobalKeyInterceptor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -69,6 +70,10 @@ public partial class App : Application
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
         builder.Services.AddSingleton(new KeyInterceptor());
         builder.Services.AddSingleton<ShortcutContext>();
+        builder.Services.AddSingleton<ShortcutsService>();
+        builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
+
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<ShortcutsService>());
 
         _app = builder.Build();
     }
