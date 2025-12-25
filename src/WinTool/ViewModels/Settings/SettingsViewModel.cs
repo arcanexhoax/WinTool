@@ -57,6 +57,17 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
+    public bool AlwaysRunAsAdmin
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.AlwaysRunAsAdmin = value);
+            }
+        }
+    }
+
     public AppTheme SelectedAppTheme
     {
         get; set
@@ -76,6 +87,7 @@ public class SettingsViewModel : ObservableObject
         _isInitializing = true;
 
         LaunchOnWindowsStartup = _settingsOptions.CurrentValue.WindowsStartupEnabled;
+        AlwaysRunAsAdmin = _settingsOptions.CurrentValue.AlwaysRunAsAdmin;
         SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
 
         _isInitializing = false;

@@ -82,12 +82,15 @@ public partial class App : Application
     {
         await _app.StartAsync();
 
+        var clp = CommandLineParameters.Parse(e.Args);
+        var settings = _app.Services.GetRequiredService<IOptions<SettingsOptions>>().Value;
+
+        RunAsAdminIfNeeded(settings, clp);
+
         // activate the window
         _app.Services.GetRequiredService<SwitchLanguageWindow>();
         var mainWindow = _app.Services.GetRequiredService<MainWindow>();
         var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
-
-        var clp = CommandLineParameters.Parse(e.Args);
 
         if (clp.BackgroundParameter is null)
             mainWindow.Show();
@@ -106,6 +109,12 @@ public partial class App : Application
 
         if (!isFirstInstance && NativeMethods.ShowWindow("WinTool"))
             Environment.Exit(0);
+    }
+
+    private void RunAsAdminIfNeeded(SettingsOptions settings, CommandLineParameters clp)
+    {
+        if (settings.AlwaysRunAsAdmin && !ProcessHelper.IsAdmin)
+            ProcessHelper.RestartAsAdmin(clp);
     }
 
     private void HandleOperations(ShellCommandHandler commandHandler, CommandLineParameters clp)

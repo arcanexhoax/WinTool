@@ -303,4 +303,7 @@
   <data name="System" xml:space="preserve">
     <value>System</value>
   </data>
+  <data name="AlwaysRunAsAdmin" xml:space="preserve">
+    <value>Always run as administrator</value>
+  </data>
 </root>
