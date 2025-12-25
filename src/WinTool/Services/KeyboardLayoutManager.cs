@@ -1,5 +1,7 @@
 ﻿using GlobalKeyInterceptor;
 using GlobalKeyInterceptor.Utils;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,13 +11,14 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using WinTool.Native;
+using WinTool.Options;
 
 namespace WinTool.Services;
 
-public class KeyboardLayoutManager
+public class KeyboardLayoutManager : BackgroundService
 {
     private readonly KeyInterceptor _keyInterceptor;
-
+    private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
     private nint _lastLayout;
     private IEnumerable<nint> _allLayouts;
     private CancellationTokenSource? _checkLayoutCts;
@@ -27,12 +30,39 @@ public class KeyboardLayoutManager
     public event Action<CultureInfo>? LayoutChanged;
     public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
 
-    public KeyboardLayoutManager(KeyInterceptor keyInterceptor)
+    public KeyboardLayoutManager(KeyInterceptor keyInterceptor, IOptionsMonitor<FeaturesOptions> featuresOptions)
     {
         _keyInterceptor = keyInterceptor;
+        _featuresOptions = featuresOptions;
+        _featuresOptions.OnChange((o, _) =>
+        {
+            if (o.EnableSwitchLanguagePopup)
+                Start();
+            else
+                Stop();
+        });
 
         _lastLayout = GetCurrentKeyboardLayout();
         _allLayouts = GetKeyboardLayouts();
+    }
+
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        if (_featuresOptions.CurrentValue.EnableSwitchLanguagePopup)
+            Start();
+
+        return Task.CompletedTask;
+    }
+
+    public void Start()
+    {
+        _keyInterceptor.ShortcutPressed += OnShortcutPressed;
+    }
+
+    public void Stop()
+    {
+        _checkLayoutCts?.Cancel();
+        _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
     }
 
     private async void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
@@ -43,7 +73,7 @@ public class KeyboardLayoutManager
         if ((e.Shortcut.Key.IsAlt() && e.Shortcut.Modifier is KeyModifier.Shift
             || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Alt
             || e.Shortcut.Key.IsCtrl() && e.Shortcut.Modifier is KeyModifier.Shift
-            || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Ctrl) 
+            || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Ctrl)
             && e.Shortcut.State is KeyState.Down)
         {
             _waitingShortcut = e.Shortcut;
@@ -75,17 +105,6 @@ public class KeyboardLayoutManager
             _checkLayoutCts = new CancellationTokenSource();
             await CheckLayoutAsync(_checkLayoutCts.Token);
         }
-    }
-
-    public void Start()
-    {
-        _keyInterceptor.ShortcutPressed += OnShortcutPressed;
-    }
-
-    public void Stop()
-    {
-        _checkLayoutCts?.Cancel();
-        _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
     }
 
     private async Task CheckLayoutAsync(CancellationToken cancellationToken)

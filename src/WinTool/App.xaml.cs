@@ -74,6 +74,7 @@ public partial class App : Application
         builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
 
         builder.Services.AddHostedService(sp => sp.GetRequiredService<ShortcutsService>());
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<KeyboardLayoutManager>());
 
         _app = builder.Build();
     }
@@ -87,7 +88,7 @@ public partial class App : Application
 
         RunAsAdminIfNeeded(settings, clp);
 
-        // activate the window
+        // activate the popup window
         _app.Services.GetRequiredService<SwitchLanguageWindow>();
         var mainWindow = _app.Services.GetRequiredService<MainWindow>();
         var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
