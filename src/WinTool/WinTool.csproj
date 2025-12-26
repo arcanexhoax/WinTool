@@ -71,7 +71,6 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-		<PackageReference Include="System.Text.Json" Version="10.0.1" />
 		<PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
 	</ItemGroup>
 

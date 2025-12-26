@@ -38,7 +38,7 @@ public class SwitchLanguageViewModel : ObservableObject
     private void OnLayoutsListChanged(IEnumerable<CultureInfo> allLayouts)
     {
         var allLanguages = allLayouts.Select(layout => new LanguageViewModel(layout, GetThreeLettersNativeName(layout)));
-        AllLanguages = [.. allLanguages];
+        App.Current.Dispatcher.Invoke(() => AllLanguages = [.. allLanguages]);
     }
 
     private void OnLayoutChanged(CultureInfo newCulture)

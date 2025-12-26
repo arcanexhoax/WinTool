@@ -2,6 +2,7 @@
 using GlobalKeyInterceptor.Utils;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,12 +21,12 @@ public class KeyboardLayoutManager : BackgroundService
     private readonly KeyInterceptor _keyInterceptor;
     private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
     private nint _lastLayout;
-    private IEnumerable<nint> _allLayouts;
+    private nint[]? _allLayouts;
     private CancellationTokenSource? _checkLayoutCts;
     private Shortcut? _waitingShortcut;
     private bool _waitingForWinRelease;
 
-    public IEnumerable<CultureInfo> AllCultures => _allLayouts.Select(ConvertToCultureInfo);
+    public IEnumerable<CultureInfo> AllCultures { get; private set; } = [];
 
     public event Action<CultureInfo>? LayoutChanged;
     public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
@@ -41,9 +42,6 @@ public class KeyboardLayoutManager : BackgroundService
             else
                 Stop();
         });
-
-        _lastLayout = GetCurrentKeyboardLayout();
-        _allLayouts = GetKeyboardLayouts();
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -56,6 +54,10 @@ public class KeyboardLayoutManager : BackgroundService
 
     public void Start()
     {
+        _lastLayout = GetCurrentKeyboardLayout();
+        _allLayouts = GetKeyboardLayoutsUsingWinApi();
+        AllCultures = OrderKeyboardLayouts(_allLayouts);
+
         _keyInterceptor.ShortcutPressed += OnShortcutPressed;
     }
 
@@ -120,13 +122,7 @@ public class KeyboardLayoutManager : BackgroundService
                 if (currentLayout != _lastLayout)
                 {
                     _lastLayout = currentLayout;
-                    var allLayouts = GetKeyboardLayouts();
-
-                    if (!_allLayouts.SequenceEqual(allLayouts))
-                    {
-                        _allLayouts = allLayouts;
-                        LayoutsListChanged?.Invoke(allLayouts.Select(ConvertToCultureInfo));
-                    }
+                    CheckLayoutsList();
 
                     var currentCulture = ConvertToCultureInfo(currentLayout);
                     Debug.WriteLine($"New layout: {currentCulture.NativeName}");
@@ -141,7 +137,19 @@ public class KeyboardLayoutManager : BackgroundService
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error in keyboard layout cheking: {ex}");
+            Debug.WriteLine($"Error in keyboard layout checking: {ex}");
+        }
+    }
+
+    private void CheckLayoutsList()
+    {
+        var allLayouts = GetKeyboardLayoutsUsingWinApi();
+
+        if (!_allLayouts.SequenceEqual(allLayouts))
+        {
+            _allLayouts = allLayouts;
+            AllCultures = OrderKeyboardLayouts(_allLayouts);
+            LayoutsListChanged?.Invoke(AllCultures);
         }
     }
 
@@ -215,13 +223,40 @@ public class KeyboardLayoutManager : BackgroundService
         return true;
     }
 
-    private nint[] GetKeyboardLayouts()
+    private nint[] GetKeyboardLayoutsUsingWinApi()
     {
         int count = NativeMethods.GetKeyboardLayoutList(0, null);
         var keyboardLayouts = new nint[count];
         NativeMethods.GetKeyboardLayoutList(keyboardLayouts.Length, keyboardLayouts);
 
         return keyboardLayouts;
+    }
+
+    private CultureInfo[] OrderKeyboardLayouts(nint[] loadedLayouts)
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(@"Control Panel\International\User Profile");
+
+        if (key?.GetValue("Languages") is not string[] languageCodes)
+            return [];
+
+        var languageIndexes = languageCodes
+            .Select((lang, i) => new { Lang = lang, Index = i })
+            .ToDictionary(x => x.Lang, x => x.Index);
+
+        return loadedLayouts
+            .Select(ConvertToCultureInfo)
+            .Distinct()
+            .OrderBy(c =>
+            {
+                if (languageIndexes.TryGetValue(c.Name, out var exact))
+                    return exact;
+
+                if (languageIndexes.TryGetValue(c.TwoLetterISOLanguageName, out var fallback))
+                    return fallback;
+
+                return int.MaxValue;
+            })
+            .ToArray();
     }
 
     private CultureInfo ConvertToCultureInfo(nint hkl)
