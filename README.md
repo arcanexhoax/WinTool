@@ -1,13 +1,14 @@
 # WinTool
 
-![NET](https://img.shields.io/badge/.NET%209-%23512BD4)
-![Version](https://img.shields.io/badge/Version-0.9.1-%230c7ebf)
+![NET](https://img.shields.io/badge/.NET%2010-%23512BD4)
+![Version](https://img.shields.io/badge/Version-0.9.2-%230c7ebf)
 [![License](https://img.shields.io/github/license/arcanexhoax/WinTool.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/WinTool/master/LICENSE)
 
 WinTool is a utility that adds useful features and shortcuts to Windows, enhancing everyday experience.
 
 <br>
 <img src="./docs/main-window.png" />
+<br>
 
 ## Shortcuts
 ### Windows Explorer
@@ -18,10 +19,14 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 - Copy name of selected/opened item
 - Open current folder in cmd
 
+<br>
+
 ## Features
 - Keyboard layout switching popup near active caret in any app
 
 <img src="./docs/input-popup.png" />
+
+<br>
 
 ## Related libraries
 - [GlobalKeyInterceptor](https://github.com/arcanexhoax/GlobalKeyInterceptor) - a library used to intercept keyboard shortcuts

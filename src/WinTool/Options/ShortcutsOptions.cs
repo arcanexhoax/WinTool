@@ -4,16 +4,7 @@ namespace WinTool.Options;
 
 public class ShortcutsOptions
 {
-    public Dictionary<string, string> Shortcuts { get; set; } = new()
-    {
-        { ShortcutNames.CreateFile, "Ctrl + E" },
-        { ShortcutNames.FastFileCreation, "Ctrl + Shift + E" },
-        { ShortcutNames.SelectedItemCopyPath, "Ctrl + Shift + C" },
-        { ShortcutNames.SelectedItemCopyName, "Ctrl + Shift + X" },
-        { ShortcutNames.RunWithArgs, "Ctrl + O" },
-        { ShortcutNames.OpenFolderInCmd, "Ctrl + Shift + L" },
-        { ShortcutNames.ChangeFileProperties, "Ctrl + F2" }
-    };
+    public Dictionary<string, string> Shortcuts { get; set; } = [];
 }
 
 public class ShortcutNames

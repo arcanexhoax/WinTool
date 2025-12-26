@@ -1,5 +1,8 @@
 ﻿using GlobalKeyInterceptor;
 using GlobalKeyInterceptor.Utils;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,30 +12,59 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using WinTool.Native;
+using WinTool.Options;
 
 namespace WinTool.Services;
 
-public class KeyboardLayoutManager
+public class KeyboardLayoutManager : BackgroundService
 {
     private readonly KeyInterceptor _keyInterceptor;
-
+    private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
     private nint _lastLayout;
-    private IEnumerable<nint> _allLayouts;
+    private nint[]? _allLayouts;
     private CancellationTokenSource? _checkLayoutCts;
     private Shortcut? _waitingShortcut;
     private bool _waitingForWinRelease;
 
-    public IEnumerable<CultureInfo> AllCultures => _allLayouts.Select(ConvertToCultureInfo);
+    public IEnumerable<CultureInfo> AllCultures { get; private set; } = [];
 
     public event Action<CultureInfo>? LayoutChanged;
     public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
 
-    public KeyboardLayoutManager(KeyInterceptor keyInterceptor)
+    public KeyboardLayoutManager(KeyInterceptor keyInterceptor, IOptionsMonitor<FeaturesOptions> featuresOptions)
     {
         _keyInterceptor = keyInterceptor;
+        _featuresOptions = featuresOptions;
+        _featuresOptions.OnChange((o, _) =>
+        {
+            if (o.EnableSwitchLanguagePopup)
+                Start();
+            else
+                Stop();
+        });
+    }
 
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        if (_featuresOptions.CurrentValue.EnableSwitchLanguagePopup)
+            Start();
+
+        return Task.CompletedTask;
+    }
+
+    public void Start()
+    {
         _lastLayout = GetCurrentKeyboardLayout();
-        _allLayouts = GetKeyboardLayouts();
+        _allLayouts = GetKeyboardLayoutsUsingWinApi();
+        AllCultures = OrderKeyboardLayouts(_allLayouts);
+
+        _keyInterceptor.ShortcutPressed += OnShortcutPressed;
+    }
+
+    public void Stop()
+    {
+        _checkLayoutCts?.Cancel();
+        _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
     }
 
     private async void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
@@ -43,7 +75,7 @@ public class KeyboardLayoutManager
         if ((e.Shortcut.Key.IsAlt() && e.Shortcut.Modifier is KeyModifier.Shift
             || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Alt
             || e.Shortcut.Key.IsCtrl() && e.Shortcut.Modifier is KeyModifier.Shift
-            || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Ctrl) 
+            || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Ctrl)
             && e.Shortcut.State is KeyState.Down)
         {
             _waitingShortcut = e.Shortcut;
@@ -77,17 +109,6 @@ public class KeyboardLayoutManager
         }
     }
 
-    public void Start()
-    {
-        _keyInterceptor.ShortcutPressed += OnShortcutPressed;
-    }
-
-    public void Stop()
-    {
-        _checkLayoutCts?.Cancel();
-        _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
-    }
-
     private async Task CheckLayoutAsync(CancellationToken cancellationToken)
     {
         try
@@ -101,13 +122,7 @@ public class KeyboardLayoutManager
                 if (currentLayout != _lastLayout)
                 {
                     _lastLayout = currentLayout;
-                    var allLayouts = GetKeyboardLayouts();
-
-                    if (!_allLayouts.SequenceEqual(allLayouts))
-                    {
-                        _allLayouts = allLayouts;
-                        LayoutsListChanged?.Invoke(allLayouts.Select(ConvertToCultureInfo));
-                    }
+                    CheckLayoutsList();
 
                     var currentCulture = ConvertToCultureInfo(currentLayout);
                     Debug.WriteLine($"New layout: {currentCulture.NativeName}");
@@ -122,7 +137,19 @@ public class KeyboardLayoutManager
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error in keyboard layout cheking: {ex}");
+            Debug.WriteLine($"Error in keyboard layout checking: {ex}");
+        }
+    }
+
+    private void CheckLayoutsList()
+    {
+        var allLayouts = GetKeyboardLayoutsUsingWinApi();
+
+        if (!_allLayouts.SequenceEqual(allLayouts))
+        {
+            _allLayouts = allLayouts;
+            AllCultures = OrderKeyboardLayouts(_allLayouts);
+            LayoutsListChanged?.Invoke(AllCultures);
         }
     }
 
@@ -196,13 +223,40 @@ public class KeyboardLayoutManager
         return true;
     }
 
-    private nint[] GetKeyboardLayouts()
+    private nint[] GetKeyboardLayoutsUsingWinApi()
     {
         int count = NativeMethods.GetKeyboardLayoutList(0, null);
         var keyboardLayouts = new nint[count];
         NativeMethods.GetKeyboardLayoutList(keyboardLayouts.Length, keyboardLayouts);
 
         return keyboardLayouts;
+    }
+
+    private CultureInfo[] OrderKeyboardLayouts(nint[] loadedLayouts)
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(@"Control Panel\International\User Profile");
+
+        if (key?.GetValue("Languages") is not string[] languageCodes)
+            return [];
+
+        var languageIndexes = languageCodes
+            .Select((lang, i) => new { Lang = lang, Index = i })
+            .ToDictionary(x => x.Lang, x => x.Index);
+
+        return loadedLayouts
+            .Select(ConvertToCultureInfo)
+            .Distinct()
+            .OrderBy(c =>
+            {
+                if (languageIndexes.TryGetValue(c.Name, out var exact))
+                    return exact;
+
+                if (languageIndexes.TryGetValue(c.TwoLetterISOLanguageName, out var fallback))
+                    return fallback;
+
+                return int.MaxValue;
+            })
+            .ToArray();
     }
 
     private CultureInfo ConvertToCultureInfo(nint hkl)

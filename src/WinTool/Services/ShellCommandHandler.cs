@@ -81,7 +81,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
             }
         };
 
-        ProcessHelper.ExecuteWithUacIfNeeded(() =>
+        ProcessHelper.ExecuteAsAdminIfNeeded(() =>
         {
             using var fileStream = File.Create(path);
             fileStream.SetLength(size);

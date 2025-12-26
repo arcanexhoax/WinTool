@@ -6,6 +6,8 @@ namespace WinTool.Utils;
 
 public class ShortcutUtils
 {
+    public static bool IsValid(string shortcut) => Parse(shortcut) != null;
+
     public static Shortcut? Parse(string shortcut) => Parse(shortcut, KeyState.Up);
 
     public static Shortcut? Parse(string shortcut, KeyState state)

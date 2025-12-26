@@ -38,10 +38,17 @@
                             CornerRadius="0 0 6 6"
                             Style="{DynamicResource CardBorderStyle}"
                             Padding="58 10">
-                        <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
-                                  IsChecked="{Binding LaunchOnWindowsStartup}"
-                                  HorizontalAlignment="Left"
-                                  VerticalAlignment="Top" />
+                        <StackPanel>
+                            <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
+                                      IsChecked="{Binding LaunchOnWindowsStartup}"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top" />
+                            <CheckBox Content="{x:Static p:Resources.AlwaysRunAsAdmin}"
+                                      IsChecked="{Binding AlwaysRunAsAdmin}"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      Margin="0 8 0 0"/>
+                        </StackPanel>
                     </Border>
 
                     <Border CornerRadius="6 6 0 0"

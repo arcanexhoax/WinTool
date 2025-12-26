@@ -9,55 +9,58 @@ namespace WinTool.Utils;
 
 internal class ProcessHelper
 {
-    private static readonly bool _isAdmin;
     private static readonly string _appDirectory;
 
+    public static bool IsAdmin { get; }
     public static string ProcessPath { get; }
 
     static ProcessHelper()
     {
         var identity = WindowsIdentity.GetCurrent();
         var principal = new WindowsPrincipal(identity);
-        _isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+        IsAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
 
         _appDirectory = Path.GetDirectoryName(Environment.ProcessPath)!;
         ProcessPath = Path.Combine(_appDirectory, "WinTool.exe");
     }
 
-    public static void ExecuteWithUacIfNeeded(Action action, CommandLineParameters clp)
+    public static void ExecuteAsAdminIfNeeded(Action action, CommandLineParameters clp)
     {
         try
         {
             action?.Invoke();
         }
-        catch (UnauthorizedAccessException ex)
+        catch (UnauthorizedAccessException ex) when (IsAdmin)
         {
-            if (_isAdmin)
-            {
-                Debug.WriteLine($"Already running as admin but got: {ex.Message}");
-                MessageBoxHelper.ShowError(string.Format(Resources.AlreadyRunnningAsAdminError, ex.Message));
-                return;
-            }
+            Debug.WriteLine($"Already running as admin but got: {ex.Message}");
+            MessageBoxHelper.ShowError(string.Format(Resources.AlreadyRunnningAsAdminError, ex.Message));
+        }
+        catch (UnauthorizedAccessException) 
+        {
+            RestartAsAdmin(clp);
+        }
+    }
 
-            ProcessStartInfo psi = new()
-            {
-                Arguments = clp.ToString(),
-                FileName = ProcessPath,
-                Verb = "runas",
-                UseShellExecute = true,
-                WorkingDirectory = _appDirectory
-            };
+    public static void RestartAsAdmin(CommandLineParameters? clp = null)
+    {
+        var psi = new ProcessStartInfo()
+        {
+            Arguments = clp?.ToString(),
+            FileName = ProcessPath,
+            Verb = "runas",
+            UseShellExecute = true,
+            WorkingDirectory = _appDirectory
+        };
 
-            try
-            {
-                Process.Start(psi);
-                App.Current.Shutdown();
-            }
-            catch (Exception iex)
-            {
-                Debug.WriteLine("Failed to start process with UAC: " + iex.Message);
-                MessageBoxHelper.ShowError(string.Format(Resources.RunAsAdminError, iex.Message));
-            }
+        try
+        {
+            Process.Start(psi);
+            App.Current.Shutdown();
+        }
+        catch (Exception iex)
+        {
+            Debug.WriteLine("Failed to start process with UAC: " + iex.Message);
+            MessageBoxHelper.ShowError(string.Format(Resources.RunAsAdminError, iex.Message));
         }
     }
 }

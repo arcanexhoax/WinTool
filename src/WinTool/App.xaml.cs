@@ -1,6 +1,7 @@
 ﻿using GlobalKeyInterceptor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -69,6 +70,11 @@ public partial class App : Application
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
         builder.Services.AddSingleton(new KeyInterceptor());
         builder.Services.AddSingleton<ShortcutContext>();
+        builder.Services.AddSingleton<ShortcutsService>();
+        builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
+
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<ShortcutsService>());
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<KeyboardLayoutManager>());
 
         _app = builder.Build();
     }
@@ -77,12 +83,15 @@ public partial class App : Application
     {
         await _app.StartAsync();
 
-        // activate the window
+        var clp = CommandLineParameters.Parse(e.Args);
+        var settings = _app.Services.GetRequiredService<IOptions<SettingsOptions>>().Value;
+
+        RunAsAdminIfNeeded(settings, clp);
+
+        // activate the popup window
         _app.Services.GetRequiredService<SwitchLanguageWindow>();
         var mainWindow = _app.Services.GetRequiredService<MainWindow>();
         var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
-
-        var clp = CommandLineParameters.Parse(e.Args);
 
         if (clp.BackgroundParameter is null)
             mainWindow.Show();
@@ -101,6 +110,12 @@ public partial class App : Application
 
         if (!isFirstInstance && NativeMethods.ShowWindow("WinTool"))
             Environment.Exit(0);
+    }
+
+    private void RunAsAdminIfNeeded(SettingsOptions settings, CommandLineParameters clp)
+    {
+        if (settings.AlwaysRunAsAdmin && !ProcessHelper.IsAdmin)
+            ProcessHelper.RestartAsAdmin(clp);
     }
 
     private void HandleOperations(ShellCommandHandler commandHandler, CommandLineParameters clp)
