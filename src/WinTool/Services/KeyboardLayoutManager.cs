@@ -26,7 +26,14 @@ public class KeyboardLayoutManager : BackgroundService
     private Shortcut? _waitingShortcut;
     private bool _waitingForWinRelease;
 
-    public IEnumerable<CultureInfo> AllCultures { get; private set; } = [];
+    public IEnumerable<CultureInfo> AllCultures
+    {
+        get; private set
+        {
+            field = value;
+            LayoutsListChanged?.Invoke(value);
+        }
+    } = [];
 
     public event Action<CultureInfo>? LayoutChanged;
     public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
@@ -149,7 +156,6 @@ public class KeyboardLayoutManager : BackgroundService
         {
             _allLayouts = allLayouts;
             AllCultures = OrderKeyboardLayouts(_allLayouts);
-            LayoutsListChanged?.Invoke(AllCultures);
         }
     }
 
