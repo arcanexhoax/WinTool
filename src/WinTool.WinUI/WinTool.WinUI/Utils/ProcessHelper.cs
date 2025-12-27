@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Principal;
 using WinTool.CommandLine;
 using WinTool.Properties;
+using WinTool.WinUI;
 
 namespace WinTool.Utils;
 
@@ -55,8 +56,7 @@ internal class ProcessHelper
         try
         {
             Process.Start(psi);
-            // TODO shutdown app
-            //App.Current.Shutdown();
+            App.Current.Exit();
         }
         catch (Exception iex)
         {

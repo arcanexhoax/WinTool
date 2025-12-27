@@ -5,8 +5,14 @@
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
-    <None Update="MainWindow.xaml">
+    <Page Update="Views\Shortcuts\RunWithArgsWindow.xaml">
       <SubType>Designer</SubType>
-    </None>
+    </Page>
+    <Page Update="Views\Shortcuts\CreateFileWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Shortcuts\ShortcutsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 </Project>

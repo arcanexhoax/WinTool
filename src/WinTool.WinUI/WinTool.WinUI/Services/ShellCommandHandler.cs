@@ -1,0 +1,174 @@
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows;
+using Windows.ApplicationModel.DataTransfer;
+using WinTool.CommandLine;
+using WinTool.Extensions;
+using WinTool.Models;
+using WinTool.Properties;
+using WinTool.Utils;
+using WinTool.Views.Shortcuts;
+using File = System.IO.File;
+
+namespace WinTool.Services;
+
+public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
+{
+    private const string NewFileTemplate = "NewFile.txt";
+
+    private readonly Shell _shell = shell;
+    private readonly ViewFactory _viewFactory = viewFactory;
+
+    public bool IsBackgroundMode { get; set; } = true;
+
+    public void CreateFileFast()
+    {
+        string? path = _shell.GetActiveShellPath();
+
+        if (string.IsNullOrEmpty(path))
+            return;
+
+        DirectoryInfo di = new(path);
+        int num = 0;
+
+        string? fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
+        string? extension = Path.GetExtension(NewFileTemplate);
+
+        var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
+        {
+            var match = Regex.Match(f.Name, $@"^{fileName}_(\d+){extension}$");
+
+            if (match.Groups.Count != 2)
+                return -1;
+
+            if (int.TryParse(match.Groups[1].Value, out int number))
+                return number;
+            return -1;
+        });
+
+        if (numbers.Any())
+            num = numbers.Max() + 1;
+
+        CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
+    }
+
+    public void CreateFileInteractive()
+    {
+        string? path = _shell.GetActiveShellPath();
+
+        if (string.IsNullOrEmpty(path))
+            return;
+
+        var createFileWindow = _viewFactory.CreateWindow<CreateFileWindow>();
+        // TODO add create file interactive
+        //var result = createFileWindow.ShowDialog(path);
+
+        //if (result is not { Success: true, Data: { } data })
+        //    return;
+
+        //CreateFile(data.FilePath, data.Size);
+    }
+
+    public void CreateFile(string path, long size = 0)
+    {
+        var clp = new CommandLineParameters()
+        {
+            BackgroundParameter = IsBackgroundMode ? new BackgroundParameter() : null,
+            CreateFileParameter = new CreateFileParameter()
+            {
+                FilePath = path,
+                Size = size
+            }
+        };
+
+        ProcessHelper.ExecuteAsAdminIfNeeded(() =>
+        {
+            using var fileStream = File.Create(path);
+            fileStream.SetLength(size);
+        }, clp);
+    }
+
+    public void CopyFilePath()
+    {
+        var selectedItems = _shell.GetSelectedItems();
+
+        // if there are no selections - copy folder path
+        if (selectedItems.Count == 0)
+        {
+            string? folderPath = _shell.GetActiveShellPath();
+
+            if (!string.IsNullOrEmpty(folderPath))
+                Clipboard.SetText(folderPath);
+        }
+        else
+        {
+            var filePaths = selectedItems.Select(i => i.Path);
+            Clipboard.SetText(string.Join(Environment.NewLine, filePaths));
+        }
+    }
+
+    public void CopyFileName()
+    {
+        var selectedItems = _shell.GetSelectedItems();
+
+        // if there are no selections - copy folder name
+        if (selectedItems.Count == 0)
+        {
+            string? folderPath = _shell.GetActiveShellPath();
+
+            if (string.IsNullOrEmpty(folderPath))
+                return;
+
+            DirectoryInfo di = new(folderPath);
+            Clipboard.SetText(di.Name);
+        }
+        else
+        {
+            var fileNames = selectedItems.Select(i => i.Name ?? i.Path);
+            Clipboard.SetText(string.Join(Environment.NewLine, fileNames));
+        }
+    }
+
+    public void RunWithArgs()
+    {
+        var selectedItems = _shell.GetSelectedItems();
+
+        if (selectedItems.Count != 1 || Path.GetExtension(selectedItems[0].Path) != ".exe")
+            return;
+
+        string selectedItem = selectedItems[0].Path;
+
+        var runWithArgsWindow = _viewFactory.CreateWindow<RunWithArgsWindow>();
+        // TODO add run with args
+        //var result = runWithArgsWindow.ShowDialog(selectedItem);
+
+        //if (result is not { Success: true, Data: { } args })
+        //    return;
+
+        //if (!File.Exists(selectedItem))
+        //{
+        //    MessageBoxHelper.ShowError(string.Format(Resources.FileNotFound, selectedItem));
+        //    return;
+        //}
+
+        //Process.Start(selectedItem, args ?? string.Empty);
+    }
+
+    public void OpenInCmd()
+    {
+        string? folderPath = _shell.GetActiveShellPath();
+
+        if (string.IsNullOrEmpty(folderPath))
+            return;
+
+        using (Process.Start(new ProcessStartInfo
+        {
+            WorkingDirectory = folderPath,
+            FileName = "cmd.exe",
+            UseShellExecute = false,
+        })) { }
+    }
+}

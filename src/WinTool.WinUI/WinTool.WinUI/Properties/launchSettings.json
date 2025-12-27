@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WinTool.WinUI": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}
