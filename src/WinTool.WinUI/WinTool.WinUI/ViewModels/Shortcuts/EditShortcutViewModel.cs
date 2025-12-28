@@ -7,11 +7,10 @@ using System.Linq;
 using WinTool.Models;
 using WinTool.Options;
 using WinTool.Properties;
-using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class EditShortcutViewModel : ObservableObject, IDialogViewModel<EditShortcutInput, Shortcut>
+public partial class EditShortcutViewModel : ObservableObject, IDialogViewModel<EditShortcutInput, Shortcut>
 {
     private readonly IOptionsMonitor<ShortcutsOptions> _options;
     private readonly ShortcutContext _shortcutContext;

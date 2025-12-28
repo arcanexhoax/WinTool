@@ -43,11 +43,11 @@ public partial class ShortcutsService : BackgroundService
     {
         var shortcutMatches = new (string, Action, string, string)[]
         {
-            (ShortcutNames.CreateFile, _shellCommandHandler.CreateFileInteractive, Icons.KnowledgeArticle, Resources.CreateFile),
+            (ShortcutNames.CreateFile, async () => await _shellCommandHandler.CreateFileInteractive(), Icons.KnowledgeArticle, Resources.CreateFile),
             (ShortcutNames.FastFileCreation, _shellCommandHandler.CreateFileFast, Icons.Page, Resources.FastFileCreation),
             (ShortcutNames.SelectedItemCopyPath, _shellCommandHandler.CopyFilePath, Icons.Copy, Resources.SelectedItemCopyPath),
             (ShortcutNames.SelectedItemCopyName, _shellCommandHandler.CopyFileName, Icons.Rename, Resources.SelectedItemCopyName),
-            (ShortcutNames.RunWithArgs, _shellCommandHandler.RunWithArgs, Icons.OpenFile, Resources.RunWithArgs),
+            (ShortcutNames.RunWithArgs, async () => await _shellCommandHandler.RunWithArgs(), Icons.OpenFile, Resources.RunWithArgs),
             (ShortcutNames.OpenFolderInCmd, _shellCommandHandler.OpenInCmd, Icons.CommandPrompt, Resources.OpenFolderInCmd)
         };
 

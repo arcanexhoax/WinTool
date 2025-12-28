@@ -3,11 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using WinTool.CommandLine;
 using WinTool.Extensions;
-using WinTool.Models;
 using WinTool.Properties;
 using WinTool.Utils;
 using WinTool.Views.Shortcuts;
@@ -55,7 +54,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
     }
 
-    public void CreateFileInteractive()
+    public async Task CreateFileInteractive()
     {
         string? path = _shell.GetActiveShellPath();
 
@@ -63,13 +62,12 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
             return;
 
         var createFileWindow = _viewFactory.CreateWindow<CreateFileWindow>();
-        // TODO add create file interactive
-        //var result = createFileWindow.ShowDialog(path);
+        var result = await createFileWindow.ShowDialog(path);
 
-        //if (result is not { Success: true, Data: { } data })
-        //    return;
+        if (result is not { Success: true, Data: { } data })
+            return;
 
-        //CreateFile(data.FilePath, data.Size);
+        CreateFile(data.FilePath, data.Size);
     }
 
     public void CreateFile(string path, long size = 0)
@@ -132,7 +130,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         }
     }
 
-    public void RunWithArgs()
+    public async Task RunWithArgs()
     {
         var selectedItems = _shell.GetSelectedItems();
 
@@ -142,19 +140,18 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         string selectedItem = selectedItems[0].Path;
 
         var runWithArgsWindow = _viewFactory.CreateWindow<RunWithArgsWindow>();
-        // TODO add run with args
-        //var result = runWithArgsWindow.ShowDialog(selectedItem);
+        var result = await runWithArgsWindow.ShowDialog(selectedItem);
 
-        //if (result is not { Success: true, Data: { } args })
-        //    return;
+        if (result is not { Success: true, Data: { } args })
+            return;
 
-        //if (!File.Exists(selectedItem))
-        //{
-        //    MessageBoxHelper.ShowError(string.Format(Resources.FileNotFound, selectedItem));
-        //    return;
-        //}
+        if (!File.Exists(selectedItem))
+        {
+            MessageBoxHelper.ShowError(string.Format(Resources.FileNotFound, selectedItem));
+            return;
+        }
 
-        //Process.Start(selectedItem, args ?? string.Empty);
+        Process.Start(selectedItem, args ?? string.Empty);
     }
 
     public void OpenInCmd()

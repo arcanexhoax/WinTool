@@ -14,7 +14,13 @@ using WinTool.Native;
 using WinTool.Options;
 using WinTool.Services;
 using WinTool.Utils;
+using WinTool.ViewModels;
+using WinTool.ViewModels.Features;
+using WinTool.ViewModels.Settings;
+using WinTool.ViewModels.Shortcuts;
 using WinTool.Views;
+using WinTool.Views.Features;
+using WinTool.Views.Settings;
 using WinTool.Views.Shortcuts;
 
 namespace WinTool.WinUI;
@@ -42,21 +48,21 @@ public partial class App : Application
 
         builder.Services.AddSingleton<MainWindow>();
         builder.Services.AddSingleton<ShortcutsView>();
-        //builder.Services.AddSingleton<FeaturesView>();
-        //builder.Services.AddSingleton<SettingsView>();
+        builder.Services.AddSingleton<FeaturesView>();
+        builder.Services.AddSingleton<SettingsView>();
         builder.Services.AddTransient<CreateFileWindow>();
         builder.Services.AddTransient<RunWithArgsWindow>();
-        //builder.Services.AddTransient<EditShortcutWindow>();
+        builder.Services.AddTransient<EditShortcutWindow>();
+        // TODO add
         //builder.Services.AddSingleton<SwitchLanguageWindow>();
-        //builder.Services.AddSingleton<MainViewModel>();
-        //builder.Services.AddSingleton<SwitchLanguageViewModel>();
-        //builder.Services.AddSingleton<ShortcutsViewModel>();
-        //builder.Services.AddSingleton<FeaturesViewModel>();
-        //builder.Services.AddSingleton<SettingsViewModel>();
-        //builder.Services.AddSingleton<CreateFileViewModel>();
-        //builder.Services.AddSingleton<RunWithArgsViewModel>();
-        //builder.Services.AddSingleton<ChangeFilePropertiesViewModel>();
-        //builder.Services.AddSingleton<EditShortcutViewModel>();
+        builder.Services.AddSingleton<MainViewModel>();
+        builder.Services.AddSingleton<SwitchLanguageViewModel>();
+        builder.Services.AddSingleton<ShortcutsViewModel>();
+        builder.Services.AddSingleton<FeaturesViewModel>();
+        builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<CreateFileViewModel>();
+        builder.Services.AddSingleton<RunWithArgsViewModel>();
+        builder.Services.AddSingleton<EditShortcutViewModel>();
         builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
@@ -85,6 +91,7 @@ public partial class App : Application
 
         RestartAsAdminIfNeeded(settings, clp);
 
+        // TODO add
         // activate the popup window
         //_app.Services.GetRequiredService<SwitchLanguageWindow>();
         var mainWindow = _app.Services.GetRequiredService<MainWindow>();

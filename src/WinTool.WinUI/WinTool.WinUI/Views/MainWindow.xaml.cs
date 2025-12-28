@@ -1,11 +1,12 @@
-using Microsoft.UI.Xaml;
+using WinTool.ViewModels;
 
 namespace WinTool.Views;
 
-public sealed partial class MainWindow : Window
+public sealed partial class MainWindow : WindowBase
 {
-    public MainWindow()
+    public MainWindow(MainViewModel vm)
     {
         InitializeComponent();
+        DataContext = vm;
     }
 }
