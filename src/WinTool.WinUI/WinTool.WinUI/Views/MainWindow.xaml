@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<local:WindowBase
-    x:Class="WinTool.Views.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:WinTool.Views"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Title="WinTool">
-
+<local:WindowBase x:Class="WinTool.Views.MainWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="using:WinTool.Views"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:p="using:WinTool.Properties"
+                  mc:Ignorable="d"
+                  d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
     <local:WindowBase.SystemBackdrop>
         <MicaBackdrop />
     </local:WindowBase.SystemBackdrop>
 
     <Grid>
-
+        <TitleBar Title="{x:Bind p:Resources.WinTool}"
+                  VerticalAlignment="Top"
+                  x:Name="titleBar">
+            <TitleBar.IconSource>
+                <ImageIconSource ImageSource="/Resources/icon.ico" />
+            </TitleBar.IconSource>
+        </TitleBar>
     </Grid>
 </local:WindowBase>
