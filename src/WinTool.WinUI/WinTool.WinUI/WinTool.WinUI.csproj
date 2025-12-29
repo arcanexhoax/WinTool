@@ -26,11 +26,12 @@
 	  <Content Remove="Resources\Icons\settings.png" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Views\Features\FeaturesView.xaml" />
-	  <None Remove="Views\Settings\SettingsView.xaml" />
+	  <None Remove="Views\Features\FeaturesPage.xaml" />
+	  <None Remove="Views\Settings\SettingsPage.xaml" />
 	  <None Remove="Views\Shortcuts\CreateFileWindow.xaml" />
 	  <None Remove="Views\Shortcuts\EditShortcutWindow.xaml" />
 	  <None Remove="Views\Shortcuts\RunWithArgsWindow.xaml" />
+	  <None Remove="Views\Shortcuts\ShortcutsPage.xaml" />
 	  <None Remove="Views\Shortcuts\ShortcutView.xaml" />
 	</ItemGroup>
 
@@ -109,6 +110,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Page Update="Views\Settings\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Views\Shortcuts\ShortcutsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Page Update="Views\Shortcuts\ShortcutView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
@@ -133,19 +146,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Page Update="Views\Shortcuts\ShortcutsView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Page Update="Views\Features\FeaturesView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Page Update="Views\Settings\SettingsView.xaml">
+	  <Page Update="Views\Features\FeaturesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	</ItemGroup>

@@ -120,11 +120,6 @@ public class WindowBase : Window
         get => ((FrameworkElement)Content).DataContext;
         set => ((FrameworkElement)Content).DataContext = value;
     }
-
-    public WindowBase()
-    {
-        Content = new Frame();
-    }
 }
 
 public class ModalWindow : WindowBase

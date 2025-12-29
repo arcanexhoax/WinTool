@@ -5,10 +5,13 @@
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
-    <Page Update="Views\Settings\SettingsView.xaml">
+    <Page Update="Views\Features\FeaturesPage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\Features\FeaturesView.xaml">
+    <Page Update="Views\Settings\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Shortcuts\ShortcutsPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Shortcuts\ShortcutView.xaml">
@@ -21,9 +24,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Shortcuts\CreateFileWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Shortcuts\ShortcutsView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

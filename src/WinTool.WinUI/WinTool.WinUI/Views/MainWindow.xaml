@@ -12,13 +12,36 @@
         <MicaBackdrop />
     </local:WindowBase.SystemBackdrop>
 
-    <Grid>
+
+    <Grid RowDefinitions="auto, *">
         <TitleBar Title="{x:Bind p:Resources.WinTool}"
-                  VerticalAlignment="Top"
                   x:Name="titleBar">
             <TitleBar.IconSource>
                 <ImageIconSource ImageSource="/Resources/icon.ico" />
             </TitleBar.IconSource>
         </TitleBar>
+
+        <NavigationView Grid.Row="1"
+                        IsBackButtonVisible="Collapsed"
+                        IsPaneToggleButtonVisible="False"
+                        PaneDisplayMode="Left"
+                        OpenPaneLength="260"
+                        Margin="0 10 0 0"
+                        Loaded="OnNavViewLoaded"
+                        SelectionChanged="OnSelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="{x:Bind p:Resources.Shortcuts}"
+                                    Icon="Keyboard"
+                                    x:Name="ShortcutsItem"/>
+                <NavigationViewItem Content="{x:Bind p:Resources.Features}"
+                                    x:Name="FeaturesItem">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEA80;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <Frame x:Name="Root"/>
+        </NavigationView>
     </Grid>
 </local:WindowBase>

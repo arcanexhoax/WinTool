@@ -27,9 +27,11 @@ namespace WinTool.WinUI;
 
 public partial class App : Application
 {
-    private readonly IHost _app;
+    private static IHost? s_app;
 
     private Mutex? _secondInstanceMutex;
+
+    public static IServiceProvider Services => s_app!.Services;
 
     public App()
     {
@@ -47,9 +49,9 @@ public partial class App : Application
         builder.Services.Configure<ShortcutsOptions>(builder.Configuration.GetSection(nameof(ShortcutsOptions)));
 
         builder.Services.AddSingleton<MainWindow>();
-        builder.Services.AddSingleton<ShortcutsView>();
-        builder.Services.AddSingleton<FeaturesView>();
-        builder.Services.AddSingleton<SettingsView>();
+        builder.Services.AddSingleton<ShortcutsPage>();
+        builder.Services.AddSingleton<FeaturesPage>();
+        builder.Services.AddSingleton<SettingsPage>();
         builder.Services.AddTransient<CreateFileWindow>();
         builder.Services.AddTransient<RunWithArgsWindow>();
         builder.Services.AddTransient<EditShortcutWindow>();
@@ -79,23 +81,23 @@ public partial class App : Application
         builder.Services.AddHostedService(sp => sp.GetRequiredService<ShortcutsService>());
         builder.Services.AddHostedService(sp => sp.GetRequiredService<KeyboardLayoutManager>());
 
-        _app = builder.Build();
+        s_app = builder.Build();
     }
 
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
-        await _app.StartAsync();
+        await s_app!.StartAsync();
 
         var clp = CommandLineParameters.Parse(Environment.GetCommandLineArgs());
-        var settings = _app.Services.GetRequiredService<IOptions<SettingsOptions>>().Value;
+        var settings = s_app.Services.GetRequiredService<IOptions<SettingsOptions>>().Value;
 
         RestartAsAdminIfNeeded(settings, clp);
 
         // TODO add
         // activate the popup window
         //_app.Services.GetRequiredService<SwitchLanguageWindow>();
-        var mainWindow = _app.Services.GetRequiredService<MainWindow>();
-        var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
+        var mainWindow = s_app.Services.GetRequiredService<MainWindow>();
+        var commandHandler = s_app.Services.GetRequiredService<ShellCommandHandler>();
 
         if (clp.BackgroundParameter is null)
             mainWindow.Activate();
@@ -139,6 +141,6 @@ public partial class App : Application
     private async void OnShutdownStarting(DispatcherQueue sender, DispatcherQueueShutdownStartingEventArgs args)
     {
         _secondInstanceMutex?.Dispose();
-        await _app.StopAsync();
+        await s_app!.StopAsync();
     }
 }
