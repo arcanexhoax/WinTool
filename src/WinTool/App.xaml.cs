@@ -114,8 +114,8 @@ public partial class App : Application
 
     private void RunAsAdminIfNeeded(SettingsOptions settings, CommandLineParameters clp)
     {
-        if (settings.AlwaysRunAsAdmin && !ProcessHelper.IsAdmin)
-            ProcessHelper.RestartAsAdmin(clp);
+        if (settings.AlwaysRunAsAdmin && !Process.IsAdmin)
+            Process.RestartAsAdmin(clp.ToString());
     }
 
     private void HandleOperations(ShellCommandHandler commandHandler, CommandLineParameters clp)
@@ -129,7 +129,7 @@ public partial class App : Application
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error creating file {createFile.FilePath}: {ex.Message}");
-                MessageBoxHelper.ShowError(string.Format(WinTool.Properties.Resources.FileCreationError, createFile.FilePath, ex.Message));
+                MessageBox.ShowError(string.Format(WinTool.Properties.Resources.FileCreationError, createFile.FilePath, ex.Message));
             }
         }
     }

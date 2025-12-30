@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Extensions;
 using WinTool.Models;
 using WinTool.Properties;
-using WinTool.Utils;
 using WinTool.Views.Shortcuts;
 using File = System.IO.File;
 
@@ -81,7 +81,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
             }
         };
 
-        ProcessHelper.ExecuteAsAdminIfNeeded(() =>
+        Process.ExecuteAsAdmin(() =>
         {
             using var fileStream = File.Create(path);
             fileStream.SetLength(size);
@@ -146,11 +146,11 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
         if (!File.Exists(selectedItem))
         {
-            MessageBoxHelper.ShowError(string.Format(Resources.FileNotFound, selectedItem));
+            MessageBox.ShowError(string.Format(Resources.FileNotFound, selectedItem));
             return;
         }
 
-        ProcessHelper.Start(selectedItem, data.Args, data.RunAsAdmin);
+        Process.Start(selectedItem, data.Args, data.RunAsAdmin);
     }
 
     public void OpenInCmd()
@@ -210,7 +210,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         if (result is not { Success: true, Data: { } data })
         {
             if (result.Message is not (null or []))
-                MessageBoxHelper.ShowError(result.Message);
+                MessageBox.ShowError(result.Message);
             return;
         }
             

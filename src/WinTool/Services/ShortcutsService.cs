@@ -6,11 +6,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using WinTool.Extensions;
 using WinTool.Models;
 using WinTool.Options;
 using WinTool.Properties;
 using WinTool.UI;
-using WinTool.Utils;
 
 namespace WinTool.Services;
 
@@ -53,7 +54,7 @@ public class ShortcutsService : BackgroundService
 
         foreach (var (name, command, icon, description) in shortcutMatches)
         {
-            var shortcut = ShortcutUtils.Parse(_options.CurrentValue.Shortcuts[name], KeyState.Down)!;
+            var shortcut = Shortcut.Parse(_options.CurrentValue.Shortcuts[name], KeyState.Down)!;
             var shortcutCommand = new ShortcutCommand(name, shortcut, command, icon, description);
             Shortcuts[shortcut] = shortcutCommand;
         }
@@ -79,7 +80,7 @@ public class ShortcutsService : BackgroundService
         {
             Debug.WriteLine($"Failed to execute command {shortcutCommand.Id}: {ex.Message}");
             // TODO fix: message box is minimized
-            MessageBoxHelper.ShowError(string.Format(Resources.CommandExecutionError, shortcutCommand.Id, ex.Message));
+            MessageBox.ShowError(string.Format(Resources.CommandExecutionError, shortcutCommand.Id, ex.Message));
         }
 
         e.IsHandled = true;

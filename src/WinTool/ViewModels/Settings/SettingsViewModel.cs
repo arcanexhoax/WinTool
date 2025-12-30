@@ -2,10 +2,11 @@
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Extensions;
 using WinTool.Options;
 using WinTool.Properties;
-using WinTool.Utils;
 
 namespace WinTool.ViewModels.Settings;
 
@@ -52,7 +53,7 @@ public class SettingsViewModel : ObservableObject
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error setting Windows startup: {ex.Message}");
-                MessageBoxHelper.ShowError(string.Format(Resources.SetWindowsStartupError, ex.Message));
+                MessageBox.ShowError(string.Format(Resources.SetWindowsStartupError, ex.Message));
             }
         }
     }
@@ -82,7 +83,7 @@ public class SettingsViewModel : ObservableObject
     public SettingsViewModel(WritableOptions<SettingsOptions> settingsOptions)
     {
         // use arg "/background" to start app in background mode
-        _executionFilePath = $"{ProcessHelper.ProcessPath} {BackgroundParameter.ParameterName}";
+        _executionFilePath = $"{Environment.ProcessPath!} {BackgroundParameter.ParameterName}";
         _settingsOptions = settingsOptions;
         _isInitializing = true;
 

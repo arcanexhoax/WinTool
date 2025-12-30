@@ -4,9 +4,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
+using WinTool.Extensions;
 using WinTool.Models;
 using WinTool.Properties;
-using WinTool.Utils;
 using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
@@ -100,7 +101,7 @@ public class CreateFileViewModel : ObservableObject, IDialogViewModel<string, Cr
 
         if (!CheckIfFileValid(filePath, FileName, sizeBytes, out string? errorMessage))
         {
-            MessageBoxHelper.ShowError(errorMessage);
+            MessageBox.ShowError(errorMessage);
             return;
         }
 

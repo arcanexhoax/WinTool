@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Options;
+﻿using GlobalKeyInterceptor;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using WinTool.Extensions;
 using WinTool.Options;
 
 namespace WinTool.Utils;
@@ -20,7 +22,7 @@ public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOpti
     {
         foreach (var (name, shortcutStr) in _defaultShortcuts)
         {
-            if (!options.Shortcuts.TryGetValue(name, out var actualShortcutStr) || !ShortcutUtils.IsValid(actualShortcutStr))
+            if (!options.Shortcuts.TryGetValue(name, out var actualShortcutStr) || !Shortcut.IsValid(actualShortcutStr))
                 options.Shortcuts[name] = shortcutStr;
         }
     }
