@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -60,8 +61,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         if (string.IsNullOrEmpty(path))
             return;
 
-        var createFileWindow = _viewFactory.Create<CreateFileWindow>();
-        var result = createFileWindow.ShowDialog(path);
+        var result = _viewFactory.ShowDialog<CreateFileWindow, string, CreateFileOutput>(path);
 
         if (result is not { Success: true, Data: { } data })
             return;
@@ -85,7 +85,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         {
             using var fileStream = File.Create(path);
             fileStream.SetLength(size);
-        }, clp);
+        }, clp.ToString());
     }
 
     public void CopyFilePath()
@@ -134,7 +134,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         var selectedItems = _shell.GetSelectedItems();
 
         if (selectedItems is [{ Path: var selectedItem }])
-            Process.Start(selectedItem, null, true);
+            RunFileAsAdminOptional(selectedItem, null, true);
     }
 
     public void RunFileWithArgs()
@@ -144,8 +144,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         if (selectedItems is not [{ Path: var selectedItem }])
             return;
 
-        var runWithArgsWindow = _viewFactory.Create<RunWithArgsWindow>();
-        var result = runWithArgsWindow.ShowDialog(selectedItem);
+        var result = _viewFactory.ShowDialog<RunWithArgsWindow, string, RunWithArgsOutput>(selectedItem);
 
         if (result is not { Success: true, Data: { } data })
             return;
@@ -156,7 +155,20 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
             return;
         }
 
-        Process.Start(selectedItem, data.Args, data.RunAsAdmin);
+        RunFileAsAdminOptional(selectedItem, data.Args, data.RunAsAdmin);
+    }
+
+    private void RunFileAsAdminOptional(string fileName, string? args, bool asAdmin)
+    {
+        try
+        {
+            Process.Start(fileName, args, asAdmin);
+        }
+        catch (Win32Exception ex) when (ex.HResult == -2147467259)
+        {
+            Debug.WriteLine($"File {fileName} is unable to run as admin");
+            Process.Start(fileName, args, false);
+        }
     }
 
     public void OpenInCmd() => OpenInCmd(false);

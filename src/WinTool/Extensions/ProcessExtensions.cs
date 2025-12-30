@@ -22,7 +22,7 @@ public static class ProcessExtensions
     {
         public static bool IsAdmin => s_isAdmin;
 
-        public static void ExecuteAsAdmin(Action action, CommandLineParameters clp)
+        public static void ExecuteAsAdmin(Action action, string? args = null)
         {
             try
             {
@@ -35,7 +35,7 @@ public static class ProcessExtensions
             }
             catch (UnauthorizedAccessException)
             {
-                RestartAsAdmin(clp?.ToString());
+                RestartAsAdmin(args);
             }
         }
 
