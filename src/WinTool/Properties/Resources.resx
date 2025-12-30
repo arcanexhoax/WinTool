@@ -232,7 +232,7 @@
     <value>Run "{0}" with arguments</value>
   </data>
   <data name="RunWithArgs" xml:space="preserve">
-    <value>Run selected exe-file with arguments</value>
+    <value>Run selected file with arguments</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>

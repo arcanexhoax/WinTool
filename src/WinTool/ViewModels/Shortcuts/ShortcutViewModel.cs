@@ -13,21 +13,17 @@ using WinTool.Views.Shortcuts;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class ShortcutViewModel : ObservableObject
+public partial class ShortcutViewModel : ObservableObject
 {
     private readonly string _id;
     private readonly ShortcutsService _shortcutsService;
     private readonly ViewFactory _viewFactory;
 
-    public Shortcut? Shortcut
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial Shortcut? Shortcut { get; set; }
 
-    public bool IsLast
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial bool IsLast { get; set; }
 
     public string Icon { get; }
 

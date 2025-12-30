@@ -484,7 +484,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run selected exe-file with arguments.
+        ///   Looks up a localized string similar to Run selected file with arguments.
         /// </summary>
         public static string RunWithArgs {
             get {

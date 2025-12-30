@@ -21,49 +21,33 @@ public enum SizeUnit : long
     TB = 1_099_511_627_776,
 }
 
-public class CreateFileViewModel : ObservableObject, IDialogViewModel<string, CreateFileOutput>
+public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<string, CreateFileOutput>
 {
     private Action<Result<CreateFileOutput>>? _onResult;
 
-    public string? FileName
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? FileName { get; set; }
 
-    public string? FullFolderPath
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? FullFolderPath { get; set; }
 
-    public string? RelativeFolderPath
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? RelativeFolderPath { get; set; }
 
-    public uint Size
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial uint Size { get; set; }
 
-    public bool IsTextSelected
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial bool IsTextSelected { get; set; }
 
-    public bool AreOptionsOpened
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial bool AreOptionsOpened { get; set; }
 
-    public SizeUnit SelectedSizeUnit
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial SizeUnit SelectedSizeUnit { get; set; }
 
-    public ObservableCollection<SizeUnit> SizeUnits
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial ObservableCollection<SizeUnit> SizeUnits { get; set; }
 
     public RelayCommand CreateCommand { get; }
     public RelayCommand CloseWindowCommand { get; }

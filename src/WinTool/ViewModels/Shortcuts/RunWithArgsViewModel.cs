@@ -7,39 +7,27 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, RunWithArgsOutput>
+public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, RunWithArgsOutput>
 {
     private Action<Result<RunWithArgsOutput>>? _onResult;
 
-    public string? FileName
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? FileName { get; set; }
 
-    public string? FullFilePath
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? FullFilePath { get; set; }
 
-    public string? Args
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? Args { get; set; }
 
-    public bool RunAsAdmin
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial bool RunAsAdmin { get; set; }
 
-    public bool AreOptionsOpened
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial bool AreOptionsOpened { get; set; }
 
-    public bool IsTextSelected
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial bool IsTextSelected { get; set; }
 
     public RelayCommand RunCommand { get; }
     public RelayCommand CloseWindowCommand { get; }

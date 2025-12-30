@@ -133,10 +133,8 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
     {
         var selectedItems = _shell.GetSelectedItems();
 
-        if (selectedItems.Count != 1 || Path.GetExtension(selectedItems[0].Path) != ".exe")
+        if (selectedItems is not [{ Path: var selectedItem }])
             return;
-
-        string selectedItem = selectedItems[0].Path;
 
         var runWithArgsWindow = _viewFactory.Create<RunWithArgsWindow>();
         var result = runWithArgsWindow.ShowDialog(selectedItem);

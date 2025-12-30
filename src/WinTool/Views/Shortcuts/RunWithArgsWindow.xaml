@@ -43,7 +43,8 @@
                          Text="{Binding Args, UpdateSourceTrigger=PropertyChanged}"
                          MinWidth="200"
                          MinHeight="150"
-                         Margin="0 16 0 0" />
+                         Margin="0 16 0 0"
+                         TextWrapping="Wrap"/>
 
                 <Expander Header="{x:Static p:Resources.Options}"
                           IsExpanded="{Binding AreOptionsOpened}"
