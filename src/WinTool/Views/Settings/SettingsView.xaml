@@ -16,7 +16,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Style="{StaticResource ContentHeader}"
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}"
                        Text="{x:Static p:Resources.Settings}"
                        MaxWidth="1000" />
 
@@ -24,56 +24,50 @@
                           Padding="0 0 20 0"
                           Grid.Row="1">
                 <StackPanel MaxWidth="1000">
-                    <Border CornerRadius="6 6 0 0"
-                            Style="{DynamicResource CardBorderStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                       FontSize="18"
-                                       Text="&#xE713;" />
-                            <TextBlock Text="{x:Static p:Resources.General}"
-                                       Margin="20 0 0 0" />
-                        </StackPanel>
-                    </Border>
-                    <Border BorderThickness="1 0 1 1"
-                            CornerRadius="0 0 6 6"
-                            Style="{DynamicResource CardBorderStyle}"
-                            Padding="58 10">
-                        <StackPanel>
-                            <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
-                                      IsChecked="{Binding LaunchOnWindowsStartup}"
-                                      HorizontalAlignment="Left"
-                                      VerticalAlignment="Top" />
-                            <CheckBox Content="{x:Static p:Resources.AlwaysRunAsAdmin}"
-                                      IsChecked="{Binding AlwaysRunAsAdmin}"
-                                      HorizontalAlignment="Left"
-                                      VerticalAlignment="Top"
-                                      Margin="0 8 0 0"/>
-                        </StackPanel>
+                    <TextBlock Text="{x:Static p:Resources.General}"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 8 0 0">
+                        <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
+                                    IsChecked="{Binding LaunchOnWindowsStartup}"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top" />
                     </Border>
 
-                    <Border CornerRadius="6 6 0 0"
-                            Margin="0 8 0 0"
-                            Style="{DynamicResource CardBorderStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                       FontSize="18"
-                                       Text="&#xE790;" />
-                            <TextBlock Text="{x:Static p:Resources.Appearance}"
-                                       Margin="20 0 0 0" />
-                        </StackPanel>
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 2 0 0">
+                        <CheckBox Content="{x:Static p:Resources.AlwaysRunAsAdmin}"
+                                  IsChecked="{Binding AlwaysRunAsAdmin}"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top" />
                     </Border>
 
-                    <Border BorderThickness="1 0 1 1"
-                            CornerRadius="0 0 6 6"
-                            Style="{DynamicResource CardBorderStyle}"
-                            Padding="58 10 40 10">
+                    <TextBlock Text="{x:Static p:Resources.Appearance}"
+                               Style="{StaticResource BodyStrongTextBlockStyle}"
+                               Margin="0 36 0 0"/>
+
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 8 0 0">
                         <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Text="&#xE790;"
+                                       Margin="0 0 18 0"/>
                             <TextBlock Text="{x:Static p:Resources.AppTheme}"
-                                       HorizontalAlignment="Left" />
+                                       HorizontalAlignment="Left"
+                                       Grid.Column="1"/>
                             <ComboBox Width="150"
                                       HorizontalAlignment="Right"
                                       SelectedValue="{Binding SelectedAppTheme}"
-                                      SelectedValuePath="Tag">
+                                      SelectedValuePath="Tag"
+                                      Grid.Column="2">
                                 <ComboBoxItem Tag="{x:Static settings:AppTheme.System}"
                                               Content="{x:Static p:Resources.System}" />
                                 <ComboBoxItem Tag="{x:Static settings:AppTheme.Light}"

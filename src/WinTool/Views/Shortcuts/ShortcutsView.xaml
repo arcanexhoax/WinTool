@@ -17,34 +17,22 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="{x:Static p:Resources.Shortcuts}"
-                       Style="{StaticResource ContentHeader}"
+                       Style="{StaticResource TitleTextBlockStyle}"
                        MaxWidth="1000"/>
 
             <ScrollViewer Grid.Row="1"
                           Margin="0 24 0 0"
                           Padding="0 0 20 0">
                 <StackPanel MaxWidth="1000">
-                    <Border Style="{DynamicResource CardBorderStyle}"
-                            CornerRadius="6 6 0 0">
-                        <TextBlock Text="{x:Static p:Resources.WindowsExplorer}"
-                                   Style="{StaticResource CardHeader}" />
-                    </Border>
-            
-                    <ItemsControl ItemsSource="{Binding Shortcuts}">
+                    <TextBlock Text="{x:Static p:Resources.WindowsExplorer}"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                    <ItemsControl ItemsSource="{Binding Shortcuts}"
+                                  Margin="0 8 0 0">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderThickness="1 0 1 1"
-                                        Padding="20 10">
-                                    <Border.Style>
-                                        <Style TargetType="Border" BasedOn="{StaticResource CardBorderStyle}">
-                                            <Setter Property="CornerRadius" Value="0"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsLast}" Value="true">
-                                                    <Setter Property="CornerRadius" Value="0 0 6 6"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
+                                <Border Style="{StaticResource CardBorderStyle}"
+                                        Margin="0 0 0 2">
                                     <shortcuts:ShortcutView DataContext="{Binding}" />
                                 </Border>
                             </DataTemplate>

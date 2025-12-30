@@ -22,9 +22,6 @@ public partial class ShortcutViewModel : ObservableObject
     [ObservableProperty]
     public partial Shortcut? Shortcut { get; set; }
 
-    [ObservableProperty]
-    public partial bool IsLast { get; set; }
-
     public string Icon { get; }
 
     public string Description { get; }

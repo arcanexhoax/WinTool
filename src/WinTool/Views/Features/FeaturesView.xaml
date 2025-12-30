@@ -14,33 +14,23 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="{x:Static p:Resources.Features}"
-                       Style="{StaticResource ContentHeader}"
+                       Style="{StaticResource TitleTextBlockStyle}"
                        MaxWidth="1000"/>
 
             <ScrollViewer Grid.Row="1"
                           Margin="0 24 0 0"
                           Padding="0 0 20 0">
                 <StackPanel MaxWidth="1000">
-                    <Border Style="{DynamicResource CardBorderStyle}"
-                            CornerRadius="6 6 0 0">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                       FontSize="18"
-                                       Text="&#xF15F;" />
-                            <TextBlock Text="{x:Static p:Resources.InputPopup}"
-                                       Margin="20 0 0 0"/>
-                        </StackPanel>
-                    </Border>
+                    <TextBlock Text="{x:Static p:Resources.InputPopup}"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
 
                     <Border Style="{DynamicResource CardBorderStyle}"
-                            CornerRadius="0 0 6 6"
-                            BorderThickness="1 0 1 1"
-                            Padding="58 10">
+                            Margin="0 8 0 0">
                         <CheckBox Content="{x:Static p:Resources.EnableSwitchLanguagePopup}"
-                                  IsChecked="{Binding EnableSwitchLanguagePopup}"
-                                  Height="32"
-                                  VerticalAlignment="Top"
-                                  HorizontalAlignment="Left" />
+                                    IsChecked="{Binding EnableSwitchLanguagePopup}"
+                                    Height="32"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Left" />
                     </Border>
                 </StackPanel>
             </ScrollViewer>
