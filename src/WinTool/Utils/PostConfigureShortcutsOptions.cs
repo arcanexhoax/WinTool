@@ -14,7 +14,8 @@ public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOpti
         { ShortcutNames.FastFileCreation, "Ctrl + Shift + E" },
         { ShortcutNames.SelectedItemCopyPath, "Ctrl + Shift + C" },
         { ShortcutNames.SelectedItemCopyName, "Ctrl + Shift + X" },
-        { ShortcutNames.RunWithArgs, "Ctrl + O" },
+        { ShortcutNames.RunFileAsAdmin, "Ctrl + Shift + Enter" },
+        { ShortcutNames.RunFileWithArgs, "Ctrl + O" },
         { ShortcutNames.OpenFolderInCmd, "Ctrl + P" },
         { ShortcutNames.OpenFolderInCmdAsAdmin, "Ctrl + Shift + P" },
     };

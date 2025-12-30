@@ -48,7 +48,8 @@ public class ShortcutsService : BackgroundService
             (ShortcutNames.FastFileCreation, _shellCommandHandler.CreateFileFast, Icons.Page, Resources.FastFileCreation),
             (ShortcutNames.SelectedItemCopyPath, _shellCommandHandler.CopyFilePath, Icons.Copy, Resources.SelectedItemCopyPath),
             (ShortcutNames.SelectedItemCopyName, _shellCommandHandler.CopyFileName, Icons.Rename, Resources.SelectedItemCopyName),
-            (ShortcutNames.RunWithArgs, _shellCommandHandler.RunWithArgs, Icons.OpenFile, Resources.RunWithArgs),
+            (ShortcutNames.RunFileAsAdmin, _shellCommandHandler.RunFileAsAdmin, Icons.ProtectedDocument, Resources.RunFileAsAdmin),
+            (ShortcutNames.RunFileWithArgs, _shellCommandHandler.RunFileWithArgs, Icons.OpenFile, Resources.RunFileWithArgs),
             (ShortcutNames.OpenFolderInCmd, _shellCommandHandler.OpenInCmd, Icons.CommandPrompt, Resources.OpenFolderInCmd),
             (ShortcutNames.OpenFolderInCmdAsAdmin, _shellCommandHandler.OpenInCmdAsAdmin, Icons.CommandPrompt, Resources.OpenFolderInCmdAsAdmin)
         };
@@ -71,21 +72,23 @@ public class ShortcutsService : BackgroundService
             return;
         }
 
-        Debug.WriteLine($"Executing {shortcutCommand.Id}");
+        Task.Run(() =>
+        {
+            Debug.WriteLine($"Executing {shortcutCommand.Id}");
 
-        try
-        {
-            shortcutCommand.Command();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Failed to execute command {shortcutCommand.Id}: {ex.Message}");
-            // TODO fix: message box is minimized
-            MessageBox.ShowError(string.Format(Resources.CommandExecutionError, shortcutCommand.Id, ex.Message));
-        }
+            try
+            {
+                shortcutCommand.Command();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to execute command {shortcutCommand.Id}: {ex.Message}");
+                // TODO fix: message box is minimized
+                MessageBox.ShowError(string.Format(Resources.CommandExecutionError, shortcutCommand.Id, ex.Message));
+            }
+        });
 
         e.IsHandled = true;
-        return;
     }
 
     public void EditShortcut(string shortcutId, Shortcut newShortcut)

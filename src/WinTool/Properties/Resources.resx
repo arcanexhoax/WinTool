@@ -231,7 +231,7 @@
   <data name="RunFormat" xml:space="preserve">
     <value>Run "{0}" with arguments</value>
   </data>
-  <data name="RunWithArgs" xml:space="preserve">
+  <data name="RunFileWithArgs" xml:space="preserve">
     <value>Run selected file with arguments</value>
   </data>
   <data name="Save" xml:space="preserve">
@@ -311,5 +311,8 @@
   </data>
   <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
     <value>Open current folder in command prompt as admin</value>
+  </data>
+  <data name="RunFileAsAdmin" xml:space="preserve">
+    <value>Run selected file as admin</value>
   </data>
 </root>

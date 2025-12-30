@@ -129,7 +129,15 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         }
     }
 
-    public void RunWithArgs()
+    public void RunFileAsAdmin()
+    {
+        var selectedItems = _shell.GetSelectedItems();
+
+        if (selectedItems is [{ Path: var selectedItem }])
+            Process.Start(selectedItem, null, true);
+    }
+
+    public void RunFileWithArgs()
     {
         var selectedItems = _shell.GetSelectedItems();
 

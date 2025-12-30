@@ -484,20 +484,29 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run &quot;{0}&quot; with arguments.
+        ///   Looks up a localized string similar to Run selected file as admin.
         /// </summary>
-        public static string RunFormat {
+        public static string RunFileAsAdmin {
             get {
-                return ResourceManager.GetString("RunFormat", resourceCulture);
+                return ResourceManager.GetString("RunFileAsAdmin", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Run selected file with arguments.
         /// </summary>
-        public static string RunWithArgs {
+        public static string RunFileWithArgs {
             get {
-                return ResourceManager.GetString("RunWithArgs", resourceCulture);
+                return ResourceManager.GetString("RunFileWithArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run &quot;{0}&quot; with arguments.
+        /// </summary>
+        public static string RunFormat {
+            get {
+                return ResourceManager.GetString("RunFormat", resourceCulture);
             }
         }
         
