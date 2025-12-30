@@ -1,8 +1,9 @@
-﻿using WinTool.ViewModels.Shortcuts;
+﻿using WinTool.Models;
+using WinTool.ViewModels.Shortcuts;
 
 namespace WinTool.Views.Shortcuts;
 
-public partial class RunWithArgsWindow : DialogWindow<string, string?>
+public partial class RunWithArgsWindow : DialogWindow<string, RunWithArgsOutput>
 {
     public RunWithArgsWindow(RunWithArgsViewModel runWithArgsVm)
     {

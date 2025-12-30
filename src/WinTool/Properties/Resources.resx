@@ -306,4 +306,7 @@
   <data name="AlwaysRunAsAdmin" xml:space="preserve">
     <value>Always run as administrator</value>
   </data>
+  <data name="RunAsAdmin" xml:space="preserve">
+    <value>Run as administrator</value>
+  </data>
 </root>

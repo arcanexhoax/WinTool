@@ -141,7 +141,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         var runWithArgsWindow = _viewFactory.Create<RunWithArgsWindow>();
         var result = runWithArgsWindow.ShowDialog(selectedItem);
 
-        if (result is not { Success: true, Data: { } args })
+        if (result is not { Success: true, Data: { } data })
             return;
 
         if (!File.Exists(selectedItem))
@@ -150,7 +150,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
             return;
         }
 
-        Process.Start(selectedItem, args ?? string.Empty);
+        ProcessHelper.Start(selectedItem, data.Args, data.RunAsAdmin);
     }
 
     public void OpenInCmd()

@@ -457,6 +457,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run as administrator.
+        /// </summary>
+        public static string RunAsAdmin {
+            get {
+                return ResourceManager.GetString("RunAsAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run WinTool as admin failed: {0}.
         /// </summary>
         public static string RunAsAdminError {

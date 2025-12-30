@@ -9,8 +9,6 @@ namespace WinTool.Utils;
 
 internal class ProcessHelper
 {
-    private static readonly string _appDirectory;
-
     public static bool IsAdmin { get; }
     public static string ProcessPath { get; }
 
@@ -20,8 +18,7 @@ internal class ProcessHelper
         var principal = new WindowsPrincipal(identity);
         IsAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
 
-        _appDirectory = Path.GetDirectoryName(Environment.ProcessPath)!;
-        ProcessPath = Path.Combine(_appDirectory, "WinTool.exe");
+        ProcessPath = Environment.ProcessPath!;
     }
 
     public static void ExecuteAsAdminIfNeeded(Action action, CommandLineParameters clp)
@@ -43,18 +40,9 @@ internal class ProcessHelper
 
     public static void RestartAsAdmin(CommandLineParameters? clp = null)
     {
-        var psi = new ProcessStartInfo()
-        {
-            Arguments = clp?.ToString(),
-            FileName = ProcessPath,
-            Verb = "runas",
-            UseShellExecute = true,
-            WorkingDirectory = _appDirectory
-        };
-
         try
         {
-            Process.Start(psi);
+            Start(ProcessPath, clp?.ToString(), true);
             App.Current.Shutdown();
         }
         catch (Exception iex)
@@ -62,5 +50,18 @@ internal class ProcessHelper
             Debug.WriteLine("Failed to start process with UAC: " + iex.Message);
             MessageBoxHelper.ShowError(string.Format(Resources.RunAsAdminError, iex.Message));
         }
+    }
+
+    public static void Start(string fileName, string? args, bool asAdmin = false)
+    {
+        var psi = new ProcessStartInfo()
+        {
+            Arguments = args ?? string.Empty,
+            FileName = fileName,
+            Verb = asAdmin ? "runas" : string.Empty,
+            UseShellExecute = true,
+        };
+
+        Process.Start(psi);
     }
 }

@@ -7,9 +7,9 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, string?>
+public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, RunWithArgsOutput>
 {
-    private Action<Result<string?>>? _onResult;
+    private Action<Result<RunWithArgsOutput>>? _onResult;
 
     public string? FileName
     {
@@ -26,6 +26,16 @@ public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, s
         get; set => SetProperty(ref field, value);
     }
 
+    public bool RunAsAdmin
+    {
+        get; set => SetProperty(ref field, value);
+    }
+
+    public bool AreOptionsOpened
+    {
+        get; set => SetProperty(ref field, value);
+    }
+
     public bool IsTextSelected
     {
         get; set => SetProperty(ref field, value);
@@ -36,17 +46,18 @@ public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, s
 
     public RunWithArgsViewModel()
     {
-        RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<string?>(true, Args)));
-        CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<string?>(false)));
+        RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(true, new RunWithArgsOutput(Args, RunAsAdmin))));
+        CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(false)));
     }
 
-    public void OnShow(string filePath, Action<Result<string?>> onResult)
+    public void OnShow(string filePath, Action<Result<RunWithArgsOutput>> onResult)
     {
         _onResult = onResult;
 
         FileName = Path.GetFileName(filePath);
         FullFilePath = filePath;
         IsTextSelected = true;
+        AreOptionsOpened = RunAsAdmin;
     }
 
     public void OnClose() => _onResult = null;
