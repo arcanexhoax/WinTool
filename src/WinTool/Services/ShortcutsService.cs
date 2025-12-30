@@ -49,7 +49,8 @@ public class ShortcutsService : BackgroundService
             (ShortcutNames.SelectedItemCopyPath, _shellCommandHandler.CopyFilePath, Icons.Copy, Resources.SelectedItemCopyPath),
             (ShortcutNames.SelectedItemCopyName, _shellCommandHandler.CopyFileName, Icons.Rename, Resources.SelectedItemCopyName),
             (ShortcutNames.RunWithArgs, _shellCommandHandler.RunWithArgs, Icons.OpenFile, Resources.RunWithArgs),
-            (ShortcutNames.OpenFolderInCmd, _shellCommandHandler.OpenInCmd, Icons.CommandPrompt, Resources.OpenFolderInCmd)
+            (ShortcutNames.OpenFolderInCmd, _shellCommandHandler.OpenInCmd, Icons.CommandPrompt, Resources.OpenFolderInCmd),
+            (ShortcutNames.OpenFolderInCmdAsAdmin, _shellCommandHandler.OpenInCmdAsAdmin, Icons.CommandPrompt, Resources.OpenFolderInCmdAsAdmin)
         };
 
         foreach (var (name, command, icon, description) in shortcutMatches)

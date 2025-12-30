@@ -15,7 +15,8 @@ public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOpti
         { ShortcutNames.SelectedItemCopyPath, "Ctrl + Shift + C" },
         { ShortcutNames.SelectedItemCopyName, "Ctrl + Shift + X" },
         { ShortcutNames.RunWithArgs, "Ctrl + O" },
-        { ShortcutNames.OpenFolderInCmd, "Ctrl + Shift + L" }
+        { ShortcutNames.OpenFolderInCmd, "Ctrl + P" },
+        { ShortcutNames.OpenFolderInCmdAsAdmin, "Ctrl + Shift + P" },
     };
 
     public void PostConfigure(string? _, ShortcutsOptions options)

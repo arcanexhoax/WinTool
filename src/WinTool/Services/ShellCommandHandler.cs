@@ -151,19 +151,16 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         Process.Start(selectedItem, data.Args, data.RunAsAdmin);
     }
 
-    public void OpenInCmd()
+    public void OpenInCmd() => OpenInCmd(false);
+
+    public void OpenInCmdAsAdmin() => OpenInCmd(true);
+
+    private void OpenInCmd(bool asAdmin)
     {
         string? folderPath = _shell.GetActiveShellPath();
 
-        if (string.IsNullOrEmpty(folderPath))
-            return;
-
-        using (Process.Start(new ProcessStartInfo
-        {
-            WorkingDirectory = folderPath,
-            FileName = "cmd.exe",
-            UseShellExecute = false,
-        })) { }
+        if (!string.IsNullOrEmpty(folderPath))
+            Process.Start("cmd.exe", $"/k cd /d \"{folderPath}\"", asAdmin);
     }
 
     public void ChangeFileProperties()

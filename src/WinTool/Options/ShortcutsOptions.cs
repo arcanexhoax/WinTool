@@ -15,5 +15,6 @@ public class ShortcutNames
     public const string SelectedItemCopyName = nameof(SelectedItemCopyName);
     public const string RunWithArgs = nameof(RunWithArgs);
     public const string OpenFolderInCmd = nameof(OpenFolderInCmd);
+    public const string OpenFolderInCmdAsAdmin = nameof(OpenFolderInCmdAsAdmin);
     public const string ChangeFileProperties = nameof(ChangeFileProperties);
 }

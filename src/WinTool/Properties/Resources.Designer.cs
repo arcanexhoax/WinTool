@@ -412,11 +412,20 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open current folder in cmd.
+        ///   Looks up a localized string similar to Open current folder in command prompt.
         /// </summary>
         public static string OpenFolderInCmd {
             get {
                 return ResourceManager.GetString("OpenFolderInCmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open current folder in command prompt as admin.
+        /// </summary>
+        public static string OpenFolderInCmdAsAdmin {
+            get {
+                return ResourceManager.GetString("OpenFolderInCmdAsAdmin", resourceCulture);
             }
         }
         

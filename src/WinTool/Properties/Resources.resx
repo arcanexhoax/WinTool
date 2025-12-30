@@ -211,7 +211,7 @@
     <value>Open</value>
   </data>
   <data name="OpenFolderInCmd" xml:space="preserve">
-    <value>Open current folder in cmd</value>
+    <value>Open current folder in command prompt</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>Options</value>
@@ -308,5 +308,8 @@
   </data>
   <data name="RunAsAdmin" xml:space="preserve">
     <value>Run as administrator</value>
+  </data>
+  <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
+    <value>Open current folder in command prompt as admin</value>
   </data>
 </root>
