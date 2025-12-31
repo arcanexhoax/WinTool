@@ -8,12 +8,13 @@ public static class ShortcutExtensions
 {
     extension(Shortcut)
     {
-        public static bool IsValid(string shortcut) => Parse(shortcut) != null;
+        public static Shortcut? Parse(string? shortcut) => Parse(shortcut, KeyState.Down);
 
-        public static Shortcut? Parse(string shortcut) => Parse(shortcut, KeyState.Up);
-
-        public static Shortcut? Parse(string shortcut, KeyState state)
+        public static Shortcut? Parse(string? shortcut, KeyState state)
         {
+            if (shortcut is null or [])
+                return null;
+
             var parts = shortcut.ToLower().Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             if (parts.Length == 0)

@@ -23,6 +23,7 @@ public class ShortcutsService : BackgroundService
     private readonly Shell _shell;
     private readonly KeyInterceptor _keyInterceptor;
 
+    public Dictionary<string, ShortcutCommand> AvailableCommands { get; }
     public Dictionary<Shortcut, ShortcutCommand> Shortcuts { get; } = [];
 
     public ShortcutsService(
@@ -38,27 +39,30 @@ public class ShortcutsService : BackgroundService
         _shell = shell;
         _keyInterceptor = keyInterceptor;
         _keyInterceptor.ShortcutPressed += OnShortcutPressed;
+
+        AvailableCommands = new Dictionary<string, ShortcutCommand>()
+        {
+            { ShortcutNames.CreateFile, new(ShortcutNames.CreateFile, null, _shellCommandHandler.CreateFileInteractive, Icons.KnowledgeArticle, Resources.CreateFile) },
+            { ShortcutNames.FastFileCreation, new(ShortcutNames.FastFileCreation, null, _shellCommandHandler.CreateFileFast, Icons.Page, Resources.FastFileCreation) },
+            { ShortcutNames.SelectedItemCopyPath, new(ShortcutNames.SelectedItemCopyPath, null, _shellCommandHandler.CopyFilePath, Icons.Copy, Resources.SelectedItemCopyPath) },
+            { ShortcutNames.SelectedItemCopyName, new(ShortcutNames.SelectedItemCopyName, null, _shellCommandHandler.CopyFileName, Icons.Rename, Resources.SelectedItemCopyName) },
+            { ShortcutNames.RunFileAsAdmin, new(ShortcutNames.RunFileAsAdmin, null, _shellCommandHandler.RunFileAsAdmin, Icons.ProtectedDocument, Resources.RunFileAsAdmin) },
+            { ShortcutNames.RunFileWithArgs, new(ShortcutNames.RunFileWithArgs, null, _shellCommandHandler.RunFileWithArgs, Icons.OpenFile, Resources.RunFileWithArgs) },
+            { ShortcutNames.OpenFolderInCmd, new(ShortcutNames.OpenFolderInCmd, null, _shellCommandHandler.OpenInCmd, Icons.CommandPrompt, Resources.OpenFolderInCmd) },
+            { ShortcutNames.OpenFolderInCmdAsAdmin, new(ShortcutNames.OpenFolderInCmdAsAdmin, null, _shellCommandHandler.OpenInCmdAsAdmin, Icons.CommandPrompt, Resources.OpenFolderInCmdAsAdmin) }
+        };
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var shortcutMatches = new (string, Action, string, string)[]
+        foreach (var (name, scStr) in _options.CurrentValue.Shortcuts)
         {
-            (ShortcutNames.CreateFile, _shellCommandHandler.CreateFileInteractive, Icons.KnowledgeArticle, Resources.CreateFile),
-            (ShortcutNames.FastFileCreation, _shellCommandHandler.CreateFileFast, Icons.Page, Resources.FastFileCreation),
-            (ShortcutNames.SelectedItemCopyPath, _shellCommandHandler.CopyFilePath, Icons.Copy, Resources.SelectedItemCopyPath),
-            (ShortcutNames.SelectedItemCopyName, _shellCommandHandler.CopyFileName, Icons.Rename, Resources.SelectedItemCopyName),
-            (ShortcutNames.RunFileAsAdmin, _shellCommandHandler.RunFileAsAdmin, Icons.ProtectedDocument, Resources.RunFileAsAdmin),
-            (ShortcutNames.RunFileWithArgs, _shellCommandHandler.RunFileWithArgs, Icons.OpenFile, Resources.RunFileWithArgs),
-            (ShortcutNames.OpenFolderInCmd, _shellCommandHandler.OpenInCmd, Icons.CommandPrompt, Resources.OpenFolderInCmd),
-            (ShortcutNames.OpenFolderInCmdAsAdmin, _shellCommandHandler.OpenInCmdAsAdmin, Icons.CommandPrompt, Resources.OpenFolderInCmdAsAdmin)
-        };
-
-        foreach (var (name, command, icon, description) in shortcutMatches)
-        {
-            var shortcut = Shortcut.Parse(_options.CurrentValue.Shortcuts[name], KeyState.Down)!;
-            var shortcutCommand = new ShortcutCommand(name, shortcut, command, icon, description);
-            Shortcuts[shortcut] = shortcutCommand;
+            if (Shortcut.Parse(scStr) is { } shortcut 
+                && AvailableCommands.TryGetValue(name, out var shortcutCommand))
+            {
+                shortcutCommand.Shortcut = shortcut;
+                Shortcuts[shortcut] = shortcutCommand;
+            }
         }
 
         return Task.CompletedTask;
@@ -93,16 +97,15 @@ public class ShortcutsService : BackgroundService
 
     public void EditShortcut(string shortcutId, Shortcut newShortcut)
     {
-        var (shortcut, sc) = Shortcuts.FirstOrDefault(s => s.Value.Id == shortcutId);
-
-        if (sc is null || shortcut is null)
+        if (!AvailableCommands.TryGetValue(shortcutId, out var shortcutCommand))
             return;
 
-        sc.Shortcut = newShortcut;
+        if (shortcutCommand.Shortcut != null)
+            Shortcuts.Remove(shortcutCommand.Shortcut);
 
-        Shortcuts.Remove(shortcut);
-        Shortcuts[newShortcut] = sc;
+        shortcutCommand.Shortcut = newShortcut;
+        Shortcuts[newShortcut]= shortcutCommand;
 
-        _options.Update(o => o.Shortcuts[sc.Id] = sc.Shortcut.ToString());
+        _options.Update(o => o.Shortcuts[shortcutCommand.Id] = shortcutCommand.Shortcut.ToString());
     }
 }

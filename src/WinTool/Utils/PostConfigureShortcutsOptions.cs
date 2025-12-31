@@ -1,6 +1,7 @@
 ﻿using GlobalKeyInterceptor;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Linq;
 using WinTool.Extensions;
 using WinTool.Options;
 
@@ -20,12 +21,27 @@ public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOpti
         { ShortcutNames.OpenFolderInCmdAsAdmin, "Ctrl + Shift + P" },
     };
 
-    public void PostConfigure(string? _, ShortcutsOptions options)
+    public void PostConfigure(string? _, ShortcutsOptions o)
     {
-        foreach (var (name, shortcutStr) in _defaultShortcuts)
+        var usedShortcuts = new HashSet<Shortcut>();
+        var acceptedShortcuts = new HashSet<string>();
+        var defaultShortcuts = _defaultShortcuts.ToDictionary(s => s.Key, s => Shortcut.Parse(s.Value)!);
+        var actualShortcuts = o.Shortcuts.ToDictionary(
+            s => s.Key,
+            s => Shortcut.Parse(s.Value) is { Modifier: not KeyModifier.None } p ? p : null);
+
+        foreach (var (name, actualSc) in actualShortcuts)
         {
-            if (!options.Shortcuts.TryGetValue(name, out var actualShortcutStr) || !Shortcut.IsValid(actualShortcutStr))
-                options.Shortcuts[name] = shortcutStr;
+            if (defaultShortcuts.ContainsKey(name) && actualSc != null && usedShortcuts.Add(actualSc))
+                acceptedShortcuts.Add(name);
+            else
+                o.Shortcuts.Remove(name);
+        }
+
+        foreach (var (name, defaultSc) in defaultShortcuts)
+        {
+            if (!acceptedShortcuts.Contains(name))
+                o.Shortcuts[name] = usedShortcuts.Add(defaultSc) ? _defaultShortcuts[name] : null;
         }
     }
 }

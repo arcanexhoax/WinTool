@@ -46,9 +46,6 @@ public partial class ShortcutViewModel : ObservableObject
 
     private void Edit()
     {
-        if (Shortcut is null)
-            return;
-
         var window = _viewFactory.Create<EditShortcutWindow>();
         var result = window.ShowDialog(new EditShortcutInput(Shortcut, _id));
 

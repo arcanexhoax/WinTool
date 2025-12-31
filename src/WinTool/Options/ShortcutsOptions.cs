@@ -4,7 +4,7 @@ namespace WinTool.Options;
 
 public class ShortcutsOptions
 {
-    public Dictionary<string, string> Shortcuts { get; set; } = [];
+    public Dictionary<string, string?> Shortcuts { get; set; } = [];
 }
 
 public class ShortcutNames
