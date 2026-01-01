@@ -1,7 +1,7 @@
 # WinTool
 
 ![NET](https://img.shields.io/badge/.NET%2010-%23512BD4)
-![Version](https://img.shields.io/badge/Version-0.9.2-%230c7ebf)
+![Version](https://img.shields.io/badge/Version-0.9.3-%230c7ebf)
 [![License](https://img.shields.io/github/license/arcanexhoax/WinTool.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/WinTool/master/LICENSE)
 
 WinTool is a utility that adds useful features and shortcuts to Windows, enhancing everyday experience.
@@ -12,12 +12,14 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 
 ## Shortcuts
 ### Windows Explorer
-- Run selected exe-file with arguments
 - Create file
 - Fast file creation
 - Copy path to selected/opened item
 - Copy name of selected/opened item
-- Open current folder in cmd
+- Run selected file as admin
+- Run selected file with arguments
+- Open current folder in command prompt
+- Open current folder in command prompt as admin
 
 <br>
 

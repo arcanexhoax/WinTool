@@ -1,13 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using WinTool.CommandLine;
+using WinTool.Extensions;
 using WinTool.Models;
 using WinTool.Properties;
-using WinTool.Utils;
 using WinTool.Views.Shortcuts;
 using File = System.IO.File;
 
@@ -60,8 +61,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         if (string.IsNullOrEmpty(path))
             return;
 
-        var createFileWindow = _viewFactory.Create<CreateFileWindow>();
-        var result = createFileWindow.ShowDialog(path);
+        var result = _viewFactory.ShowDialog<CreateFileWindow, string, CreateFileOutput>(path);
 
         if (result is not { Success: true, Data: { } data })
             return;
@@ -81,11 +81,11 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
             }
         };
 
-        ProcessHelper.ExecuteAsAdminIfNeeded(() =>
+        Process.ExecuteAsAdmin(() =>
         {
             using var fileStream = File.Create(path);
             fileStream.SetLength(size);
-        }, clp);
+        }, clp.ToString());
     }
 
     public void CopyFilePath()
@@ -129,43 +129,58 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         }
     }
 
-    public void RunWithArgs()
+    public void RunFileAsAdmin()
     {
         var selectedItems = _shell.GetSelectedItems();
 
-        if (selectedItems.Count != 1 || Path.GetExtension(selectedItems[0].Path) != ".exe")
+        if (selectedItems is [{ Path: var selectedItem }])
+            RunFileAsAdminOptional(selectedItem, null, true);
+    }
+
+    public void RunFileWithArgs()
+    {
+        var selectedItems = _shell.GetSelectedItems();
+
+        if (selectedItems is not [{ Path: var selectedItem }])
             return;
 
-        string selectedItem = selectedItems[0].Path;
+        var result = _viewFactory.ShowDialog<RunWithArgsWindow, string, RunWithArgsOutput>(selectedItem);
 
-        var runWithArgsWindow = _viewFactory.Create<RunWithArgsWindow>();
-        var result = runWithArgsWindow.ShowDialog(selectedItem);
-
-        if (result is not { Success: true, Data: { } args })
+        if (result is not { Success: true, Data: { } data })
             return;
 
         if (!File.Exists(selectedItem))
         {
-            MessageBoxHelper.ShowError(string.Format(Resources.FileNotFound, selectedItem));
+            MessageBox.ShowError(string.Format(Resources.FileNotFound, selectedItem));
             return;
         }
 
-        Process.Start(selectedItem, args ?? string.Empty);
+        RunFileAsAdminOptional(selectedItem, data.Args, data.RunAsAdmin);
     }
 
-    public void OpenInCmd()
+    private void RunFileAsAdminOptional(string fileName, string? args, bool asAdmin)
+    {
+        try
+        {
+            Process.Start(fileName, args, asAdmin);
+        }
+        catch (Win32Exception ex) when (ex.HResult == -2147467259)
+        {
+            Debug.WriteLine($"File {fileName} is unable to run as admin");
+            Process.Start(fileName, args, false);
+        }
+    }
+
+    public void OpenInCmd() => OpenInCmd(false);
+
+    public void OpenInCmdAsAdmin() => OpenInCmd(true);
+
+    private void OpenInCmd(bool asAdmin)
     {
         string? folderPath = _shell.GetActiveShellPath();
 
-        if (string.IsNullOrEmpty(folderPath))
-            return;
-
-        using (Process.Start(new ProcessStartInfo
-        {
-            WorkingDirectory = folderPath,
-            FileName = "cmd.exe",
-            UseShellExecute = false,
-        })) { }
+        if (!string.IsNullOrEmpty(folderPath))
+            Process.Start("cmd.exe", $"/k cd /d \"{folderPath}\"", asAdmin);
     }
 
     public void ChangeFileProperties()
@@ -210,7 +225,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         if (result is not { Success: true, Data: { } data })
         {
             if (result.Message is not (null or []))
-                MessageBoxHelper.ShowError(result.Message);
+                MessageBox.ShowError(result.Message);
             return;
         }
             

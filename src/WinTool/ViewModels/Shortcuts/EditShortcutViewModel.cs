@@ -11,7 +11,7 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class EditShortcutViewModel : ObservableObject, IDialogViewModel<EditShortcutInput, Shortcut>
+public partial class EditShortcutViewModel : ObservableObject, IDialogViewModel<EditShortcutInput, Shortcut>
 {
     private readonly IOptionsMonitor<ShortcutsOptions> _options;
     private readonly ShortcutContext _shortcutContext;
@@ -23,7 +23,7 @@ public class EditShortcutViewModel : ObservableObject, IDialogViewModel<EditShor
     {
         get; set
         {
-            if (value?.State is KeyState.Down && SetProperty(ref field, value))
+            if (value is not { State: KeyState.Up } && SetProperty(ref field, value))
             {
                 IsErrorShown = false;
                 SaveCommand.NotifyCanExecuteChanged();
@@ -31,15 +31,11 @@ public class EditShortcutViewModel : ObservableObject, IDialogViewModel<EditShor
         }
     }
 
-    public bool IsErrorShown
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial bool IsErrorShown { get; set; }
 
-    public string? ErrorText
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? ErrorText { get; set; }
 
     public RelayCommand SaveCommand { get; }
     public RelayCommand CancelCommand { get; }
@@ -49,7 +45,7 @@ public class EditShortcutViewModel : ObservableObject, IDialogViewModel<EditShor
         _options = options;
         _shortcutContext = shortcutContext;
 
-        SaveCommand = new RelayCommand(() => _onResult?.Invoke(new Result<Shortcut>(true, Shortcut)), IsSaveble);
+        SaveCommand = new RelayCommand(() => _onResult?.Invoke(new Result<Shortcut>(true, Shortcut)), IsSavable);
         CancelCommand = new RelayCommand(() => _onResult?.Invoke(new Result<Shortcut>(false)));
     }
 
@@ -69,7 +65,7 @@ public class EditShortcutViewModel : ObservableObject, IDialogViewModel<EditShor
         _onResult = null;
     }
 
-    private bool IsSaveble()
+    private bool IsSavable()
     {
         if (Shortcut is not { Modifier: not KeyModifier.None })
             return false;

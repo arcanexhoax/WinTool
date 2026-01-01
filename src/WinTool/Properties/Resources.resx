@@ -211,7 +211,7 @@
     <value>Open</value>
   </data>
   <data name="OpenFolderInCmd" xml:space="preserve">
-    <value>Open current folder in cmd</value>
+    <value>Open current folder in command prompt</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>Options</value>
@@ -231,8 +231,8 @@
   <data name="RunFormat" xml:space="preserve">
     <value>Run "{0}" with arguments</value>
   </data>
-  <data name="RunWithArgs" xml:space="preserve">
-    <value>Run selected exe-file with arguments</value>
+  <data name="RunFileWithArgs" xml:space="preserve">
+    <value>Run selected file with arguments</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
@@ -305,5 +305,17 @@
   </data>
   <data name="AlwaysRunAsAdmin" xml:space="preserve">
     <value>Always run as administrator</value>
+  </data>
+  <data name="RunAsAdmin" xml:space="preserve">
+    <value>Run as administrator</value>
+  </data>
+  <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
+    <value>Open current folder in command prompt as admin</value>
+  </data>
+  <data name="RunFileAsAdmin" xml:space="preserve">
+    <value>Run selected file as admin</value>
+  </data>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>Not specified</value>
   </data>
 </root>

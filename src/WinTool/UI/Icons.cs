@@ -7,5 +7,6 @@ public class Icons
     public const string Rename = "\xE8AC";
     public const string Copy = "\xE8C8";
     public const string OpenFile = "\xE8E5";
+    public const string ProtectedDocument = "\xE8A6";
     public const string CommandPrompt = "\xE756";
 }

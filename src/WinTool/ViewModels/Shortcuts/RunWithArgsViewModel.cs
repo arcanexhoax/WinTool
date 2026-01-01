@@ -7,46 +7,45 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, string?>
+public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, RunWithArgsOutput>
 {
-    private Action<Result<string?>>? _onResult;
+    private Action<Result<RunWithArgsOutput>>? _onResult;
 
-    public string? FileName
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? FileName { get; set; }
 
-    public string? FullFilePath
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? FullFilePath { get; set; }
 
-    public string? Args
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? Args { get; set; }
 
-    public bool IsTextSelected
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial bool RunAsAdmin { get; set; }
+
+    [ObservableProperty]
+    public partial bool AreOptionsOpened { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsTextSelected { get; set; }
 
     public RelayCommand RunCommand { get; }
     public RelayCommand CloseWindowCommand { get; }
 
     public RunWithArgsViewModel()
     {
-        RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<string?>(true, Args)));
-        CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<string?>(false)));
+        RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(true, new RunWithArgsOutput(Args, RunAsAdmin))));
+        CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(false)));
     }
 
-    public void OnShow(string filePath, Action<Result<string?>> onResult)
+    public void OnShow(string filePath, Action<Result<RunWithArgsOutput>> onResult)
     {
         _onResult = onResult;
 
         FileName = Path.GetFileName(filePath);
         FullFilePath = filePath;
         IsTextSelected = true;
+        AreOptionsOpened = RunAsAdmin;
     }
 
     public void OnClose() => _onResult = null;

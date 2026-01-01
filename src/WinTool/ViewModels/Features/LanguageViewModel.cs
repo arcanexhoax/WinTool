@@ -3,23 +3,13 @@ using System.Globalization;
 
 namespace WinTool.ViewModels.Features;
 
-public class LanguageViewModel : ObservableObject
+public partial class LanguageViewModel(CultureInfo cultureInfo, string name) : ObservableObject
 {
-    public CultureInfo CultureInfo { get; }
+    public CultureInfo CultureInfo { get; } = cultureInfo;
 
-    public string Name
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string Name { get; set; } = name;
 
-    public bool IsSelected
-    {
-        get; set => SetProperty(ref field, value);
-    }
-
-    public LanguageViewModel(CultureInfo cultureInfo, string name)
-    {
-        CultureInfo = cultureInfo;
-        Name = name;
-    }
+    [ObservableProperty]
+    public partial bool IsSelected { get; set; }
 }

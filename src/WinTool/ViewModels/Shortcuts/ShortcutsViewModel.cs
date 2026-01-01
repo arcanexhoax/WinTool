@@ -15,5 +15,5 @@ public class ShortcutsViewModel(
     ViewFactory viewFactory) : ObservableObject
 {
     public ObservableCollection<ShortcutViewModel> Shortcuts { get; } = 
-        [.. shortcutsService.Shortcuts.Select(sc => new ShortcutViewModel(shortcutsService, sc.Value, viewFactory))];
+        [.. shortcutsService.AvailableCommands.Select(ac => new ShortcutViewModel(shortcutsService, ac.Value, viewFactory))];
 }

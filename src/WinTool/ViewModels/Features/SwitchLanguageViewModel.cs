@@ -10,19 +10,15 @@ using WinTool.Utils;
 
 namespace WinTool.ViewModels.Features;
 
-public class SwitchLanguageViewModel : ObservableObject
+public partial class SwitchLanguageViewModel : ObservableObject
 {
     private readonly KeyboardLayoutManager _keyboardLayoutManager;
 
-    public string? CurrentLanguage
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial string? CurrentLanguage { get; set; }
 
-    public ObservableCollection<LanguageViewModel>? AllLanguages
-    {
-        get; set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    public partial ObservableCollection<LanguageViewModel>? AllLanguages { get; set; }
 
     public event Action<Point>? ShowPopup;
 

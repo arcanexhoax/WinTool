@@ -403,6 +403,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not specified.
+        /// </summary>
+        public static string NotSpecified {
+            get {
+                return ResourceManager.GetString("NotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         public static string Open {
@@ -412,11 +421,20 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open current folder in cmd.
+        ///   Looks up a localized string similar to Open current folder in command prompt.
         /// </summary>
         public static string OpenFolderInCmd {
             get {
                 return ResourceManager.GetString("OpenFolderInCmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open current folder in command prompt as admin.
+        /// </summary>
+        public static string OpenFolderInCmdAsAdmin {
+            get {
+                return ResourceManager.GetString("OpenFolderInCmdAsAdmin", resourceCulture);
             }
         }
         
@@ -457,6 +475,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run as administrator.
+        /// </summary>
+        public static string RunAsAdmin {
+            get {
+                return ResourceManager.GetString("RunAsAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run WinTool as admin failed: {0}.
         /// </summary>
         public static string RunAsAdminError {
@@ -466,20 +493,29 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run selected file as admin.
+        /// </summary>
+        public static string RunFileAsAdmin {
+            get {
+                return ResourceManager.GetString("RunFileAsAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run selected file with arguments.
+        /// </summary>
+        public static string RunFileWithArgs {
+            get {
+                return ResourceManager.GetString("RunFileWithArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run &quot;{0}&quot; with arguments.
         /// </summary>
         public static string RunFormat {
             get {
                 return ResourceManager.GetString("RunFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Run selected exe-file with arguments.
-        /// </summary>
-        public static string RunWithArgs {
-            get {
-                return ResourceManager.GetString("RunWithArgs", resourceCulture);
             }
         }
         
