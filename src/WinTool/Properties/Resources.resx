@@ -315,4 +315,7 @@
   <data name="RunFileAsAdmin" xml:space="preserve">
     <value>Run selected file as admin</value>
   </data>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
 </root>

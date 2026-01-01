@@ -23,7 +23,7 @@ public partial class EditShortcutViewModel : ObservableObject, IDialogViewModel<
     {
         get; set
         {
-            if (value?.State is KeyState.Down && SetProperty(ref field, value))
+            if (value is not { State: KeyState.Up } && SetProperty(ref field, value))
             {
                 IsErrorShown = false;
                 SaveCommand.NotifyCanExecuteChanged();

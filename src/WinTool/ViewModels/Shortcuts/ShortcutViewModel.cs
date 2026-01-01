@@ -1,14 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GlobalKeyInterceptor;
-using System;
-using System.Diagnostics;
-using System.Threading;
 using WinTool.Models;
-using WinTool.Options;
-using WinTool.Properties;
 using WinTool.Services;
-using WinTool.Utils;
 using WinTool.Views.Shortcuts;
 
 namespace WinTool.ViewModels.Shortcuts;

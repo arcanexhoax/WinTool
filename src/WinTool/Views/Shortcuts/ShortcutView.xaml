@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:c="clr-namespace:Hoax.WpfConverters;assembly=Hoax.WpfConverters"
              xmlns:vm="clr-namespace:WinTool.ViewModels.Shortcuts"
+             xmlns:p="clr-namespace:WinTool.Properties"
              d:DataContext="{d:DesignInstance Type=vm:ShortcutViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -39,9 +40,22 @@
                                FontSize="12"
                                Text="&#xE70F;" />
                 </Button>
-                
-                <TextBlock Text="{Binding Shortcut}"
-                           FontWeight="SemiBold" />
+
+                <TextBlock Text="{Binding Shortcut, TargetNullValue={x:Static p:Resources.NotSpecified}}"
+                           VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource TextFillColorPrimaryBrush}"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Shortcut}" Value="{x:Null}">
+                                    <Setter Property="Foreground" Value="{StaticResource SystemFillColorCautionBrush}"/>
+                                    <Setter Property="FontWeight" Value="Regular"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StackPanel>
         </Border>
     </Grid>
