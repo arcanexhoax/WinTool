@@ -16,62 +16,123 @@ public class WritableOptionsTests
     public WritableOptionsTests()
     {
         var path = _fileSystem.Path;
-        var content = GenerateAppSettings();
-
         _appSettingsPath = path.Combine(path.GetTempPath(), path.GetRandomFileName());
-
-        _fileSystem.File.WriteAllText(_appSettingsPath, content);
     }
 
     [Fact]
-    public void AddConfigurationFileProvider_LoadsOptionsCorrectly()
+    public void ConfigurationFileProvider_LoadsOptionsCorrectly()
     {
+        var json = """
+            {
+                "SettingsOptions": {
+                    "WindowsStartupEnabled": "False",
+                    "AlwaysRunAsAdmin": "True",
+                    "AppTheme": "Dark"
+                },
+                "FeaturesOptions": { "EnableSwitchLanguagePopup": "False" },
+                "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Alt + F1" } }
+            }
+            """;
+        _fileSystem.File.WriteAllText(_appSettingsPath, json);
+
         var sp = BuildServiceProvider(_appSettingsPath); 
         var settings = sp.GetRequiredService<IOptionsMonitor<SettingsOptions>>().CurrentValue;
         var features = sp.GetRequiredService<IOptionsMonitor<FeaturesOptions>>().CurrentValue;
         var shortcuts = sp.GetRequiredService<IOptionsMonitor<ShortcutsOptions>>().CurrentValue;
 
-        Assert.True(settings.WindowsStartupEnabled);
-        Assert.False(settings.AlwaysRunAsAdmin);
+        Assert.False(settings.WindowsStartupEnabled);
+        Assert.True(settings.AlwaysRunAsAdmin);
         Assert.Equal("Dark", settings.AppTheme.ToString());
-        Assert.True(features.EnableSwitchLanguagePopup);
-        Assert.Equal("Ctrl + E", shortcuts.Shortcuts["CreateFile"]);
+        Assert.False(features.EnableSwitchLanguagePopup);
+        Assert.Equal("Alt + F1", shortcuts.Shortcuts["CreateFile"]);
+        Assert.Equal("Ctrl + Shift + E", shortcuts.Shortcuts["FastFileCreation"]);
     }
 
     [Fact]
-    public void WritableOptions_Update_SettingsOptions_WritesToFile()
+    public void WritableOptions_CreatesFile()
     {
         var sp = BuildServiceProvider(_appSettingsPath);
-        var writable = sp.GetRequiredService<WritableOptions<SettingsOptions>>();
+        var shortcutsOptions = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
+        var featuresOptions = sp.GetRequiredService<WritableOptions<FeaturesOptions>>();
+        var settingsOptions = sp.GetRequiredService<WritableOptions<SettingsOptions>>();
 
-        writable.Update(o => o.AlwaysRunAsAdmin = true);
-
-        var text = _fileSystem.File.ReadAllText(_appSettingsPath);
-        Assert.Contains("\"AlwaysRunAsAdmin\": \"True\"", text);
-    }
-
-    [Fact]
-    public void WritableOptions_Update_FeaturesOptions_WritesToFile()
-    {
-        var sp = BuildServiceProvider(_appSettingsPath);
-        var writable = sp.GetRequiredService<WritableOptions<FeaturesOptions>>();
-
-        writable.Update(o => o.EnableSwitchLanguagePopup = false);
+        shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
+        featuresOptions.Update(o => o.EnableSwitchLanguagePopup = false);
+        settingsOptions.Update(o => o.AppTheme = ViewModels.Settings.AppTheme.Light);
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
-        Assert.Contains("\"EnableSwitchLanguagePopup\": \"False\"", text);
-    }
 
-    [Fact]
-    public void WritableOptions_Update_ShortcutsOptions_WritesToFile()
-    {
-        var sp = BuildServiceProvider(_appSettingsPath);
-        var writable = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
-
-        writable.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
-
-        var text = _fileSystem.File.ReadAllText(_appSettingsPath);
         Assert.Contains("\"CreateFile\": \"Alt + F1\"", text);
+        Assert.Contains("\"EnableSwitchLanguagePopup\": \"False\"", text);
+        Assert.Contains("\"AppTheme\": \"1\"", text);
+    }
+
+    [Fact]
+    public void WritableOptions_UpdatesWritesToFile()
+    {
+        var json = """
+            {
+                "SettingsOptions": { "AppTheme": "Dark" },
+                "FeaturesOptions": { "EnableSwitchLanguagePopup": "False" },
+                "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Ctrl + Q" } }
+            }
+            """;
+        _fileSystem.File.WriteAllText(_appSettingsPath, json);
+
+        var sp = BuildServiceProvider(_appSettingsPath);
+        var shortcutsOptions = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
+        var featuresOptions = sp.GetRequiredService<WritableOptions<FeaturesOptions>>();
+        var settingsOptions = sp.GetRequiredService<WritableOptions<SettingsOptions>>();
+
+        shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
+        featuresOptions.Update(o => o.EnableSwitchLanguagePopup = true);
+        settingsOptions.Update(o => o.AppTheme = ViewModels.Settings.AppTheme.Light);
+
+        var text = _fileSystem.File.ReadAllText(_appSettingsPath);
+
+        Assert.Contains("\"CreateFile\": \"Alt + F1\"", text);
+        Assert.Contains("\"EnableSwitchLanguagePopup\": \"True\"", text);
+        Assert.Contains("\"AppTheme\": \"1\"", text);
+    }
+
+    [Fact]
+    public void ShortcutOptions_ValidatesEmptySettings()
+    {
+        var sp = BuildServiceProvider(_appSettingsPath);
+        var shortcutsOptions = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
+
+        Assert.Equal("Ctrl + Shift + Enter", shortcutsOptions.CurrentValue.Shortcuts["RunFileAsAdmin"]);
+    }
+
+    [Fact]
+    public void ShortcutOptions_ValidatesInvalidAndDuplicatedShortcuts()
+    {
+        var json = """
+            {
+                "ShortcutsOptions": { 
+                    "Shortcuts": { 
+                        "CreateFile": "Ctrl + Shift + E",
+                        "FastFileCreation": "ctrl+shift+e",
+                        "RunFileWithArgs": "ctrl+p",
+                        "OpenFolderInCmd": "abc",
+                        "SelectedItemCopyName" : "A",
+                        "SelectedItemCopyPath" : "Ctrl + Shift + Enter"
+                    } 
+                }
+            }
+            """;
+        _fileSystem.File.WriteAllText(_appSettingsPath, json);
+
+        var sp = BuildServiceProvider(_appSettingsPath);
+        var shortcutsOptions = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
+
+        Assert.Equal("Ctrl + Shift + E", shortcutsOptions.CurrentValue.Shortcuts["CreateFile"]);
+        Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["FastFileCreation"]);
+        Assert.Equal("ctrl+p", shortcutsOptions.CurrentValue.Shortcuts["RunFileWithArgs"]);
+        Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["OpenFolderInCmd"]);
+        Assert.Equal("Ctrl + Shift + X", shortcutsOptions.CurrentValue.Shortcuts["SelectedItemCopyName"]);
+        Assert.Equal("Ctrl + Shift + Enter", shortcutsOptions.CurrentValue.Shortcuts["SelectedItemCopyPath"]);
+        Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["RunFileAsAdmin"]);
     }
 
     private ServiceProvider BuildServiceProvider(string jsonFile)
@@ -94,33 +155,11 @@ public class WritableOptionsTests
         services.AddSingleton<IOptionsMonitor<SettingsOptions>, OptionsMonitor<SettingsOptions>>();
         services.AddSingleton<IOptionsMonitor<FeaturesOptions>, OptionsMonitor<FeaturesOptions>>();
         services.AddSingleton<IOptionsMonitor<ShortcutsOptions>, OptionsMonitor<ShortcutsOptions>>();
+        services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
         services.AddSingleton<WritableOptions<SettingsOptions>>();
         services.AddSingleton<WritableOptions<FeaturesOptions>>();
         services.AddSingleton<WritableOptions<ShortcutsOptions>>();
 
         return services.BuildServiceProvider();
-    }
-
-    private string GenerateAppSettings()
-    {
-        return 
-            """
-            {
-                "SettingsOptions": {
-                    "WindowsStartupEnabled": true,
-                    "AlwaysRunAsAdmin": false,
-                    "AppTheme": "Dark"
-                },
-                "FeaturesOptions": {
-                    "EnableSwitchLanguagePopup": true
-                },
-                "ShortcutsOptions": {
-                    "Shortcuts": {
-                        "CreateFile": "Ctrl + E",
-                        "FastFileCreation": "Ctrl + Shift + E"
-                    }
-                }
-            }
-            """;
     }
 }
