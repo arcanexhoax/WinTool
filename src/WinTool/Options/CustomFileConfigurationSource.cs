@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using WinTool.Extensions;
 
-namespace WinTool.Utils;
+namespace WinTool.Options;
 
 public class CustomFileConfigurationSource(CustomFileConfigurationProvider provider) : IConfigurationSource
 {
@@ -20,21 +21,22 @@ public class CustomFileConfigurationSource(CustomFileConfigurationProvider provi
     }
 }
 
-public class CustomFileConfigurationProvider(string filePath, JsonSerializerOptions jsonOptions) : ConfigurationProvider
+public class CustomFileConfigurationProvider(string filePath, JsonSerializerOptions jsonOptions, IFileSystem fileSystem) : ConfigurationProvider
 {
     private readonly string _filePath = filePath;
     private readonly Lock _lock = new();
     private readonly JsonSerializerOptions _jsonOptions = jsonOptions;
+    private readonly IFile _file = fileSystem.File;
 
     public override void Load()
     {
-        if (!File.Exists(_filePath))
+        if (!_file.Exists(_filePath))
         {
             Data = new Dictionary<string, string?>();
             return;
         }
 
-        var json = File.ReadAllText(_filePath);
+        var json = _file.ReadAllText(_filePath);
         var data = JsonSerializer.Deserialize<Dictionary<string, object?>>(json)!;
 
         if (data == null)
@@ -59,7 +61,7 @@ public class CustomFileConfigurationProvider(string filePath, JsonSerializerOpti
 
             var data = Data.Unflatten();
             var json = JsonSerializer.Serialize(data, _jsonOptions);
-            File.WriteAllText(_filePath, json);
+            _file.WriteAllText(_filePath, json);
 
             OnReload();
         }

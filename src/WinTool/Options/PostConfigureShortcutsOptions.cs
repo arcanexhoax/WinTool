@@ -3,9 +3,8 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using WinTool.Extensions;
-using WinTool.Options;
 
-namespace WinTool.Utils;
+namespace WinTool.Options;
 
 public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOptions>
 {

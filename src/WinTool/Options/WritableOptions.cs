@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using WinTool.Extensions;
-using WinTool.Utils;
 
 namespace WinTool.Options;
 

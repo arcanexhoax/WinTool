@@ -12,7 +12,6 @@ using WinTool.Models;
 using WinTool.Native;
 using WinTool.Options;
 using WinTool.Services;
-using WinTool.Utils;
 using WinTool.ViewModels;
 using WinTool.ViewModels.Features;
 using WinTool.ViewModels.Settings;
