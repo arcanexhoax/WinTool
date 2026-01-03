@@ -116,7 +116,8 @@ public class WritableOptionsTests
                         "RunFileWithArgs": "ctrl+p",
                         "OpenFolderInCmd": "abc",
                         "SelectedItemCopyName" : "A",
-                        "SelectedItemCopyPath" : "Ctrl + Shift + Enter"
+                        "SelectedItemCopyPath" : "Ctrl + Shift + Enter",
+                        "NonExistentShortcut": "Ctrl + Shift + F13"
                     } 
                 }
             }
@@ -133,6 +134,7 @@ public class WritableOptionsTests
         Assert.Equal("Ctrl + Shift + X", shortcutsOptions.CurrentValue.Shortcuts["SelectedItemCopyName"]);
         Assert.Equal("Ctrl + Shift + Enter", shortcutsOptions.CurrentValue.Shortcuts["SelectedItemCopyPath"]);
         Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["RunFileAsAdmin"]);
+        Assert.DoesNotContain("NonExistentShortcut", shortcutsOptions.CurrentValue.Shortcuts);
     }
 
     private ServiceProvider BuildServiceProvider(string jsonFile)

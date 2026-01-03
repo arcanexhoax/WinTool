@@ -104,7 +104,7 @@ public class ShortcutsService : BackgroundService
             Shortcuts.Remove(shortcutCommand.Shortcut);
 
         shortcutCommand.Shortcut = newShortcut;
-        Shortcuts[newShortcut]= shortcutCommand;
+        Shortcuts[newShortcut] = shortcutCommand;
 
         _options.Update(o => o.Shortcuts[shortcutCommand.Id] = shortcutCommand.Shortcut.ToString());
     }

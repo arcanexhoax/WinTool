@@ -47,7 +47,6 @@ public partial class App : Application
         builder.Services.AddSingleton<SettingsView>();
         builder.Services.AddTransient<CreateFileWindow>();
         builder.Services.AddTransient<RunWithArgsWindow>();
-        builder.Services.AddTransient<ChangeFilePropertiesWindow>();
         builder.Services.AddTransient<EditShortcutWindow>();
         builder.Services.AddSingleton<SwitchLanguageWindow>();
         builder.Services.AddSingleton<MainViewModel>();
@@ -57,7 +56,6 @@ public partial class App : Application
         builder.Services.AddSingleton<SettingsViewModel>();
         builder.Services.AddSingleton<CreateFileViewModel>();
         builder.Services.AddSingleton<RunWithArgsViewModel>();
-        builder.Services.AddSingleton<ChangeFilePropertiesViewModel>();
         builder.Services.AddSingleton<EditShortcutViewModel>();
         builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();

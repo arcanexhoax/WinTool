@@ -10,7 +10,6 @@ using WinTool.Extensions;
 using WinTool.Models;
 using WinTool.Properties;
 using WinTool.Views.Shortcuts;
-using File = System.IO.File;
 
 namespace WinTool.Services;
 
@@ -181,67 +180,5 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
         if (!string.IsNullOrEmpty(folderPath))
             Process.Start("cmd.exe", $"/k cd /d \"{folderPath}\"", asAdmin);
-    }
-
-    public void ChangeFileProperties()
-    {
-        var selectedItems = _shell.GetSelectedItems();
-
-        if (selectedItems.Count == 0)
-            return;
-
-        var selectedItemPath = selectedItems[0].Path;
-
-        if (!File.Exists(selectedItemPath))
-            return;
-
-        TagLib.File? tfile = null;
-
-        try
-        {
-            tfile = TagLib.File.Create(selectedItemPath);
-        }
-        catch (Exception ex) when (ex.Source == "taglib-sharp")
-        { 
-        }
-        catch 
-        {
-            throw;
-        }
-
-        var changeFilePropertiesView = _viewFactory.Create<ChangeFilePropertiesWindow>();
-        var result = changeFilePropertiesView.ShowDialog(new ChangeFilePropertiesInput(
-            selectedItemPath,
-            tfile != null,
-            tfile?.Tag.Title,
-            tfile?.Tag.Performers,
-            tfile?.Tag.Album,
-            tfile?.Tag.Genres,
-            tfile?.Tag.Lyrics,
-            tfile?.Tag.Year ?? 0,
-            File.GetCreationTime(selectedItemPath),
-            File.GetLastAccessTime(selectedItemPath)));
-
-        if (result is not { Success: true, Data: { } data })
-        {
-            if (result.Message is not (null or []))
-                MessageBox.ShowError(result.Message);
-            return;
-        }
-            
-        if (tfile != null)
-        {
-            tfile!.Tag.Title = data.Title;
-            tfile.Tag.Performers = data.Performers;
-            tfile.Tag.Album = data.Album;
-            tfile.Tag.Genres = data.Genres;
-            tfile.Tag.Lyrics = data.Lyrics;
-            tfile.Tag.Year = data.Year;
-            tfile.Save();
-            tfile.Dispose();
-        }
-
-        File.SetCreationTime(selectedItemPath, data.CreationTime);
-        File.SetLastWriteTime(selectedItemPath, data.ChangeTime);
     }
 }

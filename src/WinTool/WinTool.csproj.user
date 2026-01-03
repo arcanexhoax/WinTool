@@ -7,12 +7,6 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="UI\Controls\DateTimePicker.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Shortcuts\ChangeFilePropertiesWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\Shortcuts\EditShortcutWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -44,12 +38,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UI\Controls\DateTimePicker.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Shortcuts\ChangeFilePropertiesWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

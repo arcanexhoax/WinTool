@@ -126,12 +126,6 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="ChangeFileProperiesTitle" xml:space="preserve">
-    <value>Change file '{0}' properties</value>
-  </data>
-  <data name="ChangeFileProperties" xml:space="preserve">
-    <value>Change file properties</value>
-  </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>
@@ -149,9 +143,6 @@
   </data>
   <data name="CreateFile" xml:space="preserve">
     <value>Create file</value>
-  </data>
-  <data name="CreationTime" xml:space="preserve">
-    <value>Creation time</value>
   </data>
   <data name="DriveNotFound" xml:space="preserve">
     <value>Unable to find drive '{0}'.</value>
@@ -189,23 +180,11 @@
   <data name="FilePathInvalid" xml:space="preserve">
     <value>File path '{0}' is invalid</value>
   </data>
-  <data name="Genres" xml:space="preserve">
-    <value>Genres</value>
-  </data>
   <data name="GetSettingsError" xml:space="preserve">
     <value>Failed to get settings: {0}</value>
   </data>
-  <data name="LastWriteTime" xml:space="preserve">
-    <value>Last write time</value>
-  </data>
   <data name="LaunchOnStartup" xml:space="preserve">
     <value>Launch on Windows startup</value>
-  </data>
-  <data name="Lyrics" xml:space="preserve">
-    <value>Lyrics</value>
-  </data>
-  <data name="MediaTags" xml:space="preserve">
-    <value>Media tags</value>
   </data>
   <data name="Open" xml:space="preserve">
     <value>Open</value>
@@ -218,9 +197,6 @@
   </data>
   <data name="OutOfMemory" xml:space="preserve">
     <value>The drive '{0}' has only {1} free bytes (requested {2}).</value>
-  </data>
-  <data name="Performers" xml:space="preserve">
-    <value>Performers</value>
   </data>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
@@ -236,9 +212,6 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
-  </data>
-  <data name="SaveFilePropertiesError" xml:space="preserve">
-    <value>Save file '{0}' properties error: {1}</value>
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
     <value>Copy name of selected/opened item</value>
@@ -261,9 +234,6 @@
   <data name="EditShortcutTip" xml:space="preserve">
     <value>The shortcut should start with at least one modifier (Ctrl, Shift, Alt, Win)</value>
   </data>
-  <data name="Title" xml:space="preserve">
-    <value>Title</value>
-  </data>
   <data name="TrayToolTip" xml:space="preserve">
     <value>Double click to open, right click - menu</value>
   </data>
@@ -272,9 +242,6 @@
   </data>
   <data name="WinTool" xml:space="preserve">
     <value>WinTool</value>
-  </data>
-  <data name="Year" xml:space="preserve">
-    <value>Year</value>
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>The shortcut is already used for "{0}".</value>

@@ -17,5 +17,4 @@ public class ShortcutNames
     public const string RunFileWithArgs = nameof(RunFileWithArgs);
     public const string OpenFolderInCmd = nameof(OpenFolderInCmd);
     public const string OpenFolderInCmdAsAdmin = nameof(OpenFolderInCmdAsAdmin);
-    public const string ChangeFileProperties = nameof(ChangeFileProperties);
 }
