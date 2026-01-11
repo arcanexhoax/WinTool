@@ -24,10 +24,10 @@ public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOpti
     {
         var usedShortcuts = new HashSet<Shortcut>();
         var acceptedShortcuts = new HashSet<string>();
-        var defaultShortcuts = _defaultShortcuts.ToDictionary(s => s.Key, s => Shortcut.Parse(s.Value)!);
+        var defaultShortcuts = _defaultShortcuts.ToDictionary(s => s.Key, s => Shortcut.Parse(s.Value, KeyState.Down));
         var actualShortcuts = o.Shortcuts.ToDictionary(
             s => s.Key,
-            s => Shortcut.Parse(s.Value) is { Modifier: not KeyModifier.None } p ? p : null);
+            s => Shortcut.TryParse(s.Value, KeyState.Down, out var p) && p.Modifier != KeyModifier.None ? p : null);
 
         foreach (var (name, actualSc) in actualShortcuts)
         {

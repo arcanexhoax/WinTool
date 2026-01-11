@@ -65,7 +65,7 @@ public partial class App : Application
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
-        builder.Services.AddSingleton(new KeyInterceptor());
+        builder.Services.AddSingleton<IKeyInterceptor>(new KeyInterceptor());
         builder.Services.AddSingleton<ShortcutContext>();
         builder.Services.AddSingleton<ShortcutsService>();
         builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();

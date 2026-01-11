@@ -35,6 +35,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         string? fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
         string? extension = Path.GetExtension(NewFileTemplate);
 
+        // TODO test it after new file name template will match Windows behavior
         var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
         {
             var match = Regex.Match(f.Name, $@"^{fileName}_(\d+){extension}$");

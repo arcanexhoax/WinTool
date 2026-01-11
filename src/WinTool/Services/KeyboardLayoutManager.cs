@@ -18,7 +18,7 @@ namespace WinTool.Services;
 
 public class KeyboardLayoutManager : BackgroundService
 {
-    private readonly KeyInterceptor _keyInterceptor;
+    private readonly IKeyInterceptor _keyInterceptor;
     private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
     private nint _lastLayout;
     private nint[]? _allLayouts;
@@ -38,7 +38,7 @@ public class KeyboardLayoutManager : BackgroundService
     public event Action<CultureInfo>? LayoutChanged;
     public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
 
-    public KeyboardLayoutManager(KeyInterceptor keyInterceptor, IOptionsMonitor<FeaturesOptions> featuresOptions)
+    public KeyboardLayoutManager(IKeyInterceptor keyInterceptor, IOptionsMonitor<FeaturesOptions> featuresOptions)
     {
         _keyInterceptor = keyInterceptor;
         _featuresOptions = featuresOptions;
@@ -79,10 +79,10 @@ public class KeyboardLayoutManager : BackgroundService
         // User can switch keyboard layout with Ctrl + Shift/Shift + Ctrl/Alt + Shift/Shift + Alt
         // But if the shortcut is Shift + Alt and it is in Up state, Windows will send Shift + Ctrl (Up)
         // So we need to track the correct shortcut and check the current layout only after that
-        if ((e.Shortcut.Key.IsAlt() && e.Shortcut.Modifier is KeyModifier.Shift
-            || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Alt
-            || e.Shortcut.Key.IsCtrl() && e.Shortcut.Modifier is KeyModifier.Shift
-            || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Ctrl)
+        if ((e.Shortcut.Key.IsAlt && e.Shortcut.Modifier is KeyModifier.Shift
+            || e.Shortcut.Key.IsShift && e.Shortcut.Modifier is KeyModifier.Alt
+            || e.Shortcut.Key.IsCtrl && e.Shortcut.Modifier is KeyModifier.Shift
+            || e.Shortcut.Key.IsShift && e.Shortcut.Modifier is KeyModifier.Ctrl)
             && e.Shortcut.State is KeyState.Down)
         {
             _waitingShortcut = e.Shortcut;
@@ -106,7 +106,7 @@ public class KeyboardLayoutManager : BackgroundService
         {
             _waitingForWinRelease = true;
         }
-        else if (e.Shortcut.Key.IsWin() && e.Shortcut.State == KeyState.Up && _waitingForWinRelease)
+        else if (e.Shortcut.Key.IsWin && e.Shortcut.State == KeyState.Up && _waitingForWinRelease)
         {
             _waitingForWinRelease = false;
 
@@ -282,9 +282,9 @@ public class KeyboardLayoutManager : BackgroundService
 
     private bool AreKeyAndModifierEqual(Key key, KeyModifier modifier)
     {
-        return key.IsAlt() && modifier == KeyModifier.Alt
-            || key.IsCtrl() && modifier == KeyModifier.Ctrl
-            || key.IsShift() && modifier == KeyModifier.Shift
-            || key.IsWin() && modifier == KeyModifier.Win;
+        return key.IsAlt && modifier == KeyModifier.Alt
+            || key.IsCtrl && modifier == KeyModifier.Ctrl
+            || key.IsShift && modifier == KeyModifier.Shift
+            || key.IsWin && modifier == KeyModifier.Win;
     }
 }
