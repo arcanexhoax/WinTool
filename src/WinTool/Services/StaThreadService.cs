@@ -36,8 +36,20 @@ public class StaThreadService : IDisposable
         }
     }
 
+    public void Invoke(Action action)
+    {
+        Invoke(() =>
+        {
+            action();
+            return true;
+        });
+    }
+
     public T Invoke<T>(Func<T> func)
     {
+        if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+            return func();
+
         T? result = default;
         Exception? exception = null;
 

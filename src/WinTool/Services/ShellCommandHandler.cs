@@ -13,12 +13,13 @@ using WinTool.Views.Shortcuts;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
+public class ShellCommandHandler(Shell shell, ViewFactory viewFactory, StaThreadService staThreadService)
 {
     private const string NewFileTemplate = "NewFile.txt";
 
     private readonly Shell _shell = shell;
     private readonly ViewFactory _viewFactory = viewFactory;
+    private readonly StaThreadService _staThreadService = staThreadService;
 
     public bool IsBackgroundMode { get; set; } = true;
 
@@ -98,12 +99,12 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
             string? folderPath = _shell.GetActiveShellPath();
 
             if (!string.IsNullOrEmpty(folderPath))
-                Clipboard.SetText(folderPath);
+                _staThreadService.Invoke(() => Clipboard.SetText(folderPath));
         }
         else
         {
             var filePaths = selectedItems.Select(i => i.Path);
-            Clipboard.SetText(string.Join(Environment.NewLine, filePaths));
+            _staThreadService.Invoke(() => Clipboard.SetText(string.Join(Environment.NewLine, filePaths)));
         }
     }
 
@@ -120,12 +121,12 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
                 return;
 
             DirectoryInfo di = new(folderPath);
-            Clipboard.SetText(di.Name);
+            _staThreadService.Invoke(() => Clipboard.SetText(di.Name));
         }
         else
         {
             var fileNames = selectedItems.Select(i => i.Name ?? i.Path);
-            Clipboard.SetText(string.Join(Environment.NewLine, fileNames));
+            _staThreadService.Invoke(() => Clipboard.SetText(string.Join(Environment.NewLine, fileNames)));
         }
     }
 
