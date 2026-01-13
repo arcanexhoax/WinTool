@@ -39,7 +39,7 @@ public partial class SwitchLanguageViewModel : ObservableObject
 
     private void OnLayoutChanged(CultureInfo newCulture)
     {
-        var caretRect = CarretHelper.GetCaretRect();
+        var caretRect = CaretHelper.GetCaretRect();
 
         if (caretRect == null)
             return;

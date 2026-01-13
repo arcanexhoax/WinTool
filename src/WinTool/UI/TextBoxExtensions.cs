@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace WinTool.Utils;
+namespace WinTool.UI;
 
 public static class TextBoxExtensions
 {
