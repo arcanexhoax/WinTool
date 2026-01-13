@@ -165,7 +165,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory, StaThread
         {
             Process.Start(fileName, args, asAdmin);
         }
-        catch (Win32Exception ex) when (ex.HResult == -2147467259)
+        catch (Win32Exception ex) when (ex.NativeErrorCode == 1155)
         {
             Debug.WriteLine($"File {fileName} is unable to run as admin");
             Process.Start(fileName, args, false);
