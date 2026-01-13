@@ -16,8 +16,8 @@
     <Grid Height="32">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="0.75*" />
-            <ColumnDefinition Width="0.25*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
         <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
@@ -26,6 +26,8 @@
                    Text="{Binding Icon}" />
 
         <TextBlock Text="{Binding Description}"
+                   ToolTip="{Binding Description}"
+                   TextTrimming="CharacterEllipsis"
                    Grid.Column="1"/>
 
         <Border Grid.Column="2">
@@ -41,14 +43,14 @@
                                Text="&#xE70F;" />
                 </Button>
 
-                <TextBlock Text="{Binding Shortcut, TargetNullValue={x:Static p:Resources.NotSpecified}}"
+                <TextBlock Text="{Binding ShortcutString, TargetNullValue={x:Static p:Resources.NotSpecified}}"
                            VerticalAlignment="Center">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="{StaticResource TextFillColorPrimaryBrush}"/>
                             <Setter Property="FontWeight" Value="SemiBold"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Shortcut}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding ShortcutString}" Value="{x:Null}">
                                     <Setter Property="Foreground" Value="{StaticResource SystemFillColorCautionBrush}"/>
                                     <Setter Property="FontWeight" Value="Regular"/>
                                 </DataTrigger>
