@@ -48,9 +48,9 @@ public partial class App : Application
         builder.Services.AddTransient<CreateFileWindow>();
         builder.Services.AddTransient<RunWithArgsWindow>();
         builder.Services.AddTransient<EditShortcutWindow>();
-        builder.Services.AddSingleton<SwitchLanguageWindow>();
+        builder.Services.AddSingleton<InputPopupWindow>();
         builder.Services.AddSingleton<MainViewModel>();
-        builder.Services.AddSingleton<SwitchLanguageViewModel>();
+        builder.Services.AddSingleton<InputPopupViewModel>();
         builder.Services.AddSingleton<ShortcutsViewModel>();
         builder.Services.AddSingleton<FeaturesViewModel>();
         builder.Services.AddSingleton<SettingsViewModel>();
@@ -86,7 +86,7 @@ public partial class App : Application
         RunAsAdminIfNeeded(settings, clp);
 
         // activate the popup window
-        _app.Services.GetRequiredService<SwitchLanguageWindow>();
+        _app.Services.GetRequiredService<InputPopupWindow>();
         var mainWindow = _app.Services.GetRequiredService<MainWindow>();
         var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
 

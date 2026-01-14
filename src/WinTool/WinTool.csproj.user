@@ -22,7 +22,7 @@
     <Compile Update="Views\Shortcuts\ShortcutView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Features\SwitchLanguageWindow.xaml.cs">
+    <Compile Update="Views\Features\InputPopupWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\Shortcuts\CreateFileWindow.xaml.cs">

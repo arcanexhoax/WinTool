@@ -10,7 +10,7 @@ using WinTool.Utils;
 
 namespace WinTool.ViewModels.Features;
 
-public partial class SwitchLanguageViewModel : ObservableObject
+public partial class InputPopupViewModel : ObservableObject
 {
     private readonly KeyboardLayoutManager _keyboardLayoutManager;
 
@@ -22,7 +22,7 @@ public partial class SwitchLanguageViewModel : ObservableObject
 
     public event Action<Point>? ShowPopup;
 
-    public SwitchLanguageViewModel(KeyboardLayoutManager keyboardLayoutManager)
+    public InputPopupViewModel(KeyboardLayoutManager keyboardLayoutManager)
     {
         _keyboardLayoutManager = keyboardLayoutManager;
         _keyboardLayoutManager.LayoutChanged += OnLayoutChanged;

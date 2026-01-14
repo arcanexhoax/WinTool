@@ -29,7 +29,7 @@ public class WritableOptionsTests
                     "AlwaysRunAsAdmin": "True",
                     "AppTheme": "Dark"
                 },
-                "FeaturesOptions": { "EnableSwitchLanguagePopup": "False" },
+                "FeaturesOptions": { "EnableInputPopup": "False" },
                 "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Alt + F1" } }
             }
             """;
@@ -43,7 +43,7 @@ public class WritableOptionsTests
         Assert.False(settings.WindowsStartupEnabled);
         Assert.True(settings.AlwaysRunAsAdmin);
         Assert.Equal("Dark", settings.AppTheme.ToString());
-        Assert.False(features.EnableSwitchLanguagePopup);
+        Assert.False(features.EnableInputPopup);
         Assert.Equal("Alt + F1", shortcuts.Shortcuts["CreateFile"]);
         Assert.Equal("Ctrl + Shift + E", shortcuts.Shortcuts["FastFileCreation"]);
     }
@@ -57,13 +57,13 @@ public class WritableOptionsTests
         var settingsOptions = sp.GetRequiredService<WritableOptions<SettingsOptions>>();
 
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
-        featuresOptions.Update(o => o.EnableSwitchLanguagePopup = false);
+        featuresOptions.Update(o => o.EnableInputPopup = false);
         settingsOptions.Update(o => o.AppTheme = ViewModels.Settings.AppTheme.Light);
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
 
         Assert.Contains("\"CreateFile\": \"Alt + F1\"", text);
-        Assert.Contains("\"EnableSwitchLanguagePopup\": \"False\"", text);
+        Assert.Contains("\"EnableInputPopup\": \"False\"", text);
         Assert.Contains("\"AppTheme\": \"1\"", text);
     }
 
@@ -73,7 +73,7 @@ public class WritableOptionsTests
         var json = """
             {
                 "SettingsOptions": { "AppTheme": "Dark" },
-                "FeaturesOptions": { "EnableSwitchLanguagePopup": "False" },
+                "FeaturesOptions": { "EnableInputPopup": "False" },
                 "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Ctrl + Q" } }
             }
             """;
@@ -85,13 +85,13 @@ public class WritableOptionsTests
         var settingsOptions = sp.GetRequiredService<WritableOptions<SettingsOptions>>();
 
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
-        featuresOptions.Update(o => o.EnableSwitchLanguagePopup = true);
+        featuresOptions.Update(o => o.EnableInputPopup = true);
         settingsOptions.Update(o => o.AppTheme = ViewModels.Settings.AppTheme.Light);
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
 
         Assert.Contains("\"CreateFile\": \"Alt + F1\"", text);
-        Assert.Contains("\"EnableSwitchLanguagePopup\": \"True\"", text);
+        Assert.Contains("\"EnableInputPopup\": \"True\"", text);
         Assert.Contains("\"AppTheme\": \"1\"", text);
     }
 
@@ -101,7 +101,7 @@ public class WritableOptionsTests
         var sp = BuildServiceProvider(_appSettingsPath);
         var shortcutsOptions = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
 
-        Assert.Equal("Ctrl + Shift + Enter", shortcutsOptions.CurrentValue.Shortcuts["RunFileAsAdmin"]);
+        Assert.Equal("Ctrl + Shift + StandardEnter", shortcutsOptions.CurrentValue.Shortcuts["RunFileAsAdmin"]);
     }
 
     [Fact]
@@ -116,7 +116,7 @@ public class WritableOptionsTests
                         "RunFileWithArgs": "ctrl+p",
                         "OpenFolderInCmd": "abc",
                         "SelectedItemCopyName" : "A",
-                        "SelectedItemCopyPath" : "Ctrl + Shift + Enter",
+                        "SelectedItemCopyPath" : "Ctrl + Shift + StandardEnter",
                         "NonExistentShortcut": "Ctrl + Shift + F13"
                     } 
                 }
@@ -132,7 +132,7 @@ public class WritableOptionsTests
         Assert.Equal("ctrl+p", shortcutsOptions.CurrentValue.Shortcuts["RunFileWithArgs"]);
         Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["OpenFolderInCmd"]);
         Assert.Equal("Ctrl + Shift + X", shortcutsOptions.CurrentValue.Shortcuts["SelectedItemCopyName"]);
-        Assert.Equal("Ctrl + Shift + Enter", shortcutsOptions.CurrentValue.Shortcuts["SelectedItemCopyPath"]);
+        Assert.Equal("Ctrl + Shift + StandardEnter", shortcutsOptions.CurrentValue.Shortcuts["SelectedItemCopyPath"]);
         Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["RunFileAsAdmin"]);
         Assert.DoesNotContain("NonExistentShortcut", shortcutsOptions.CurrentValue.Shortcuts);
     }

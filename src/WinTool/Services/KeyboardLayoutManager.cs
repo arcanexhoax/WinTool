@@ -44,7 +44,7 @@ public class KeyboardLayoutManager : BackgroundService
         _featuresOptions = featuresOptions;
         _featuresOptions.OnChange((o, _) =>
         {
-            if (o.EnableSwitchLanguagePopup)
+            if (o.EnableInputPopup)
                 Start();
             else
                 Stop();
@@ -53,7 +53,7 @@ public class KeyboardLayoutManager : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (_featuresOptions.CurrentValue.EnableSwitchLanguagePopup)
+        if (_featuresOptions.CurrentValue.EnableInputPopup)
             Start();
 
         return Task.CompletedTask;

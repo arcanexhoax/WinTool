@@ -11,7 +11,7 @@ using Timer = System.Timers.Timer;
 
 namespace WinTool.Views.Features;
 
-public partial class SwitchLanguageWindow : FluentWindow
+public partial class InputPopupWindow : FluentWindow
 {
     private const double AnimTimeMs = 200;
     private const double OffsetY = 20;
@@ -23,7 +23,7 @@ public partial class SwitchLanguageWindow : FluentWindow
     private (double X, double Y) _lastPosition;
     private Guid _currentHideAnimGuid;
 
-    public SwitchLanguageWindow(SwitchLanguageViewModel vm, IKeyInterceptor keyInterceptor)
+    public InputPopupWindow(InputPopupViewModel vm, IKeyInterceptor keyInterceptor)
     {
         InitializeComponent();
         DataContext = vm;

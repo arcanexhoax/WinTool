@@ -2,5 +2,5 @@
 
 public class FeaturesOptions
 {
-    public bool EnableSwitchLanguagePopup { get; set; } = true;
+    public bool EnableInputPopup { get; set; } = true;
 }
