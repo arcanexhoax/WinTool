@@ -20,10 +20,12 @@ public class KeyboardLayoutManager : BackgroundService
 {
     private readonly IKeyInterceptor _keyInterceptor;
     private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
+
     private nint _lastLayout;
     private nint[]? _allLayouts;
     private CancellationTokenSource? _checkLayoutCts;
     private Shortcut? _waitingShortcut;
+    private bool _isStarted;
     private bool _waitingForWinRelease;
 
     public IEnumerable<CultureInfo> AllCultures
@@ -61,6 +63,10 @@ public class KeyboardLayoutManager : BackgroundService
 
     public void Start()
     {
+        if (_isStarted)
+            return;
+
+        _isStarted = true;
         _lastLayout = GetCurrentKeyboardLayout();
         _allLayouts = GetKeyboardLayoutsUsingWinApi();
         AllCultures = OrderKeyboardLayouts(_allLayouts);
@@ -70,6 +76,10 @@ public class KeyboardLayoutManager : BackgroundService
 
     public void Stop()
     {
+        if (!_isStarted)
+            return;
+
+        _isStarted = false;
         _checkLayoutCts?.Cancel();
         _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
     }
