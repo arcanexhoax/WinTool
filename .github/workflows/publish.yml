@@ -8,8 +8,9 @@ on:
 env:
   PROJECT_NAME: WinTool
   PROJECT_DIR: src/WinTool
-  OUTPUT_DIR: output
-  ARTIFACTS_DIR: artifacts
+  OUTPUT_DIR: publish/
+  CHANGELOG_PATH: CHANGELOG.md
+  RELEASE_NOTES_PATH: release_notes.md
 
 jobs:
   build:
@@ -23,15 +24,32 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Build
-      run: |
-        msbuild ${{ env.PROJECT_DIR }} /t:Restore /t:publish /p:OutputPath="$(pwd)/${{ env.OUTPUT_DIR }}/" /p:Configuration=Release /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true /p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
+      run: msbuild -t:Restore,Build -p:Configuration=Release -p:RuntimeIdentifier=win-x64
 
-    - name: Archive
+    - name: Tests
+      run: dotnet test -c Release -p:RuntimeIdentifier=win-x64 --no-build
+
+    - name: Publish
+      run: msbuild ${{ env.PROJECT_DIR }} -t:Restore,Publish -p:PublishDir="${{ github.workspace }}/${{ env.OUTPUT_DIR }}" -p:Configuration=Release -p:IncludeNativeLibrariesForSelfExtract=true -p:SelfContained=true -p:RuntimeIdentifier=win-x64 -p:PublishSingleFile=true
+
+    - name: Generate Release Notes
+      shell: pwsh
+      run: |
+        $changelog = Get-Content ${{ env.CHANGELOG_PATH }} -Raw
+
+        if ($changelog -match '(?s)(## v[\d\.]+.*?)(?=\n## v|$)') {
+            $notes = $matches[1].Trim()
+            $notes | Out-File -FilePath ./${{ env.OUTPUT_DIR }}/${{ env.RELEASE_NOTES_PATH }} -Encoding utf8
+        } else {
+            Write-Error "Could not find a valid version section"
+            exit 1
+        }
+      
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
-      if: github.ref_type == 'tag'
       with:
         name: ${{ env.PROJECT_NAME }}
-        path: ./${{ env.OUTPUT_DIR }}/publish/${{ env.PROJECT_NAME }}.exe
+        path: ${{ env.OUTPUT_DIR }}
 
   publish:
     needs: build
@@ -43,11 +61,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: ${{ env.PROJECT_NAME }}
-        path: ${{ env.ARTIFACTS_DIR }}
+        path: ${{ env.OUTPUT_DIR}}
 
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ${{ env.ARTIFACTS_DIR }}/${{ env.PROJECT_NAME }}.exe
-        generateReleaseNotes: true
+        artifacts: ${{ env.OUTPUT_DIR }}/${{ env.PROJECT_NAME }}.exe
+        bodyFile: ${{ env.OUTPUT_DIR }}/${{ env.RELEASE_NOTES_PATH }}
         token: ${{ secrets.GH_USER_TOKEN }}
