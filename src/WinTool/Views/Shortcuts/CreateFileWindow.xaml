@@ -7,7 +7,7 @@
                    xmlns:model="clr-namespace:WinTool.Models"
                    xmlns:p="clr-namespace:WinTool.Properties"
                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                   xmlns:u="clr-namespace:WinTool.Utils"
+                   xmlns:ui="clr-namespace:WinTool.UI"
                    xmlns:view="clr-namespace:WinTool.Views"
                    xmlns:vm="clr-namespace:WinTool.ViewModels.Shortcuts"
                    mc:Ignorable="d"
@@ -50,8 +50,8 @@
                     </TextBlock>
 
                     <TextBox x:Name="textBox"
-                             u:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}"
                              Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"
+                             ui:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}"
                              Margin="6 0 0 0"
                              VerticalContentAlignment="Center"
                              Grid.Column="1" />

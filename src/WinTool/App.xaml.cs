@@ -12,7 +12,6 @@ using WinTool.Models;
 using WinTool.Native;
 using WinTool.Options;
 using WinTool.Services;
-using WinTool.Utils;
 using WinTool.ViewModels;
 using WinTool.ViewModels.Features;
 using WinTool.ViewModels.Settings;
@@ -27,8 +26,6 @@ namespace WinTool;
 public partial class App : Application
 {
     private readonly IHost _app;
-
-    private Mutex? _secondInstanceMutex;
 
     public App()
     {
@@ -48,17 +45,15 @@ public partial class App : Application
         builder.Services.AddSingleton<SettingsView>();
         builder.Services.AddTransient<CreateFileWindow>();
         builder.Services.AddTransient<RunWithArgsWindow>();
-        builder.Services.AddTransient<ChangeFilePropertiesWindow>();
         builder.Services.AddTransient<EditShortcutWindow>();
-        builder.Services.AddSingleton<SwitchLanguageWindow>();
+        builder.Services.AddSingleton<InputPopupWindow>();
         builder.Services.AddSingleton<MainViewModel>();
-        builder.Services.AddSingleton<SwitchLanguageViewModel>();
+        builder.Services.AddSingleton<InputPopupViewModel>();
         builder.Services.AddSingleton<ShortcutsViewModel>();
         builder.Services.AddSingleton<FeaturesViewModel>();
         builder.Services.AddSingleton<SettingsViewModel>();
         builder.Services.AddSingleton<CreateFileViewModel>();
         builder.Services.AddSingleton<RunWithArgsViewModel>();
-        builder.Services.AddSingleton<ChangeFilePropertiesViewModel>();
         builder.Services.AddSingleton<EditShortcutViewModel>();
         builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();
@@ -68,7 +63,7 @@ public partial class App : Application
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
-        builder.Services.AddSingleton(new KeyInterceptor());
+        builder.Services.AddSingleton<IKeyInterceptor>(new KeyInterceptor());
         builder.Services.AddSingleton<ShortcutContext>();
         builder.Services.AddSingleton<ShortcutsService>();
         builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
@@ -89,7 +84,7 @@ public partial class App : Application
         RunAsAdminIfNeeded(settings, clp);
 
         // activate the popup window
-        _app.Services.GetRequiredService<SwitchLanguageWindow>();
+        _app.Services.GetRequiredService<InputPopupWindow>();
         var mainWindow = _app.Services.GetRequiredService<MainWindow>();
         var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
 
@@ -106,10 +101,8 @@ public partial class App : Application
 
     private void CheckForSecondInstance()
     {
-        _secondInstanceMutex = new Mutex(true, "WinTool-10fdf33711f4591a368bd6a0b0e20cc1", out bool isFirstInstance);
-
-        if (!isFirstInstance && NativeMethods.ShowWindow("WinTool"))
-            Environment.Exit(0);
+        if (!Mutex.TryAttachAsFirstInstance() && NativeMethods.ShowWindow("WinTool"))
+            App.Current.Shutdown();
     }
 
     private void RunAsAdminIfNeeded(SettingsOptions settings, CommandLineParameters clp)
@@ -136,7 +129,7 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
-        _secondInstanceMutex?.Dispose();
+        Mutex.Release();
         await _app.StopAsync();
         base.OnExit(e);
     }

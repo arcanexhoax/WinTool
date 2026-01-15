@@ -39,7 +39,7 @@
                     <StackPanel>
                         <TextBlock FontSize="30"
                                    FontWeight="SemiBold"
-                                   Text="{Binding Shortcut}"
+                                   Text="{Binding ShortcutString}"
                                    HorizontalAlignment="Center" />
 
                         <TextBlock Foreground="{DynamicResource SystemFillColorCriticalBrush}"

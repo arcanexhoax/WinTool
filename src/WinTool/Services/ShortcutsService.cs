@@ -1,9 +1,9 @@
 ﻿using GlobalKeyInterceptor;
+using GlobalKeyInterceptor.Utils;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,7 +21,7 @@ public class ShortcutsService : BackgroundService
     private readonly ShellCommandHandler _shellCommandHandler;
     private readonly ShortcutContext _shortcutContext;
     private readonly Shell _shell;
-    private readonly KeyInterceptor _keyInterceptor;
+    private readonly IKeyInterceptor _keyInterceptor;
 
     public Dictionary<string, ShortcutCommand> AvailableCommands { get; }
     public Dictionary<Shortcut, ShortcutCommand> Shortcuts { get; } = [];
@@ -31,7 +31,7 @@ public class ShortcutsService : BackgroundService
         ShellCommandHandler shellCommandHandler,
         ShortcutContext shortcutContext,
         Shell shell,
-        KeyInterceptor keyInterceptor)
+        IKeyInterceptor keyInterceptor)
     {
         _options = options;
         _shellCommandHandler = shellCommandHandler;
@@ -57,7 +57,7 @@ public class ShortcutsService : BackgroundService
     {
         foreach (var (name, scStr) in _options.CurrentValue.Shortcuts)
         {
-            if (Shortcut.Parse(scStr) is { } shortcut 
+            if (Shortcut.TryParse(scStr, KeyState.Down, out var shortcut)
                 && AvailableCommands.TryGetValue(name, out var shortcutCommand))
             {
                 shortcutCommand.Shortcut = shortcut;
@@ -104,7 +104,7 @@ public class ShortcutsService : BackgroundService
             Shortcuts.Remove(shortcutCommand.Shortcut);
 
         shortcutCommand.Shortcut = newShortcut;
-        Shortcuts[newShortcut]= shortcutCommand;
+        Shortcuts[newShortcut] = shortcutCommand;
 
         _options.Update(o => o.Shortcuts[shortcutCommand.Id] = shortcutCommand.Shortcut.ToString());
     }

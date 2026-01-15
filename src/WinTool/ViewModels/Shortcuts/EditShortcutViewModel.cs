@@ -23,13 +23,18 @@ public partial class EditShortcutViewModel : ObservableObject, IDialogViewModel<
     {
         get; set
         {
-            if (value is not { State: KeyState.Up } && SetProperty(ref field, value))
-            {
-                IsErrorShown = false;
-                SaveCommand.NotifyCanExecuteChanged();
-            }
+            if (value is { State: KeyState.Up })
+                return;
+            
+            field = value;
+            IsErrorShown = false;
+            ShortcutString = value?.ToFormattedString();
+            SaveCommand.NotifyCanExecuteChanged();
         }
     }
+
+    [ObservableProperty]
+    public partial string? ShortcutString { get; set; }
 
     [ObservableProperty]
     public partial bool IsErrorShown { get; set; }

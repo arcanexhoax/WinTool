@@ -6,7 +6,7 @@
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:p="clr-namespace:WinTool.Properties"
                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                   xmlns:u="clr-namespace:WinTool.Utils"
+                   xmlns:ui="clr-namespace:WinTool.UI"
                    xmlns:view="clr-namespace:WinTool.Views"
                    xmlns:vm="clr-namespace:WinTool.ViewModels.Shortcuts"
                    xmlns:model="clr-namespace:WinTool.Models"
@@ -39,8 +39,8 @@
                            ToolTip="{Binding FullFilePath}" />
 
                 <TextBox x:Name="textBox"
-                         u:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}"
                          Text="{Binding Args, UpdateSourceTrigger=PropertyChanged}"
+                         ui:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}"
                          MinWidth="200"
                          MinHeight="150"
                          Margin="0 16 0 0"

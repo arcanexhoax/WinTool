@@ -18,12 +18,14 @@ namespace WinTool.Services;
 
 public class KeyboardLayoutManager : BackgroundService
 {
-    private readonly KeyInterceptor _keyInterceptor;
+    private readonly IKeyInterceptor _keyInterceptor;
     private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
+
     private nint _lastLayout;
     private nint[]? _allLayouts;
     private CancellationTokenSource? _checkLayoutCts;
     private Shortcut? _waitingShortcut;
+    private bool _isStarted;
     private bool _waitingForWinRelease;
 
     public IEnumerable<CultureInfo> AllCultures
@@ -38,13 +40,13 @@ public class KeyboardLayoutManager : BackgroundService
     public event Action<CultureInfo>? LayoutChanged;
     public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
 
-    public KeyboardLayoutManager(KeyInterceptor keyInterceptor, IOptionsMonitor<FeaturesOptions> featuresOptions)
+    public KeyboardLayoutManager(IKeyInterceptor keyInterceptor, IOptionsMonitor<FeaturesOptions> featuresOptions)
     {
         _keyInterceptor = keyInterceptor;
         _featuresOptions = featuresOptions;
         _featuresOptions.OnChange((o, _) =>
         {
-            if (o.EnableSwitchLanguagePopup)
+            if (o.EnableInputPopup)
                 Start();
             else
                 Stop();
@@ -53,7 +55,7 @@ public class KeyboardLayoutManager : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (_featuresOptions.CurrentValue.EnableSwitchLanguagePopup)
+        if (_featuresOptions.CurrentValue.EnableInputPopup)
             Start();
 
         return Task.CompletedTask;
@@ -61,6 +63,10 @@ public class KeyboardLayoutManager : BackgroundService
 
     public void Start()
     {
+        if (_isStarted)
+            return;
+
+        _isStarted = true;
         _lastLayout = GetCurrentKeyboardLayout();
         _allLayouts = GetKeyboardLayoutsUsingWinApi();
         AllCultures = OrderKeyboardLayouts(_allLayouts);
@@ -70,6 +76,10 @@ public class KeyboardLayoutManager : BackgroundService
 
     public void Stop()
     {
+        if (!_isStarted)
+            return;
+
+        _isStarted = false;
         _checkLayoutCts?.Cancel();
         _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
     }
@@ -79,10 +89,10 @@ public class KeyboardLayoutManager : BackgroundService
         // User can switch keyboard layout with Ctrl + Shift/Shift + Ctrl/Alt + Shift/Shift + Alt
         // But if the shortcut is Shift + Alt and it is in Up state, Windows will send Shift + Ctrl (Up)
         // So we need to track the correct shortcut and check the current layout only after that
-        if ((e.Shortcut.Key.IsAlt() && e.Shortcut.Modifier is KeyModifier.Shift
-            || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Alt
-            || e.Shortcut.Key.IsCtrl() && e.Shortcut.Modifier is KeyModifier.Shift
-            || e.Shortcut.Key.IsShift() && e.Shortcut.Modifier is KeyModifier.Ctrl)
+        if ((e.Shortcut.Key.IsAlt && e.Shortcut.Modifier is KeyModifier.Shift
+            || e.Shortcut.Key.IsShift && e.Shortcut.Modifier is KeyModifier.Alt
+            || e.Shortcut.Key.IsCtrl && e.Shortcut.Modifier is KeyModifier.Shift
+            || e.Shortcut.Key.IsShift && e.Shortcut.Modifier is KeyModifier.Ctrl)
             && e.Shortcut.State is KeyState.Down)
         {
             _waitingShortcut = e.Shortcut;
@@ -106,7 +116,7 @@ public class KeyboardLayoutManager : BackgroundService
         {
             _waitingForWinRelease = true;
         }
-        else if (e.Shortcut.Key.IsWin() && e.Shortcut.State == KeyState.Up && _waitingForWinRelease)
+        else if (e.Shortcut.Key.IsWin && e.Shortcut.State == KeyState.Up && _waitingForWinRelease)
         {
             _waitingForWinRelease = false;
 
@@ -282,9 +292,9 @@ public class KeyboardLayoutManager : BackgroundService
 
     private bool AreKeyAndModifierEqual(Key key, KeyModifier modifier)
     {
-        return key.IsAlt() && modifier == KeyModifier.Alt
-            || key.IsCtrl() && modifier == KeyModifier.Ctrl
-            || key.IsShift() && modifier == KeyModifier.Shift
-            || key.IsWin() && modifier == KeyModifier.Win;
+        return key.IsAlt && modifier == KeyModifier.Alt
+            || key.IsCtrl && modifier == KeyModifier.Ctrl
+            || key.IsShift && modifier == KeyModifier.Shift
+            || key.IsWin && modifier == KeyModifier.Win;
     }
 }

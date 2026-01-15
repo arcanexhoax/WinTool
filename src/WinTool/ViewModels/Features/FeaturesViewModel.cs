@@ -7,13 +7,15 @@ public class FeaturesViewModel : ObservableObject
 {
     private readonly WritableOptions<FeaturesOptions> _featuresOptions;
 
+    private bool _isInitializing;
+
     public bool EnableSwitchLanguagePopup
     {
         get; set
         {
-            if (SetProperty(ref field, value))
+            if (SetProperty(ref field, value) && !_isInitializing)
             {
-                _featuresOptions.Update(o => o.EnableSwitchLanguagePopup = value);
+                _featuresOptions.Update(o => o.EnableInputPopup = value);
             }
         }
     }
@@ -21,6 +23,10 @@ public class FeaturesViewModel : ObservableObject
     public FeaturesViewModel(WritableOptions<FeaturesOptions> featuresOptions)
     {
         _featuresOptions = featuresOptions;
-        EnableSwitchLanguagePopup = _featuresOptions.CurrentValue.EnableSwitchLanguagePopup;
+        _isInitializing = true;
+
+        EnableSwitchLanguagePopup = _featuresOptions.CurrentValue.EnableInputPopup;
+
+        _isInitializing = false;
     }
 }

@@ -11,19 +11,19 @@ using Timer = System.Timers.Timer;
 
 namespace WinTool.Views.Features;
 
-public partial class SwitchLanguageWindow : FluentWindow
+public partial class InputPopupWindow : FluentWindow
 {
     private const double AnimTimeMs = 200;
     private const double OffsetY = 20;
 
-    private readonly KeyInterceptor _keyInterceptor;
+    private readonly IKeyInterceptor _keyInterceptor;
     private readonly Timer _hideTimer = new(1500) { AutoReset = false };
 
     private bool _isHiding;
     private (double X, double Y) _lastPosition;
     private Guid _currentHideAnimGuid;
 
-    public SwitchLanguageWindow(SwitchLanguageViewModel vm, KeyInterceptor keyInterceptor)
+    public InputPopupWindow(InputPopupViewModel vm, IKeyInterceptor keyInterceptor)
     {
         InitializeComponent();
         DataContext = vm;
@@ -52,7 +52,7 @@ public partial class SwitchLanguageWindow : FluentWindow
     private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
     {
         if (e.Shortcut.Modifier is KeyModifier.Shift or KeyModifier.None
-            && !e.Shortcut.Key.IsCtrl() && !e.Shortcut.Key.IsShift() && !e.Shortcut.Key.IsAlt() && !e.Shortcut.Key.IsWin()
+            && !e.Shortcut.Key.IsModifier 
             && e.Shortcut.State is KeyState.Down)
         {
             HidePopup();

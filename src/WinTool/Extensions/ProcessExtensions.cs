@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Security.Principal;
+using System.Threading;
 using System.Windows;
-using WinTool.CommandLine;
 using WinTool.Properties;
 
 namespace WinTool.Extensions;
@@ -43,8 +43,9 @@ public static class ProcessExtensions
         {
             try
             {
+                Mutex.Release();
                 Start(Environment.ProcessPath!, args, true);
-                App.Current.Shutdown();
+                App.Current.Dispatcher.Invoke(App.Current.Shutdown);
             }
             catch (Exception iex)
             {

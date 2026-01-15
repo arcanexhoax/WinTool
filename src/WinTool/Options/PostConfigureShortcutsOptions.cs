@@ -3,9 +3,8 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using WinTool.Extensions;
-using WinTool.Options;
 
-namespace WinTool.Utils;
+namespace WinTool.Options;
 
 public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOptions>
 {
@@ -15,7 +14,7 @@ public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOpti
         { ShortcutNames.FastFileCreation, "Ctrl + Shift + E" },
         { ShortcutNames.SelectedItemCopyPath, "Ctrl + Shift + C" },
         { ShortcutNames.SelectedItemCopyName, "Ctrl + Shift + X" },
-        { ShortcutNames.RunFileAsAdmin, "Ctrl + Shift + Enter" },
+        { ShortcutNames.RunFileAsAdmin, "Ctrl + Shift + StandardEnter" },
         { ShortcutNames.RunFileWithArgs, "Ctrl + O" },
         { ShortcutNames.OpenFolderInCmd, "Ctrl + P" },
         { ShortcutNames.OpenFolderInCmdAsAdmin, "Ctrl + Shift + P" },
@@ -25,10 +24,10 @@ public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOpti
     {
         var usedShortcuts = new HashSet<Shortcut>();
         var acceptedShortcuts = new HashSet<string>();
-        var defaultShortcuts = _defaultShortcuts.ToDictionary(s => s.Key, s => Shortcut.Parse(s.Value)!);
+        var defaultShortcuts = _defaultShortcuts.ToDictionary(s => s.Key, s => Shortcut.Parse(s.Value, KeyState.Down));
         var actualShortcuts = o.Shortcuts.ToDictionary(
             s => s.Key,
-            s => Shortcut.Parse(s.Value) is { Modifier: not KeyModifier.None } p ? p : null);
+            s => Shortcut.TryParse(s.Value, KeyState.Down, out var p) && p.Modifier != KeyModifier.None ? p : null);
 
         foreach (var (name, actualSc) in actualShortcuts)
         {

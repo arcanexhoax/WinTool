@@ -6,7 +6,7 @@
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
-		<Version>0.9.3</Version>
+		<Version>0.9.4</Version>
 		<Authors>hoax</Authors>
 		<Copyright>Copyright (c) hoax 2023-2026</Copyright>
 		<PackageProjectUrl>https://github.com/arcanexhoax/WinTool</PackageProjectUrl>
@@ -16,7 +16,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Resources\calendar.png" />
 		<None Remove="Resources\icon.ico" />
 		<None Remove="Resources\Icons\idea.png" />
 		<None Remove="Resources\Icons\keyboard.png" />
@@ -55,7 +54,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Resources\calendar.png" />
 		<Resource Include="Resources\icon.ico" />
 		<Resource Include="Resources\Icons\idea.png" />
 		<Resource Include="Resources\Icons\keyboard.png" />
@@ -65,13 +63,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="GlobalKeyInterceptor" Version="1.3.0" />
+		<PackageReference Include="GlobalKeyInterceptor" Version="1.3.2" />
 		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
 		<PackageReference Include="Hoax.WpfConverters" Version="1.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-		<PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
+		<PackageReference Include="System.IO.Abstractions" Version="22.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

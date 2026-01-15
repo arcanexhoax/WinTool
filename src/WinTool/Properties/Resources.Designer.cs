@@ -115,24 +115,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change file &apos;{0}&apos; properties.
-        /// </summary>
-        public static string ChangeFileProperiesTitle {
-            get {
-                return ResourceManager.GetString("ChangeFileProperiesTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change file properties.
-        /// </summary>
-        public static string ChangeFileProperties {
-            get {
-                return ResourceManager.GetString("ChangeFileProperties", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Close {
@@ -183,15 +165,6 @@ namespace WinTool.Properties {
         public static string CreateFile {
             get {
                 return ResourceManager.GetString("CreateFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creation time.
-        /// </summary>
-        public static string CreationTime {
-            get {
-                return ResourceManager.GetString("CreationTime", resourceCulture);
             }
         }
         
@@ -331,15 +304,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Genres.
-        /// </summary>
-        public static string Genres {
-            get {
-                return ResourceManager.GetString("Genres", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to get settings: {0}.
         /// </summary>
         public static string GetSettingsError {
@@ -358,15 +322,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Last write time.
-        /// </summary>
-        public static string LastWriteTime {
-            get {
-                return ResourceManager.GetString("LastWriteTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Launch on Windows startup.
         /// </summary>
         public static string LaunchOnStartup {
@@ -381,24 +336,6 @@ namespace WinTool.Properties {
         public static string Light {
             get {
                 return ResourceManager.GetString("Light", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lyrics.
-        /// </summary>
-        public static string Lyrics {
-            get {
-                return ResourceManager.GetString("Lyrics", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Media tags.
-        /// </summary>
-        public static string MediaTags {
-            get {
-                return ResourceManager.GetString("MediaTags", resourceCulture);
             }
         }
         
@@ -453,15 +390,6 @@ namespace WinTool.Properties {
         public static string OutOfMemory {
             get {
                 return ResourceManager.GetString("OutOfMemory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Performers.
-        /// </summary>
-        public static string Performers {
-            get {
-                return ResourceManager.GetString("Performers", resourceCulture);
             }
         }
         
@@ -525,15 +453,6 @@ namespace WinTool.Properties {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save file &apos;{0}&apos; properties error: {1}.
-        /// </summary>
-        public static string SaveFilePropertiesError {
-            get {
-                return ResourceManager.GetString("SaveFilePropertiesError", resourceCulture);
             }
         }
         
@@ -610,15 +529,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Title.
-        /// </summary>
-        public static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Double click to open, right click - menu.
         /// </summary>
         public static string TrayToolTip {
@@ -651,15 +561,6 @@ namespace WinTool.Properties {
         public static string WinTool {
             get {
                 return ResourceManager.GetString("WinTool", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Year.
-        /// </summary>
-        public static string Year {
-            get {
-                return ResourceManager.GetString("Year", resourceCulture);
             }
         }
     }

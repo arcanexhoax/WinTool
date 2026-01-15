@@ -9,9 +9,9 @@ namespace WinTool.Views.Shortcuts;
 
 public partial class EditShortcutWindow : DialogWindow<EditShortcutInput, Shortcut>
 {
-    private readonly KeyInterceptor _keyInterceptor;
+    private readonly IKeyInterceptor _keyInterceptor;
 
-    public EditShortcutWindow(EditShortcutViewModel vm, KeyInterceptor keyInterceptor)
+    public EditShortcutWindow(EditShortcutViewModel vm, IKeyInterceptor keyInterceptor)
     {
         DataContext = vm;
         InitializeComponent();

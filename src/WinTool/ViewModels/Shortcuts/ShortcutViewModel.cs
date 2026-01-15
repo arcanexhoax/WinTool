@@ -13,8 +13,17 @@ public partial class ShortcutViewModel : ObservableObject
     private readonly ShortcutsService _shortcutsService;
     private readonly ViewFactory _viewFactory;
 
+    public Shortcut? Shortcut
+    {
+        get; set
+        {
+            field = value;
+            ShortcutString = value?.ToFormattedString();
+        }
+    }
+
     [ObservableProperty]
-    public partial Shortcut? Shortcut { get; set; }
+    public partial string? ShortcutString { get; set; }
 
     public string Icon { get; }
 

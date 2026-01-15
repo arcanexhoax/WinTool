@@ -5,7 +5,7 @@ using WinTool.Native;
 
 namespace WinTool.Utils;
 
-public class CarretHelper
+public class CaretHelper
 {
     private const int TextPatternId = 10014;
     private const int TextPattern2Id = 10024;

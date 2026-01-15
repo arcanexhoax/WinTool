@@ -10,16 +10,16 @@ using WinTool.Extensions;
 using WinTool.Models;
 using WinTool.Properties;
 using WinTool.Views.Shortcuts;
-using File = System.IO.File;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
+public class ShellCommandHandler(Shell shell, ViewFactory viewFactory, StaThreadService staThreadService)
 {
     private const string NewFileTemplate = "NewFile.txt";
 
     private readonly Shell _shell = shell;
     private readonly ViewFactory _viewFactory = viewFactory;
+    private readonly StaThreadService _staThreadService = staThreadService;
 
     public bool IsBackgroundMode { get; set; } = true;
 
@@ -36,6 +36,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         string? fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
         string? extension = Path.GetExtension(NewFileTemplate);
 
+        // TODO test it after new file name template will match Windows behavior
         var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
         {
             var match = Regex.Match(f.Name, $@"^{fileName}_(\d+){extension}$");
@@ -98,12 +99,12 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
             string? folderPath = _shell.GetActiveShellPath();
 
             if (!string.IsNullOrEmpty(folderPath))
-                Clipboard.SetText(folderPath);
+                _staThreadService.Invoke(() => Clipboard.SetText(folderPath));
         }
         else
         {
             var filePaths = selectedItems.Select(i => i.Path);
-            Clipboard.SetText(string.Join(Environment.NewLine, filePaths));
+            _staThreadService.Invoke(() => Clipboard.SetText(string.Join(Environment.NewLine, filePaths)));
         }
     }
 
@@ -120,12 +121,12 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
                 return;
 
             DirectoryInfo di = new(folderPath);
-            Clipboard.SetText(di.Name);
+            _staThreadService.Invoke(() => Clipboard.SetText(di.Name));
         }
         else
         {
             var fileNames = selectedItems.Select(i => i.Name ?? i.Path);
-            Clipboard.SetText(string.Join(Environment.NewLine, fileNames));
+            _staThreadService.Invoke(() => Clipboard.SetText(string.Join(Environment.NewLine, fileNames)));
         }
     }
 
@@ -164,7 +165,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
         {
             Process.Start(fileName, args, asAdmin);
         }
-        catch (Win32Exception ex) when (ex.HResult == -2147467259)
+        catch (Win32Exception ex) when (ex.NativeErrorCode == 1155)
         {
             Debug.WriteLine($"File {fileName} is unable to run as admin");
             Process.Start(fileName, args, false);
@@ -181,67 +182,5 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory)
 
         if (!string.IsNullOrEmpty(folderPath))
             Process.Start("cmd.exe", $"/k cd /d \"{folderPath}\"", asAdmin);
-    }
-
-    public void ChangeFileProperties()
-    {
-        var selectedItems = _shell.GetSelectedItems();
-
-        if (selectedItems.Count == 0)
-            return;
-
-        var selectedItemPath = selectedItems[0].Path;
-
-        if (!File.Exists(selectedItemPath))
-            return;
-
-        TagLib.File? tfile = null;
-
-        try
-        {
-            tfile = TagLib.File.Create(selectedItemPath);
-        }
-        catch (Exception ex) when (ex.Source == "taglib-sharp")
-        { 
-        }
-        catch 
-        {
-            throw;
-        }
-
-        var changeFilePropertiesView = _viewFactory.Create<ChangeFilePropertiesWindow>();
-        var result = changeFilePropertiesView.ShowDialog(new ChangeFilePropertiesInput(
-            selectedItemPath,
-            tfile != null,
-            tfile?.Tag.Title,
-            tfile?.Tag.Performers,
-            tfile?.Tag.Album,
-            tfile?.Tag.Genres,
-            tfile?.Tag.Lyrics,
-            tfile?.Tag.Year ?? 0,
-            File.GetCreationTime(selectedItemPath),
-            File.GetLastAccessTime(selectedItemPath)));
-
-        if (result is not { Success: true, Data: { } data })
-        {
-            if (result.Message is not (null or []))
-                MessageBox.ShowError(result.Message);
-            return;
-        }
-            
-        if (tfile != null)
-        {
-            tfile!.Tag.Title = data.Title;
-            tfile.Tag.Performers = data.Performers;
-            tfile.Tag.Album = data.Album;
-            tfile.Tag.Genres = data.Genres;
-            tfile.Tag.Lyrics = data.Lyrics;
-            tfile.Tag.Year = data.Year;
-            tfile.Save();
-            tfile.Dispose();
-        }
-
-        File.SetCreationTime(selectedItemPath, data.CreationTime);
-        File.SetLastWriteTime(selectedItemPath, data.ChangeTime);
     }
 }
