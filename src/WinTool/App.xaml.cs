@@ -27,8 +27,6 @@ public partial class App : Application
 {
     private readonly IHost _app;
 
-    private Mutex? _secondInstanceMutex;
-
     public App()
     {
         CheckForSecondInstance();
@@ -103,10 +101,8 @@ public partial class App : Application
 
     private void CheckForSecondInstance()
     {
-        _secondInstanceMutex = new Mutex(true, "WinTool-10fdf33711f4591a368bd6a0b0e20cc1", out bool isFirstInstance);
-
-        if (!isFirstInstance && NativeMethods.ShowWindow("WinTool"))
-            Environment.Exit(0);
+        if (!Mutex.TryAttachAsFirstInstance() && NativeMethods.ShowWindow("WinTool"))
+            App.Current.Shutdown();
     }
 
     private void RunAsAdminIfNeeded(SettingsOptions settings, CommandLineParameters clp)
@@ -133,7 +129,7 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
-        _secondInstanceMutex?.Dispose();
+        Mutex.Release();
         await _app.StopAsync();
         base.OnExit(e);
     }
