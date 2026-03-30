@@ -66,6 +66,8 @@ public partial class InputPopupWindow : FluentWindow
         NativeMethods.ShowWindowAsPopup(_handle);
         RemoveTitlebar();
         ApplyBackdrop(WindowBackdropType.Acrylic);
+
+        _handleSource!.AddHook(WndProc);
     }
 
     private void ShowPopup(double x, double y)
@@ -81,6 +83,7 @@ public partial class InputPopupWindow : FluentWindow
         _currentHideAnimGuid = Guid.Empty;
 
         Show();
+        NativeMethods.DefWindowProc(_handle, NativeMethods.WM_NCACTIVATE, 1, 0);
 
         var slide = new DoubleAnimation
         {
@@ -124,7 +127,7 @@ public partial class InputPopupWindow : FluentWindow
         BeginAnimation(TopProperty, slide);
     }
 
-    public void ShiftWindowToScreen()
+    private void ShiftWindowToScreen()
     {
         var windowPoint = new System.Drawing.Point((int)Left, (int)Top);
         var activeScreen = Screen.FromPoint(windowPoint);
@@ -143,5 +146,16 @@ public partial class InputPopupWindow : FluentWindow
         {
             Top = screenBottom - Height;
         }
+    }
+
+    private nint WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
+    {
+        if (msg == NativeMethods.WM_NCACTIVATE)
+        {
+            handled = true;
+            return NativeMethods.DefWindowProc(hwnd, (uint)msg, 1, lParam);
+        }
+
+        return nint.Zero;
     }
 }

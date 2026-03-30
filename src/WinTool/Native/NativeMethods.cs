@@ -11,6 +11,7 @@ namespace WinTool.Native
         public const int CHILDID_SELF = 0;
         public const uint OBJID_CARET = 0xFFFFFFF8;
         public const int GA_ROOTOWNER = 3;
+        public const int WM_NCACTIVATE = 0x0086;
 
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
@@ -114,6 +115,9 @@ namespace WinTool.Native
 
         [DllImport("dwmapi.dll")]
         public static extern int DwmSetWindowAttribute([In] nint hWnd, [In] DWMWINDOWATTRIBUTE dwAttribute, [In] ref uint pvAttribute, [In] int cbAttribute);
+
+        [DllImport("user32.dll")]
+        public static extern nint DefWindowProc(nint hWnd, uint msg, nint wParam, nint lParam);
 
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {

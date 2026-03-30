@@ -36,14 +36,12 @@ public class FluentWindow : Window
 
     protected void ApplyBackdrop(WindowBackdropType backdropType)
     {
-        var pvAttr = 1u;
+        var pvAttr = (uint)DWMSBT.DISABLE;
         var dwmAttr = DWMWINDOWATTRIBUTE.DWMWA_MICA_EFFECT;
 
         if (Environment.OSVersion.Version.Build < 22053)
         {
-            if (backdropType != WindowBackdropType.None)
-                ApplyWindowAttribute(dwmAttr, pvAttr);
-
+            ApplyWindowAttribute(dwmAttr, pvAttr);
             return;
         }
 
