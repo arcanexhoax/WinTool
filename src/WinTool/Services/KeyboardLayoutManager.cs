@@ -21,6 +21,7 @@ public class KeyboardLayoutManager : BackgroundService
     private readonly IKeyInterceptor _keyInterceptor;
     private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
 
+    private int _previewLayoutIndex;
     private nint _lastLayout;
     private nint[]? _allLayouts;
     private CancellationTokenSource? _checkLayoutCts;
@@ -37,6 +38,7 @@ public class KeyboardLayoutManager : BackgroundService
         }
     } = [];
 
+    public event Action<CultureInfo>? PreviewLayoutChanged;
     public event Action<CultureInfo>? LayoutChanged;
     public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
 
@@ -89,11 +91,7 @@ public class KeyboardLayoutManager : BackgroundService
         // User can switch keyboard layout with Ctrl + Shift/Shift + Ctrl/Alt + Shift/Shift + Alt
         // But if the shortcut is Shift + Alt and it is in Up state, Windows will send Shift + Ctrl (Up)
         // So we need to track the correct shortcut and check the current layout only after that
-        if ((e.Shortcut.Key.IsAlt && e.Shortcut.Modifier is KeyModifier.Shift
-            || e.Shortcut.Key.IsShift && e.Shortcut.Modifier is KeyModifier.Alt
-            || e.Shortcut.Key.IsCtrl && e.Shortcut.Modifier is KeyModifier.Shift
-            || e.Shortcut.Key.IsShift && e.Shortcut.Modifier is KeyModifier.Ctrl)
-            && e.Shortcut.State is KeyState.Down)
+        if (IsLayoutSwitchModifiers(e.Shortcut) && e.Shortcut.State is KeyState.Down)
         {
             _waitingShortcut = e.Shortcut;
         }
@@ -104,35 +102,68 @@ public class KeyboardLayoutManager : BackgroundService
                 || AreKeyAndModifierEqual(e.Shortcut.Key, _waitingShortcut.Modifier) && AreKeyAndModifierEqual(_waitingShortcut.Key, e.Shortcut.Modifier)))
         {
             _waitingShortcut = null;
-
-            _checkLayoutCts?.Cancel();
-            _checkLayoutCts = new CancellationTokenSource();
-            await CheckLayoutAsync(_checkLayoutCts.Token);
+            await CheckLayoutAsync();
         }
         // The second way to change the layout is Win + Space
         // When the user clicking Space while Win is pressed, the current layout does NOT change
         // The layout will only change after releasing Win (not in all cases, but it's ok)
+        // NOTE: Windows swallows Space key down events after the first one while Win is held,
+        // but Space key up events still come through, so we use those to cycle the preview
         else if (e.Shortcut is { Key: Key.Space, Modifier: KeyModifier.Win, State: KeyState.Down })
         {
-            _waitingForWinRelease = true;
+            InitWinSpaceTracking();
+        }
+        else if (e.Shortcut.Key == Key.Space && e.Shortcut.State == KeyState.Up && _waitingForWinRelease)
+        {
+            AdvancePreviewLayout();
         }
         else if (e.Shortcut.Key.IsWin && e.Shortcut.State == KeyState.Up && _waitingForWinRelease)
         {
             _waitingForWinRelease = false;
-
-            _checkLayoutCts?.Cancel();
-            _checkLayoutCts = new CancellationTokenSource();
-            await CheckLayoutAsync(_checkLayoutCts.Token);
+            await CheckLayoutAsync();
         }
     }
 
-    private async Task CheckLayoutAsync(CancellationToken cancellationToken)
+    private void InitWinSpaceTracking()
     {
+        if (_waitingForWinRelease)
+            return;
+
+        _waitingForWinRelease = true;
+        var cultures = AllCultures.ToArray();
+        var currentCulture = ConvertToCultureInfo(_lastLayout);
+        _previewLayoutIndex = Array.FindIndex(cultures, c => c.Name == currentCulture.Name);
+    }
+
+    private void AdvancePreviewLayout()
+    {
+        var cultures = AllCultures.ToArray();
+
+        if (cultures.Length > 0)
+        {
+            _previewLayoutIndex = (_previewLayoutIndex + 1) % cultures.Length;
+            PreviewLayoutChanged?.Invoke(cultures[_previewLayoutIndex]);
+        }
+    }
+
+    private static bool IsLayoutSwitchModifiers(Shortcut shortcut)
+    {
+        return shortcut.Key.IsAlt && shortcut.Modifier is KeyModifier.Shift
+            || shortcut.Key.IsShift && shortcut.Modifier is KeyModifier.Alt
+            || shortcut.Key.IsCtrl && shortcut.Modifier is KeyModifier.Shift
+            || shortcut.Key.IsShift && shortcut.Modifier is KeyModifier.Ctrl;
+    }
+
+    private async Task CheckLayoutAsync()
+    {
+        _checkLayoutCts?.Cancel();
+        _checkLayoutCts = new CancellationTokenSource();
+
         try
         {
             for (int i = 0; i < 20; i++)
             {
-                await Task.Delay(20, cancellationToken);
+                await Task.Delay(20, _checkLayoutCts.Token);
 
                 var currentLayout = GetCurrentKeyboardLayout();
 
