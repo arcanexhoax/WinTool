@@ -4,6 +4,7 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:views="clr-namespace:WinTool.Views"
+                    xmlns:local="clr-namespace:WinTool.Views.Features"
                     xmlns:vm="clr-namespace:WinTool.ViewModels.Features"
                     mc:Ignorable="d"
                     d:DataContext="{d:DesignInstance Type=vm:InputPopupViewModel}"
@@ -15,55 +16,51 @@
     <Border Background="{DynamicResource AcrylicLayoutBrush}" 
             BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
             BorderThickness="1">
-        <ItemsControl ItemsSource="{Binding AllLanguages}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Padding="2">
-                        <Border CornerRadius="6"
-                                BorderThickness="1">
-                            <Grid Width="42">
-                                <TextBlock Text="{Binding Name}"
-                                           Padding="8 16"
-                                           HorizontalAlignment="Center" />
-
-                                <Border CornerRadius="2"
-                                        Width="20"
-                                        Height="3"
-                                        VerticalAlignment="Bottom">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Background" Value="Transparent" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                    <Setter Property="Background" Value="{DynamicResource AccentFillColorTertiaryBrush}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                </Border>
-                            </Grid>
-
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background" Value="Transparent" />
-                                    <Setter Property="BorderBrush" Value="Transparent" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-                                            <Setter Property="BorderBrush" Value="{DynamicResource SurfaceStrokeColorDefaultBrush}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
+        <Grid>
+            <ItemsControl x:Name="LanguageItemsControl" 
+                          ItemsSource="{Binding AllLanguages}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="{x:Static local:InputPopupWindow.SelectionItemWidth}">
+                            <TextBlock Text="{Binding Name}"
+                                       Padding="8 16"
+                                       HorizontalAlignment="Center" />
                         </Border>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Grid x:Name="SelectionOverlay"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Stretch"
+                  IsHitTestVisible="False">
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="SelectionTranslate" />
+                </Grid.RenderTransform>
+
+                <Border Margin="2"
+                        CornerRadius="6"
+                        BorderThickness="1"
+                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                        BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}" />
+
+                <Border CornerRadius="2"
+                        Width="20"
+                        Height="3"
+                        VerticalAlignment="Bottom"
+                        Margin="0 0 0 3"
+                        Background="{DynamicResource AccentFillColorTertiaryBrush}"
+                        RenderTransformOrigin="0.5 0.5">
+                    <Border.RenderTransform>
+                        <ScaleTransform x:Name="AccentScale" />
+                    </Border.RenderTransform>
+                </Border>
+            </Grid>
+        </Grid>
     </Border>
 </views:FluentWindow>
