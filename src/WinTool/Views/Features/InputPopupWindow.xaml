@@ -24,8 +24,9 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Padding="2">
-                        <Border CornerRadius="6">
-                            <Grid Width="40">
+                        <Border CornerRadius="6"
+                                BorderThickness="1">
+                            <Grid Width="42">
                                 <TextBlock Text="{Binding Name}"
                                            Padding="8 16"
                                            HorizontalAlignment="Center" />
@@ -50,9 +51,11 @@
                             <Border.Style>
                                 <Style TargetType="Border">
                                     <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                             <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource SurfaceStrokeColorDefaultBrush}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

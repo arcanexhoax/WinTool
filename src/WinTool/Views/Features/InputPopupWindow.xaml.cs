@@ -20,6 +20,8 @@ public partial class InputPopupWindow : FluentWindow
     private readonly Timer _hideTimer = new(1500) { AutoReset = false };
 
     private bool _isHiding;
+    private bool _flippedAbove;
+    private double _animatedTop;
     private (double X, double Y) _lastPosition;
     private Guid _currentHideAnimGuid;
 
@@ -75,8 +77,12 @@ public partial class InputPopupWindow : FluentWindow
         if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty && (x, y) == _lastPosition)
             return;
 
-        Left = x;
-        Top = y - OffsetY;
+        var (finalTop, flipped) = AdjustToScreen(x, y, Height);
+        _flippedAbove = flipped;
+        _animatedTop = finalTop;
+
+        var animFrom = flipped ? finalTop + OffsetY : finalTop - OffsetY;
+        Top = animFrom;
 
         _lastPosition = (x, y);
         _isHiding = false;
@@ -87,8 +93,8 @@ public partial class InputPopupWindow : FluentWindow
 
         var slide = new DoubleAnimation
         {
-            From = y - OffsetY,
-            To = y,
+            From = animFrom,
+            To = finalTop,
             Duration = TimeSpan.FromMilliseconds(AnimTimeMs),
             EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
         };
@@ -102,12 +108,14 @@ public partial class InputPopupWindow : FluentWindow
             return;
 
         _isHiding = true;
+
         var animGuid = _currentHideAnimGuid = Guid.NewGuid();
+        var hideTo = _flippedAbove ? _animatedTop + OffsetY : _animatedTop - OffsetY;
 
         var slide = new DoubleAnimation
         {
-            From = _lastPosition.Y,
-            To = _lastPosition.Y - OffsetY,
+            From = _animatedTop,
+            To = hideTo,
             Duration = TimeSpan.FromMilliseconds(AnimTimeMs),
             EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
         };
@@ -127,25 +135,30 @@ public partial class InputPopupWindow : FluentWindow
         BeginAnimation(TopProperty, slide);
     }
 
-    private void ShiftWindowToScreen()
+    private (double FinalTop, bool FlippedAbove) AdjustToScreen(double caretX, double caretY, double height)
     {
-        var windowPoint = new System.Drawing.Point((int)Left, (int)Top);
-        var activeScreen = Screen.FromPoint(windowPoint);
-        var windowRight = Left + Width;
-        var screenRight = activeScreen.WorkingArea.X + activeScreen.WorkingArea.Width;
+        var width = ActualWidth;
 
-        if (windowRight > screenRight)
+        if (width == 0 && Content is UIElement content)
         {
-            Left = screenRight - Width;
+            content.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            width = content.DesiredSize.Width;
         }
 
-        var windowBottom = Top + Height;
+        var windowPoint = new System.Drawing.Point((int)caretX, (int)caretY);
+        var activeScreen = Screen.FromPoint(windowPoint);
+        var screenRight = activeScreen.WorkingArea.X + activeScreen.WorkingArea.Width;
         var screenBottom = activeScreen.WorkingArea.Y + activeScreen.WorkingArea.Height;
 
-        if (windowBottom > screenBottom)
-        {
-            Top = screenBottom - Height;
-        }
+        Left = caretX;
+
+        if (Left + width > screenRight)
+            Left = screenRight - width;
+
+        var flipped = caretY + height > screenBottom;
+        var finalTop = flipped ? caretY - height : caretY;
+
+        return (finalTop, flipped);
     }
 
     private nint WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
