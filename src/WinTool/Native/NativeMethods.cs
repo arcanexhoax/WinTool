@@ -59,6 +59,10 @@ namespace WinTool.Native
         [DllImport("user32")]
         internal static extern IntPtr MonitorFromWindow(IntPtr hwnd, int flags);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+
         [DllImport("user32")]
         internal static extern IntPtr GetDesktopWindow();
 

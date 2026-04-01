@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Windows;
 using WinTool.Native;
 
 namespace WinTool.Utils;
@@ -65,6 +66,25 @@ public static class DpiUtils
     public static nint GetNearestMonitorFromWindow(nint hwnd) => NativeMethods.MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
 
     public static nint GetNearestMonitorFromPoint(int x, int y) => NativeMethods.MonitorFromPoint(new POINT { X = x, Y = y }, MONITOR_DEFAULTTONEAREST);
+
+    public static Rect GetWorkingAreaAt(int x, int y)
+    {
+        var monitor = GetNearestMonitorFromPoint(x, y);
+
+        if (monitor == nint.Zero)
+            return SystemParameters.WorkArea;
+
+        var monitorInfo = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+
+        if (!NativeMethods.GetMonitorInfo(monitor, ref monitorInfo))
+            return SystemParameters.WorkArea;
+
+        return new Rect(
+            monitorInfo.rcWork.left,
+            monitorInfo.rcWork.top,
+            monitorInfo.rcWork.right - monitorInfo.rcWork.left,
+            monitorInfo.rcWork.bottom - monitorInfo.rcWork.top);
+    }
 }
 
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("06152247-6f50-465a-9245-118bfd3b6007")]

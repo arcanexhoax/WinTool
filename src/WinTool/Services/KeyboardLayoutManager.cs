@@ -158,12 +158,13 @@ public class KeyboardLayoutManager : BackgroundService
     {
         _checkLayoutCts?.Cancel();
         _checkLayoutCts = new CancellationTokenSource();
+        var token = _checkLayoutCts.Token;
 
         try
         {
             for (int i = 0; i < 20; i++)
             {
-                await Task.Delay(20, _checkLayoutCts.Token);
+                await Task.Delay(20, token);
 
                 var currentLayout = GetCurrentKeyboardLayout();
 

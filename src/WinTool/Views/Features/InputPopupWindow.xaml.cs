@@ -3,7 +3,6 @@ using GlobalKeyInterceptor.Utils;
 using System;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WinTool.Native;
@@ -229,10 +228,9 @@ public partial class InputPopupWindow : FluentWindow
             width = content.DesiredSize.Width;
         }
 
-        var windowPoint = new System.Drawing.Point((int)caretX, (int)caretY);
-        var activeScreen = Screen.FromPoint(windowPoint);
-        var screenRight = activeScreen.WorkingArea.X + activeScreen.WorkingArea.Width;
-        var screenBottom = activeScreen.WorkingArea.Y + activeScreen.WorkingArea.Height;
+        var workingArea = DpiUtils.GetWorkingAreaAt((int)caretX, (int)caretY);
+        var screenRight = workingArea.Right;
+        var screenBottom = workingArea.Bottom;
 
         Left = caretX;
 
