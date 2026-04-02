@@ -11,6 +11,7 @@ namespace WinTool.Native
         public const int CHILDID_SELF = 0;
         public const uint OBJID_CARET = 0xFFFFFFF8;
         public const int GA_ROOTOWNER = 3;
+        public const int WM_NCACTIVATE = 0x0086;
 
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
@@ -20,6 +21,7 @@ namespace WinTool.Native
         private static readonly IntPtr HWND_TOPMOST = new(-1);
 
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+        public delegate void EffectivePowerModeCallback(EffectivePowerMode mode, nint context);
 
         [DllImport("user32.dll")]
         internal static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
@@ -57,6 +59,10 @@ namespace WinTool.Native
 
         [DllImport("user32")]
         internal static extern IntPtr MonitorFromWindow(IntPtr hwnd, int flags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
         [DllImport("user32")]
         internal static extern IntPtr GetDesktopWindow();
@@ -114,6 +120,15 @@ namespace WinTool.Native
 
         [DllImport("dwmapi.dll")]
         public static extern int DwmSetWindowAttribute([In] nint hWnd, [In] DWMWINDOWATTRIBUTE dwAttribute, [In] ref uint pvAttribute, [In] int cbAttribute);
+
+        [DllImport("user32.dll")]
+        public static extern nint DefWindowProc(nint hWnd, uint msg, nint wParam, nint lParam);
+
+        [DllImport("powrprof.dll")]
+        public static extern uint PowerRegisterForEffectivePowerModeNotifications(uint version, EffectivePowerModeCallback callback, nint context, out nint handle);
+
+        [DllImport("powrprof.dll")]
+        public static extern uint PowerUnregisterFromEffectivePowerModeNotifications(nint handle);
 
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {

@@ -17,6 +17,13 @@ public enum AppTheme
     Dark
 }
 
+public enum AnimationMode
+{
+    Auto,
+    On,
+    Off
+}
+
 public class SettingsViewModel : ObservableObject
 {
     private const string RegKeyName = "WinTool";
@@ -80,6 +87,17 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
+    public AnimationMode SelectedAnimationMode
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.AnimationMode = value);
+            }
+        }
+    }
+
     public SettingsViewModel(WritableOptions<SettingsOptions> settingsOptions)
     {
         // use arg "/background" to start app in background mode
@@ -90,6 +108,7 @@ public class SettingsViewModel : ObservableObject
         LaunchOnWindowsStartup = _settingsOptions.CurrentValue.WindowsStartupEnabled;
         AlwaysRunAsAdmin = _settingsOptions.CurrentValue.AlwaysRunAsAdmin;
         SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
+        SelectedAnimationMode = _settingsOptions.CurrentValue.AnimationMode;
 
         _isInitializing = false;
     }

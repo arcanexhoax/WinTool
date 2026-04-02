@@ -9,4 +9,6 @@ public class Icons
     public const string OpenFile = "\xE8E5";
     public const string ProtectedDocument = "\xE8A6";
     public const string CommandPrompt = "\xE756";
+    public const string Theme = "\xE790";
+    public const string Power = "\xE945";
 }

@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:WinTool.Properties"
+             xmlns:ui="clr-namespace:WinTool.UI"
              xmlns:settings="clr-namespace:WinTool.ViewModels.Settings"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
@@ -30,9 +31,9 @@
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 8 0 0">
                         <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
-                                    IsChecked="{Binding LaunchOnWindowsStartup}"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top" />
+                                  IsChecked="{Binding LaunchOnWindowsStartup}"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top" />
                     </Border>
 
                     <Border Style="{DynamicResource CardBorderStyle}"
@@ -41,6 +42,47 @@
                                   IsChecked="{Binding AlwaysRunAsAdmin}"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Top" />
+                    </Border>
+
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 2 0 0">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                           FontSize="18"
+                                           Text="{x:Static ui:Icons.Power}"
+                                           Margin="0 0 18 0" />
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="{x:Static p:Resources.Animations}" />
+
+                                    <TextBlock Text="{x:Static p:Resources.AnimationsAutoDescription}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{DynamicResource SystemFillColorNeutralBrush}"
+                                               Margin="0 4 0 0" />
+                                </StackPanel>
+
+                                <ComboBox Width="150"
+                                          HorizontalAlignment="Right"
+                                          SelectedValue="{Binding SelectedAnimationMode}"
+                                          SelectedValuePath="Tag"
+                                          Grid.Column="3">
+                                    <ComboBoxItem Tag="{x:Static settings:AnimationMode.Auto}"
+                                                  Content="{x:Static p:Resources.Auto}" />
+                                    <ComboBoxItem Tag="{x:Static settings:AnimationMode.On}"
+                                                  Content="{x:Static p:Resources.On}" />
+                                    <ComboBoxItem Tag="{x:Static settings:AnimationMode.Off}"
+                                                  Content="{x:Static p:Resources.Off}" />
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
                     </Border>
 
                     <TextBlock Text="{x:Static p:Resources.Appearance}"
@@ -58,11 +100,12 @@
 
                             <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
                                        FontSize="18"
-                                       Text="&#xE790;"
+                                       Text="{x:Static ui:Icons.Theme}"
                                        Margin="0 0 18 0"/>
                             <TextBlock Text="{x:Static p:Resources.AppTheme}"
                                        HorizontalAlignment="Left"
                                        Grid.Column="1"/>
+                            
                             <ComboBox Width="150"
                                       HorizontalAlignment="Right"
                                       SelectedValue="{Binding SelectedAppTheme}"

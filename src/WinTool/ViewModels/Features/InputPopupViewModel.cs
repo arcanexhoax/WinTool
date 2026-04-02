@@ -26,6 +26,7 @@ public partial class InputPopupViewModel : ObservableObject
     {
         _keyboardLayoutManager = keyboardLayoutManager;
         _keyboardLayoutManager.LayoutChanged += OnLayoutChanged;
+        _keyboardLayoutManager.PreviewLayoutChanged += OnLayoutChanged;
         _keyboardLayoutManager.LayoutsListChanged += OnLayoutsListChanged;
 
         OnLayoutsListChanged(_keyboardLayoutManager.AllCultures);

@@ -36,7 +36,7 @@ public class FluentWindow : Window
 
     protected void ApplyBackdrop(WindowBackdropType backdropType)
     {
-        var pvAttr = 1u;
+        var pvAttr = 1u; // 1 to enable, 0 to disable
         var dwmAttr = DWMWINDOWATTRIBUTE.DWMWA_MICA_EFFECT;
 
         if (Environment.OSVersion.Version.Build < 22053)

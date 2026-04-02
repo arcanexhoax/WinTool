@@ -88,6 +88,24 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Animations.
+        /// </summary>
+        public static string Animations {
+            get {
+                return ResourceManager.GetString("Animations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto disables animations in remote sessions, when Windows animations are turned off, or when energy saver is active.
+        /// </summary>
+        public static string AnimationsAutoDescription {
+            get {
+                return ResourceManager.GetString("AnimationsAutoDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Appearance.
         /// </summary>
         public static string Appearance {
@@ -102,6 +120,15 @@ namespace WinTool.Properties {
         public static string AppTheme {
             get {
                 return ResourceManager.GetString("AppTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto.
+        /// </summary>
+        public static string Auto {
+            get {
+                return ResourceManager.GetString("Auto", resourceCulture);
             }
         }
         
@@ -345,6 +372,24 @@ namespace WinTool.Properties {
         public static string NotSpecified {
             get {
                 return ResourceManager.GetString("NotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string Off {
+            get {
+                return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        public static string On {
+            get {
+                return ResourceManager.GetString("On", resourceCulture);
             }
         }
         
