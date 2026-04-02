@@ -1,11 +1,14 @@
 ﻿using GlobalKeyInterceptor;
 using GlobalKeyInterceptor.Utils;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using WinTool.Extensions;
 using WinTool.Native;
+using WinTool.Options;
 using WinTool.Utils;
 using WinTool.ViewModels.Features;
 using Timer = System.Timers.Timer;
@@ -20,6 +23,7 @@ public partial class InputPopupWindow : FluentWindow
     public const double SelectionItemWidth = 48;
 
     private readonly IKeyInterceptor _keyInterceptor;
+    private readonly IOptionsMonitor<SettingsOptions> _settingsOptions;
     private readonly InputPopupViewModel _viewModel;
     private readonly Timer _hideTimer = new(1500) { AutoReset = false };
 
@@ -30,13 +34,14 @@ public partial class InputPopupWindow : FluentWindow
     private (double X, double Y) _lastPosition;
     private Guid _currentHideAnimGuid;
 
-    public InputPopupWindow(InputPopupViewModel vm, IKeyInterceptor keyInterceptor)
+    public InputPopupWindow(InputPopupViewModel vm, IKeyInterceptor keyInterceptor, IOptionsMonitor<SettingsOptions> settingsOptions)
     {
         InitializeComponent();
         DataContext = vm;
 
         _viewModel = vm;
         _keyInterceptor = keyInterceptor;
+        _settingsOptions = settingsOptions;
         _keyInterceptor.ShortcutPressed += OnShortcutPressed;
         _hideTimer.Elapsed += (s, e) => Dispatcher.Invoke(HidePopup);
 
@@ -87,11 +92,16 @@ public partial class InputPopupWindow : FluentWindow
         if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty && (x, y) == _lastPosition)
             return;
 
+        var shouldAnimate = _settingsOptions.CurrentValue.AnimationMode.ShouldAnimate;
         var (finalTop, flipped) = AdjustWindowToScreen(x, y, Height);
         _flippedAbove = flipped;
         _animatedTop = finalTop;
 
         var animFrom = flipped ? finalTop + AppearOffsetY : finalTop - AppearOffsetY;
+
+        if (!shouldAnimate)
+            BeginAnimation(TopProperty, null);
+
         Top = animFrom;
 
         _lastPosition = (x, y);
@@ -101,15 +111,22 @@ public partial class InputPopupWindow : FluentWindow
         Show();
         NativeMethods.DefWindowProc(_handle, NativeMethods.WM_NCACTIVATE, 1, 0);
 
-        var slide = new DoubleAnimation
+        if (shouldAnimate)
         {
-            From = animFrom,
-            To = finalTop,
-            Duration = TimeSpan.FromMilliseconds(AppearAnimTimeMs),
-            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
-        };
+            var slide = new DoubleAnimation
+            {
+                From = animFrom,
+                To = finalTop,
+                Duration = TimeSpan.FromMilliseconds(AppearAnimTimeMs),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
 
-        BeginAnimation(TopProperty, slide);
+            BeginAnimation(TopProperty, slide);
+        }
+        else
+        {
+            Top = finalTop;
+        }
     }
 
     private void HidePopup()
@@ -119,30 +136,41 @@ public partial class InputPopupWindow : FluentWindow
 
         _isHiding = true;
 
-        var animGuid = _currentHideAnimGuid = Guid.NewGuid();
-        var hideTo = _flippedAbove ? _animatedTop + AppearOffsetY : _animatedTop - AppearOffsetY;
-
-        var slide = new DoubleAnimation
+        if (_settingsOptions.CurrentValue.AnimationMode.ShouldAnimate)
         {
-            From = _animatedTop,
-            To = hideTo,
-            Duration = TimeSpan.FromMilliseconds(AppearAnimTimeMs),
-            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
-        };
+            var animGuid = _currentHideAnimGuid = Guid.NewGuid();
+            var hideTo = _flippedAbove ? _animatedTop + AppearOffsetY : _animatedTop - AppearOffsetY;
 
-        slide.Completed += (s, e) =>
-        {
-            if (animGuid == _currentHideAnimGuid)
+            var slide = new DoubleAnimation
             {
-                _currentHideAnimGuid = Guid.Empty;
-                _isHiding = false;
+                From = _animatedTop,
+                To = hideTo,
+                Duration = TimeSpan.FromMilliseconds(AppearAnimTimeMs),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+            };
 
-                Hide();
-                BeginAnimation(TopProperty, null);
-            }
-        };
+            slide.Completed += (s, e) =>
+            {
+                if (animGuid == _currentHideAnimGuid)
+                {
+                    _currentHideAnimGuid = Guid.Empty;
+                    _isHiding = false;
 
-        BeginAnimation(TopProperty, slide);
+                    Hide();
+                    BeginAnimation(TopProperty, null);
+                }
+            };
+
+            BeginAnimation(TopProperty, slide);
+        }
+        else
+        {
+            _currentHideAnimGuid = Guid.Empty;
+            _isHiding = false;
+
+            BeginAnimation(TopProperty, null);
+            Hide();
+        }
     }
 
     private void UpdateSelectionIndicatorPosition()
@@ -188,7 +216,19 @@ public partial class InputPopupWindow : FluentWindow
             return;
 
         _lastIndicatorIndex = selectedIndex;
-        AnimateSelectionIndicator(targetX);
+
+        if (_settingsOptions.CurrentValue.AnimationMode.ShouldAnimate)
+        {
+            AnimateSelectionIndicator(targetX);
+        }
+        else
+        {
+            SelectionTranslate.BeginAnimation(TranslateTransform.XProperty, null);
+            AccentScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+
+            SelectionTranslate.X = targetX;
+            AccentScale.ScaleX = 1.0;
+        }
     }
 
     private (double X, double Width) GetSelectionItemMetrics(int index)

@@ -21,6 +21,7 @@ namespace WinTool.Native
         private static readonly IntPtr HWND_TOPMOST = new(-1);
 
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+        public delegate void EffectivePowerModeCallback(EffectivePowerMode mode, nint context);
 
         [DllImport("user32.dll")]
         internal static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
@@ -122,6 +123,12 @@ namespace WinTool.Native
 
         [DllImport("user32.dll")]
         public static extern nint DefWindowProc(nint hWnd, uint msg, nint wParam, nint lParam);
+
+        [DllImport("powrprof.dll")]
+        public static extern uint PowerRegisterForEffectivePowerModeNotifications(uint version, EffectivePowerModeCallback callback, nint context, out nint handle);
+
+        [DllImport("powrprof.dll")]
+        public static extern uint PowerUnregisterFromEffectivePowerModeNotifications(nint handle);
 
         public static string? GetTextFrom(nint hWnd, Func<nint, StringBuilder, int, int> getText)
         {

@@ -8,4 +8,6 @@ public class SettingsOptions
     public bool AlwaysRunAsAdmin { get; set; }
 
     public AppTheme AppTheme { get; set; } = AppTheme.System;
+
+    public AnimationMode AnimationMode { get; set; } = AnimationMode.Auto;
 }

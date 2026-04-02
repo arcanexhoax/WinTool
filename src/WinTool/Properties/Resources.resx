@@ -273,6 +273,12 @@
   <data name="AlwaysRunAsAdmin" xml:space="preserve">
     <value>Always run as administrator</value>
   </data>
+  <data name="Animations" xml:space="preserve">
+    <value>Animations</value>
+  </data>
+  <data name="AnimationsAutoDescription" xml:space="preserve">
+    <value>Auto disables animations in remote sessions, when Windows animations are turned off, or when energy saver is active</value>
+  </data>
   <data name="RunAsAdmin" xml:space="preserve">
     <value>Run as administrator</value>
   </data>
@@ -284,5 +290,14 @@
   </data>
   <data name="NotSpecified" xml:space="preserve">
     <value>Not specified</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Auto</value>
   </data>
 </root>
