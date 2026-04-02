@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:WinTool.Properties"
+             xmlns:cc="clr-namespace:WinTool.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Border Style="{DynamicResource MainContentBorderStyle}">
@@ -26,11 +27,20 @@
 
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 8 0 0">
-                        <CheckBox Content="{x:Static p:Resources.EnableSwitchLanguagePopup}"
-                                    IsChecked="{Binding EnableSwitchLanguagePopup}"
-                                    Height="32"
-                                    VerticalAlignment="Top"
-                                    HorizontalAlignment="Left" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{x:Static p:Resources.EnableSwitchLanguagePopup}" />
+
+                            <cc:ToggleSwitch IsChecked="{Binding EnableSwitchLanguagePopup}"
+                                             ShowStateContent="True"
+                                             StateContentPosition="Left"
+                                             Grid.Column="2" />
+                        </Grid>
                     </Border>
                 </StackPanel>
             </ScrollViewer>

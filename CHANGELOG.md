@@ -1,6 +1,7 @@
 ## v0.9.5
 - Added keyboard layout preview in Input popup when switching with `Win + Space` (shows the upcoming layout before releasing `Win`)
 - Added animated transition between keyboard layouts in Input popup
+- Added possibility to manage animations in settings
 - Fixed: Input Popup could appear without backdrop
 - Fixed: Input Popup now correctly adjusts to the screen
 

@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:WinTool.Properties"
              xmlns:ui="clr-namespace:WinTool.UI"
+             xmlns:cc="clr-namespace:WinTool.UI.Controls"
              xmlns:settings="clr-namespace:WinTool.ViewModels.Settings"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
@@ -30,18 +31,38 @@
                     
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 8 0 0">
-                        <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
-                                  IsChecked="{Binding LaunchOnWindowsStartup}"
-                                  HorizontalAlignment="Left"
-                                  VerticalAlignment="Top" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{x:Static p:Resources.LaunchOnStartup}" />
+
+                            <cc:ToggleSwitch IsChecked="{Binding LaunchOnWindowsStartup}"
+                                             ShowStateContent="True"
+                                             StateContentPosition="Left"
+                                             Grid.Column="2" />
+                        </Grid>
                     </Border>
 
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 2 0 0">
-                        <CheckBox Content="{x:Static p:Resources.AlwaysRunAsAdmin}"
-                                  IsChecked="{Binding AlwaysRunAsAdmin}"
-                                  HorizontalAlignment="Left"
-                                  VerticalAlignment="Top" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{x:Static p:Resources.AlwaysRunAsAdmin}" />
+
+                            <cc:ToggleSwitch IsChecked="{Binding AlwaysRunAsAdmin}"
+                                             ShowStateContent="True"
+                                             StateContentPosition="Left"
+                                             Grid.Column="2" />
+                        </Grid>
                     </Border>
 
                     <Border Style="{DynamicResource CardBorderStyle}"

@@ -37,8 +37,8 @@ jobs:
       run: |
         $changelog = Get-Content ${{ env.CHANGELOG_PATH }} -Raw
 
-        if ($changelog -match '(?s)(## v[\d\.]+.*?)(?=\n## v|$)') {
-            $notes = $matches[1].Trim()
+        if ($changelog -match '(?ms)^## v[^\r\n]+\r?\n(?<notes>.*?)(?=^## v|\z)') {
+            $notes = $matches['notes'].Trim()
             $notes | Out-File -FilePath ./${{ env.OUTPUT_DIR }}/${{ env.RELEASE_NOTES_PATH }} -Encoding utf8
         } else {
             Write-Error "Could not find a valid version section"
