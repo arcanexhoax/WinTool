@@ -50,17 +50,11 @@ public partial class InputPopupWindow : FluentWindow
             Dispatcher.Invoke(() =>
             {
                 _hideTimer.Stop();
-
                 UpdateSelectionIndicatorPosition();
 
-                var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretPos.X, caretPos.Y);
-                var x = caretPos.X * DpiUtils.DefaultDpiX / dpiAtPoint;
-                var y = caretPos.Y * DpiUtils.DefaultDpiY / dpiAtPoint;
-
-                ShowPopup(x, y);
+                ShowPopup(caretPos.X, caretPos.Y);
 
                 UpdateSelectionIndicatorPosition();
-
                 _hideTimer.Start();
             });
         };
@@ -87,13 +81,17 @@ public partial class InputPopupWindow : FluentWindow
         _handleSource!.AddHook(WndProc);
     }
 
-    private void ShowPopup(double x, double y)
+    private void ShowPopup(int caretPixelX, int caretPixelY)
     {
+        var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretPixelX, caretPixelY);
+        var x = caretPixelX * DpiUtils.DefaultDpiX / dpiAtPoint;
+        var y = caretPixelY * DpiUtils.DefaultDpiY / dpiAtPoint;
+
         if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty && (x, y) == _lastPosition)
             return;
 
         var shouldAnimate = _settingsOptions.CurrentValue.AnimationMode.ShouldAnimate;
-        var (finalTop, flipped) = AdjustWindowToScreen(x, y, Height);
+        var (finalTop, flipped) = AdjustWindowToScreen(caretPixelX, caretPixelY, x, y, Height, dpiAtPoint);
         _flippedAbove = flipped;
         _animatedTop = finalTop;
 
@@ -258,7 +256,7 @@ public partial class InputPopupWindow : FluentWindow
         AccentScale.BeginAnimation(ScaleTransform.ScaleXProperty, squeezeAnim);
     }
 
-    private (double FinalTop, bool FlippedAbove) AdjustWindowToScreen(double caretX, double caretY, double height)
+    private (double FinalTop, bool FlippedAbove) AdjustWindowToScreen(int caretPixelX, int caretPixelY, double caretX, double caretY, double height, int dpiAtPoint)
     {
         var width = ActualWidth;
 
@@ -268,9 +266,9 @@ public partial class InputPopupWindow : FluentWindow
             width = content.DesiredSize.Width;
         }
 
-        var workingArea = DpiUtils.GetWorkingAreaAt((int)caretX, (int)caretY);
-        var screenRight = workingArea.Right;
-        var screenBottom = workingArea.Bottom;
+        var workingArea = DpiUtils.GetWorkingAreaAt(caretPixelX, caretPixelY);
+        var screenRight = workingArea.Right * DpiUtils.DefaultDpiX / dpiAtPoint;
+        var screenBottom = workingArea.Bottom * DpiUtils.DefaultDpiY / dpiAtPoint;
 
         Left = caretX;
 
