@@ -99,6 +99,17 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
+    public string? SelectedLanguage
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.Language = value);
+            }
+        }
+    }
+
     public SettingsViewModel(ILogger<SettingsViewModel> logger, WritableOptions<SettingsOptions> settingsOptions)
     {
         // use arg "/background" to start app in background mode
@@ -111,6 +122,7 @@ public class SettingsViewModel : ObservableObject
         AlwaysRunAsAdmin = _settingsOptions.CurrentValue.AlwaysRunAsAdmin;
         SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
         SelectedAnimationMode = _settingsOptions.CurrentValue.AnimationMode;
+        SelectedLanguage = _settingsOptions.CurrentValue.Language;
 
         _isInitializing = false;
     }

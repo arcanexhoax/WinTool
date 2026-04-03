@@ -64,4 +64,5 @@
   <data name="On" xml:space="preserve"><value>Włączone</value><comment>[It's turned] On</comment></data>
   <data name="Off" xml:space="preserve"><value>Wyłączone</value><comment>[It's turned] Off </comment></data>
   <data name="Auto" xml:space="preserve"><value>Auto</value><comment>Auto = Automatically</comment></data>
+  <data name="Language" xml:space="preserve"><value>Język</value><comment>App display language</comment></data>
 </root>

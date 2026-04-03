@@ -1,12 +1,16 @@
-﻿using GlobalKeyInterceptor;
+﻿#pragma warning disable WPF0001
+using GlobalKeyInterceptor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using WinTool.CommandLine;
 using WinTool.Extensions;
 using WinTool.Models;
@@ -29,6 +33,13 @@ public partial class App : Application
     private readonly IHost _app;
     private readonly ILogger _logger;
 
+    private string? _currentLanguage;
+    private AppTheme _currentTheme;
+    private MainWindow? _mainWindow;
+
+    public static CultureInfo SystemUICulture { get; } = Thread.CurrentThread.CurrentUICulture;
+    public static CultureInfo SystemCulture { get; } = Thread.CurrentThread.CurrentCulture;
+
     public App()
     {
         CheckForSecondInstance();
@@ -42,10 +53,10 @@ public partial class App : Application
         builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection(nameof(FeaturesOptions)));
         builder.Services.Configure<ShortcutsOptions>(builder.Configuration.GetSection(nameof(ShortcutsOptions)));
 
-        builder.Services.AddSingleton<MainWindow>();
-        builder.Services.AddSingleton<ShortcutsView>();
-        builder.Services.AddSingleton<FeaturesView>();
-        builder.Services.AddSingleton<SettingsView>();
+        builder.Services.AddTransient<MainWindow>();
+        builder.Services.AddTransient<ShortcutsView>();
+        builder.Services.AddTransient<FeaturesView>();
+        builder.Services.AddTransient<SettingsView>();
         builder.Services.AddTransient<CreateFileWindow>();
         builder.Services.AddTransient<RunWithArgsWindow>();
         builder.Services.AddTransient<EditShortcutWindow>();
@@ -70,6 +81,7 @@ public partial class App : Application
         builder.Services.AddSingleton<ShortcutContext>();
         builder.Services.AddSingleton<ShortcutsService>();
         builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
+        builder.Services.AddSingleton<IPostConfigureOptions<SettingsOptions>, PostConfigureSettingsOptions>();
 
         builder.Services.AddHostedService(sp => sp.GetRequiredService<ShortcutsService>());
         builder.Services.AddHostedService(sp => sp.GetRequiredService<KeyboardLayoutManager>());
@@ -84,19 +96,24 @@ public partial class App : Application
         _logger.LogInformation("Application started with arguments: {Arguments}", string.Join(' ', e.Args));
 
         var clp = CommandLineParameters.Parse(e.Args);
-        var settings = _app.Services.GetRequiredService<IOptions<SettingsOptions>>().Value;
 
+        var settingsMonitor = _app.Services.GetRequiredService<IOptionsMonitor<SettingsOptions>>();
+        settingsMonitor.OnChange(OnSettingsChanged);
+
+        var settings = settingsMonitor.CurrentValue;
+        ApplyLanguage(settings.Language);
+        ApplyTheme(settings.AppTheme);
         RunAsAdminIfNeeded(settings, clp);
 
         // activate the popup window
         _app.Services.GetRequiredService<InputPopupWindow>();
-        var mainWindow = _app.Services.GetRequiredService<MainWindow>();
-        var commandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
+        _mainWindow = _app.Services.GetRequiredService<MainWindow>();
 
         if (clp.BackgroundParameter is null)
-            mainWindow.Show();
+            _mainWindow.Show();
 
-        HandleOperations(commandHandler, clp);
+        var shellCommandHandler = _app.Services.GetRequiredService<ShellCommandHandler>();
+        HandleOperations(shellCommandHandler, clp);
 
         if (clp.ShutdownOnEndedParameter is not null)
             App.Current.Shutdown();
@@ -129,6 +146,86 @@ public partial class App : Application
                 _logger.LogError(ex, "Error creating file {FilePath}", createFile.FilePath);
                 MessageBox.ShowError(string.Format(WinTool.Properties.Resources.FileCreationError, createFile.FilePath, ex.Message));
             }
+        }
+    }
+
+    private void ApplyLanguage(string? cultureName)
+    {
+        try
+        {
+            var culture = CultureInfo.GetCultureInfo(cultureName ?? SystemUICulture.Name);
+            Thread.CurrentThread.CurrentUICulture = culture;
+            Thread.CurrentThread.CurrentCulture = culture;
+            WinTool.Properties.Resources.Culture = culture;
+
+            _currentLanguage = culture.TwoLetterISOLanguageName;
+        }
+        catch
+        {
+            Thread.CurrentThread.CurrentUICulture = SystemUICulture;
+            Thread.CurrentThread.CurrentCulture = SystemCulture;
+            WinTool.Properties.Resources.Culture = null;
+
+            _currentLanguage = SystemUICulture.TwoLetterISOLanguageName;
+        }
+    }
+
+    private void ApplyTheme(AppTheme selectedTheme)
+    {
+        var selectedThemeName = selectedTheme.ToString();
+
+        if (Current.ThemeMode.Value != selectedThemeName)
+            Current.ThemeMode = new ThemeMode(selectedThemeName);
+
+        var actualTheme = selectedTheme == AppTheme.System ? GetSystemTheme() : selectedTheme;
+
+        if (actualTheme == AppTheme.Dark)
+        {
+            Current.Resources["EmptyBackdropBrush"] = new SolidColorBrush(Color.FromArgb(0xFF, 0x20, 0x20, 0x20));
+            Current.Resources["AcrylicLayoutBrush"] = new SolidColorBrush(Color.FromArgb(0x99, 0x00, 0x00, 0x00));
+        }
+        else
+        {
+            Current.Resources["EmptyBackdropBrush"] = new SolidColorBrush(Color.FromArgb(0xFF, 0xF0, 0xF0, 0xF0));
+            Current.Resources["AcrylicLayoutBrush"] = new SolidColorBrush(Color.FromArgb(0x99, 0xFF, 0xFF, 0xFF));
+        }
+
+        _currentTheme = selectedTheme;
+    }
+
+    private AppTheme GetSystemTheme()
+    {
+        const string keyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+        using var key = Registry.CurrentUser.OpenSubKey(keyPath);
+
+        if (key == null)
+            return AppTheme.Light;
+
+        var value = key.GetValue("AppsUseLightTheme");
+        return value is int i && i == 0 ? AppTheme.Dark : AppTheme.Light;
+    }
+
+    private void RecreateMainWindow()
+    {
+        var wasVisible = _mainWindow?.IsVisible == true;
+        _mainWindow?.ForceClose();
+        _mainWindow = _app.Services.GetRequiredService<MainWindow>();
+
+        if (wasVisible)
+            _mainWindow.Show();
+    }
+
+    private void OnSettingsChanged(SettingsOptions settings, string? _)
+    {
+        if (settings.AppTheme != _currentTheme)
+        {
+            ApplyTheme(settings.AppTheme);
+        }
+
+        if (settings.Language != _currentLanguage)
+        {
+            ApplyLanguage(settings.Language);
+            RecreateMainWindow();
         }
     }
 

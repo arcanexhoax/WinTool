@@ -310,4 +310,8 @@
     <value>Авто</value>
     <comment>Auto = Automatically</comment>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Мова</value>
+    <comment>App display language</comment>
+  </data>
 </root>

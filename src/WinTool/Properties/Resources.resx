@@ -310,4 +310,8 @@
     <value>Auto</value>
     <comment>Auto = Automatically</comment>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+    <comment>App display language</comment>
+  </data>
 </root>

@@ -67,6 +67,44 @@
 
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 2 0 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{x:Static p:Resources.Language}" />
+
+                            <ComboBox Width="150"
+                                      HorizontalAlignment="Right"
+                                      SelectedValue="{Binding SelectedLanguage}"
+                                      SelectedValuePath="Tag"
+                                      Grid.Column="2">
+                                <ComboBoxItem Tag="en"
+                                              Content="English" />
+                                <ComboBoxItem Tag="de"
+                                              Content="Deutsch" />
+                                <ComboBoxItem Tag="es"
+                                              Content="Español" />
+                                <ComboBoxItem Tag="fr"
+                                              Content="Français" />
+                                <ComboBoxItem Tag="pl"
+                                              Content="Polski" />
+                                <ComboBoxItem Tag="pt"
+                                              Content="Português" />
+                                <ComboBoxItem Tag="ru"
+                                              Content="Русский" />
+                                <ComboBoxItem Tag="tr"
+                                              Content="Türkçe" />
+                                <ComboBoxItem Tag="uk"
+                                              Content="Українська" />
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 2 0 0">
                         <StackPanel>
                             <Grid>
                                 <Grid.ColumnDefinitions>
