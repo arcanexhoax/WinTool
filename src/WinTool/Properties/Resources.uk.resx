@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,196 +118,196 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AlreadyRunnningAsAdminError" xml:space="preserve">
-    <value>The app is already running as administrator, but an unauthorized access error occurred: {0}</value>
+    <value>Застосунок уже запущено від імені адміністратора, але отримано: {0}</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Скасувати</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Close</value>
+    <value>Закрити</value>
   </data>
   <data name="Create" xml:space="preserve">
-    <value>Create</value>
+    <value>Створити</value>
   </data>
   <data name="CreateFile" xml:space="preserve">
-    <value>Create file</value>
+    <value>Створити файл</value>
   </data>
   <data name="DriveNotFound" xml:space="preserve">
-    <value>Unable to find drive '{0}'.</value>
+    <value>Не вдалося знайти диск '{0}'.</value>
     <comment>Unable to find drive '[D:\]'.</comment>
   </data>
   <data name="EnableSwitchLanguagePopup" xml:space="preserve">
-    <value>Enable Input Popup</value>
+    <value>Увімкнути спливаюче вікно вводу</value>
   </data>
   <data name="EnterNewShortcut" xml:space="preserve">
-    <value>Enter a new shortcut</value>
+    <value>Введіть нове сполучення клавіш</value>
     <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>WinTool. Error</value>
+    <value>WinTool. Помилка</value>
   </data>
   <data name="FastFileCreation" xml:space="preserve">
-    <value>Fast file creation</value>
+    <value>Швидке створення файлу</value>
   </data>
   <data name="Features" xml:space="preserve">
-    <value>Features</value>
+    <value>Функції</value>
   </data>
   <data name="FileAlreadyExists" xml:space="preserve">
-    <value>File '{0}' already exists.</value>
+    <value>Файл '{0}' уже існує.</value>
   </data>
   <data name="FileConsistsOnlyOfDots" xml:space="preserve">
-    <value>File '{0}' consists only of dots</value>
+    <value>Файл '{0}' складається лише з крапок</value>
   </data>
   <data name="FileCreationError" xml:space="preserve">
-    <value>Failed to create file '{0}': {1}</value>
+    <value>Не вдалося створити файл '{0}': {1}</value>
   </data>
   <data name="FileHasForbiddenChars" xml:space="preserve">
-    <value>File '{0}' has forbidden characters</value>
+    <value>Файл '{0}' містить заборонені символи</value>
   </data>
   <data name="FilePathInvalid" xml:space="preserve">
-    <value>File path '{0}' is invalid</value>
+    <value>Шлях до файла '{0}' недійсний</value>
   </data>
   <data name="GetSettingsError" xml:space="preserve">
-    <value>Failed to get settings: {0}</value>
+    <value>Не вдалося отримати налаштування: {0}</value>
   </data>
   <data name="LaunchOnStartup" xml:space="preserve">
-    <value>Launch on Windows startup</value>
+    <value>Запускати разом із Windows</value>
     <comment>Launch [this app] on Windows startup</comment>
   </data>
   <data name="Open" xml:space="preserve">
-    <value>Open</value>
+    <value>Відкрити</value>
   </data>
   <data name="OpenFolderInCmd" xml:space="preserve">
-    <value>Open current folder in command prompt</value>
+    <value>Відкрити поточну папку в командному рядку</value>
   </data>
   <data name="Options" xml:space="preserve">
-    <value>Options</value>
+    <value>Параметри</value>
   </data>
   <data name="OutOfMemory" xml:space="preserve">
-    <value>The drive '{0}' has only {1} free bytes (requested {2}).</value>
+    <value>На диску '{0}' лише {1} вільних байтів (потрібно {2}).</value>
     <comment>The drive '[D:\]' has only [10] free bytes (requested [20]).</comment>
   </data>
   <data name="Run" xml:space="preserve">
-    <value>Run</value>
+    <value>Запустити</value>
     <comment>Run [an app]</comment>
   </data>
   <data name="RunAsAdminError" xml:space="preserve">
-    <value>Run WinTool as admin failed: {0}</value>
+    <value>Не вдалося запустити WinTool від імені адміністратора: {0}</value>
   </data>
   <data name="RunFormat" xml:space="preserve">
-    <value>Run "{0}" with arguments</value>
+    <value>Запустити "{0}" з аргументами</value>
     <comment>Run [an app] "[calc.exe]" with arguments</comment>
   </data>
   <data name="RunFileWithArgs" xml:space="preserve">
-    <value>Run selected file with arguments</value>
+    <value>Запустити вибраний файл з аргументами</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>Save</value>
+    <value>Зберегти</value>
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
-    <value>Copy name of selected/opened item</value>
+    <value>Копіювати назву вибраного або відкритого елемента</value>
     <comment>Item = file/folder</comment>
   </data>
   <data name="SelectedItemCopyPath" xml:space="preserve">
-    <value>Copy path to selected/opened item</value>
+    <value>Копіювати шлях до вибраного або відкритого елемента</value>
     <comment>Item = file/folder</comment>
   </data>
   <data name="Settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>Налаштування</value>
   </data>
   <data name="SetWindowsStartupError" xml:space="preserve">
-    <value>Could not set the app to start with Windows. {0}</value>
+    <value>Не вдалося налаштувати запуск застосунку разом із Windows. {0}</value>
   </data>
   <data name="Shortcuts" xml:space="preserve">
-    <value>Shortcuts</value>
+    <value>Гарячі клавіші</value>
     <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
   </data>
   <data name="Size" xml:space="preserve">
-    <value>Size</value>
+    <value>Розмір</value>
   </data>
   <data name="EditShortcutTip" xml:space="preserve">
-    <value>The shortcut should start with at least one modifier (Ctrl, Shift, Alt, Win)</value>
+    <value>Сполучення клавіш має починатися принаймні з одного модифікатора (Ctrl, Shift, Alt, Win)</value>
   </data>
   <data name="TrayToolTip" xml:space="preserve">
-    <value>Double click to open, right click - menu</value>
+    <value>Подвійний клік, щоб відкрити, правий клік — меню</value>
     <comment>Double click to open [this app], right click -  [open] menu of [this app]</comment>
   </data>
   <data name="UpdateSettingsError" xml:space="preserve">
-    <value>Failed to update settings: {0}</value>
+    <value>Не вдалося оновити налаштування: {0}</value>
   </data>
   <data name="WinTool" xml:space="preserve">
     <value>WinTool</value>
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
-    <value>The shortcut is already used for "{0}".</value>
+    <value>Це сполучення клавіш уже використовується для "{0}".</value>
     <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
   </data>
   <data name="InputPopup" xml:space="preserve">
-    <value>Input Popup</value>
+    <value>Спливаюче вікно вводу</value>
   </data>
   <data name="WindowsExplorer" xml:space="preserve">
-    <value>Windows Explorer</value>
+    <value>Провідник Windows</value>
   </data>
   <data name="General" xml:space="preserve">
-    <value>General</value>
+    <value>Загальні</value>
     <comment>General [settings]</comment>
   </data>
   <data name="Appearance" xml:space="preserve">
-    <value>Appearance</value>
+    <value>Вигляд</value>
     <comment>[This app] Appearance</comment>
   </data>
   <data name="AppTheme" xml:space="preserve">
-    <value>App theme</value>
+    <value>Тема застосунку</value>
     <comment>App theme (dark/light/system)</comment>
   </data>
   <data name="Light" xml:space="preserve">
-    <value>Light</value>
+    <value>Світла</value>
     <comment>Light [theme]</comment>
   </data>
   <data name="Dark" xml:space="preserve">
-    <value>Dark</value>
+    <value>Темна</value>
     <comment>Dark [theme]</comment>
   </data>
   <data name="System" xml:space="preserve">
-    <value>System</value>
+    <value>Системна</value>
     <comment>System [theme]</comment>
   </data>
   <data name="AlwaysRunAsAdmin" xml:space="preserve">
-    <value>Always run as administrator</value>
+    <value>Завжди запускати від імені адміністратора</value>
     <comment>Always run [apps] as administrator</comment>
   </data>
   <data name="Animations" xml:space="preserve">
-    <value>Animations</value>
+    <value>Анімації</value>
     <comment>[UI] Animations</comment>
   </data>
   <data name="AnimationsAutoDescription" xml:space="preserve">
-    <value>Auto disables animations in remote sessions, when Windows animations are turned off, or when energy saver is active</value>
+    <value>Автоматичний режим вимикає анімації в віддалених сеансах, коли анімації Windows вимкнені або коли активне енергозбереження</value>
     <comment>Auto = Automatically</comment>
   </data>
   <data name="RunAsAdmin" xml:space="preserve">
-    <value>Run as administrator</value>
+    <value>Запустити від імені адміністратора</value>
     <comment>Run [an app] as administartor</comment>
   </data>
   <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
-    <value>Open current folder in command prompt as admin</value>
+    <value>Відкрити поточну папку в командному рядку від імені адміністратора</value>
   </data>
   <data name="RunFileAsAdmin" xml:space="preserve">
-    <value>Run selected file as admin</value>
+    <value>Запустити вибраний файл від імені адміністратора</value>
   </data>
   <data name="NotSpecified" xml:space="preserve">
-    <value>Not specified</value>
+    <value>Не вказано</value>
     <comment>[It's] Not specified</comment>
   </data>
   <data name="On" xml:space="preserve">
-    <value>On</value>
+    <value>Увімкнено</value>
     <comment>[It's turned] On</comment>
   </data>
   <data name="Off" xml:space="preserve">
-    <value>Off</value>
+    <value>Вимкнено</value>
     <comment>[It's turned] Off </comment>
   </data>
   <data name="Auto" xml:space="preserve">
-    <value>Auto</value>
+    <value>Авто</value>
     <comment>Auto = Automatically</comment>
   </data>
 </root>

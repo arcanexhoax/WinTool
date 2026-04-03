@@ -61,16 +61,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Album.
-        /// </summary>
-        public static string Album {
-            get {
-                return ResourceManager.GetString("Album", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Already running as admin but got: {0}.
+        ///   Looks up a localized string similar to The app already running as admin but got: {0}.
         /// </summary>
         public static string AlreadyRunnningAsAdminError {
             get {
@@ -147,24 +138,6 @@ namespace WinTool.Properties {
         public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Convert selected text to lowercase.
-        /// </summary>
-        public static string ConvertToLowercase {
-            get {
-                return ResourceManager.GetString("ConvertToLowercase", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Convert selected text to uppercase.
-        /// </summary>
-        public static string ConvertToUppercase {
-            get {
-                return ResourceManager.GetString("ConvertToUppercase", resourceCulture);
             }
         }
         
@@ -511,7 +484,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to set windows startup. {0}.
+        ///   Looks up a localized string similar to Could not set the app to start with Windows. {0}.
         /// </summary>
         public static string SetWindowsStartupError {
             get {

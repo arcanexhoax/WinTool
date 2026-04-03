@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AlreadyRunnningAsAdminError" xml:space="preserve"><value>Приложение уже запущено от имени администратора, но получено: {0}</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Close" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="Create" xml:space="preserve"><value>Создать</value></data>
+  <data name="CreateFile" xml:space="preserve"><value>Создать файл</value></data>
+  <data name="DriveNotFound" xml:space="preserve"><value>Не удалось найти диск '{0}'.</value><comment>Unable to find drive '[D:\]'.</comment></data>
+  <data name="EnableSwitchLanguagePopup" xml:space="preserve"><value>Включить всплывающее окно ввода</value></data>
+  <data name="EnterNewShortcut" xml:space="preserve"><value>Введите новое сочетание клавиш</value><comment>Shortcut = hotkey (e.g. Ctrl + A)</comment></data>
+  <data name="Error" xml:space="preserve"><value>WinTool. Ошибка</value></data>
+  <data name="FastFileCreation" xml:space="preserve"><value>Быстрое создание файла</value></data>
+  <data name="Features" xml:space="preserve"><value>Функции</value></data>
+  <data name="FileAlreadyExists" xml:space="preserve"><value>Файл '{0}' уже существует.</value></data>
+  <data name="FileConsistsOnlyOfDots" xml:space="preserve"><value>Файл '{0}' состоит только из точек</value></data>
+  <data name="FileCreationError" xml:space="preserve"><value>Не удалось создать файл '{0}': {1}</value></data>
+  <data name="FileHasForbiddenChars" xml:space="preserve"><value>Файл '{0}' содержит недопустимые символы</value></data>
+  <data name="FilePathInvalid" xml:space="preserve"><value>Путь к файлу '{0}' недействителен</value></data>
+  <data name="GetSettingsError" xml:space="preserve"><value>Не удалось получить настройки: {0}</value></data>
+  <data name="LaunchOnStartup" xml:space="preserve"><value>Запускать вместе с Windows</value><comment>Launch [this app] on Windows startup</comment></data>
+  <data name="Open" xml:space="preserve"><value>Открыть</value></data>
+  <data name="OpenFolderInCmd" xml:space="preserve"><value>Открыть текущую папку в командной строке</value></data>
+  <data name="Options" xml:space="preserve"><value>Параметры</value></data>
+  <data name="OutOfMemory" xml:space="preserve"><value>На диске '{0}' только {1} свободных байт (запрошено {2}).</value><comment>The drive '[D:\]' has only [10] free bytes (requested [20]).</comment></data>
+  <data name="Run" xml:space="preserve"><value>Запустить</value><comment>Run [an app]</comment></data>
+  <data name="RunAsAdminError" xml:space="preserve"><value>Не удалось запустить WinTool от имени администратора: {0}</value></data>
+  <data name="RunFormat" xml:space="preserve"><value>Запустить "{0}" с аргументами</value><comment>Run [an app] "[calc.exe]" with arguments</comment></data>
+  <data name="RunFileWithArgs" xml:space="preserve"><value>Запустить выбранный файл с аргументами</value></data>
+  <data name="Save" xml:space="preserve"><value>Сохранить</value></data>
+  <data name="SelectedItemCopyName" xml:space="preserve"><value>Копировать имя выбранного или открытого элемента</value><comment>Item = file/folder</comment></data>
+  <data name="SelectedItemCopyPath" xml:space="preserve"><value>Копировать путь к выбранному или открытому элементу</value><comment>Item = file/folder</comment></data>
+  <data name="Settings" xml:space="preserve"><value>Настройки</value></data>
+  <data name="SetWindowsStartupError" xml:space="preserve"><value>Не удалось настроить запуск приложения вместе с Windows. {0}</value></data>
+  <data name="Shortcuts" xml:space="preserve"><value>Горячие клавиши</value><comment>Shortcut = hotkey (e.g. Ctrl + A)</comment></data>
+  <data name="Size" xml:space="preserve"><value>Размер</value></data>
+  <data name="EditShortcutTip" xml:space="preserve"><value>Сочетание клавиш должно начинаться как минимум с одного модификатора (Ctrl, Shift, Alt, Win)</value></data>
+  <data name="TrayToolTip" xml:space="preserve"><value>Двойной щелчок, чтобы открыть, правый щелчок — меню</value><comment>Double click to open [this app], right click -  [open] menu of [this app]</comment></data>
+  <data name="UpdateSettingsError" xml:space="preserve"><value>Не удалось обновить настройки: {0}</value></data>
+  <data name="WinTool" xml:space="preserve"><value>WinTool</value></data>
+  <data name="ShortcutAlreadyUsed" xml:space="preserve"><value>Это сочетание клавиш уже используется для "{0}".</value><comment>Shortcut = hotkey (e.g. Ctrl + A)</comment></data>
+  <data name="InputPopup" xml:space="preserve"><value>Всплывающее окно ввода</value></data>
+  <data name="WindowsExplorer" xml:space="preserve"><value>Проводник Windows</value></data>
+  <data name="General" xml:space="preserve"><value>Общие</value><comment>General [settings]</comment></data>
+  <data name="Appearance" xml:space="preserve"><value>Внешний вид</value><comment>[This app] Appearance</comment></data>
+  <data name="AppTheme" xml:space="preserve"><value>Тема приложения</value><comment>App theme (dark/light/system)</comment></data>
+  <data name="Light" xml:space="preserve"><value>Светлая</value><comment>Light [theme]</comment></data>
+  <data name="Dark" xml:space="preserve"><value>Тёмная</value><comment>Dark [theme]</comment></data>
+  <data name="System" xml:space="preserve"><value>Системная</value><comment>System [theme]</comment></data>
+  <data name="AlwaysRunAsAdmin" xml:space="preserve"><value>Всегда запускать от имени администратора</value><comment>Always run [apps] as administrator</comment></data>
+  <data name="Animations" xml:space="preserve"><value>Анимации</value><comment>[UI] Animations</comment></data>
+  <data name="AnimationsAutoDescription" xml:space="preserve"><value>Автоматический режим отключает анимации в удалённых сеансах, когда анимации Windows выключены или активен режим энергосбережения</value><comment>Auto = Automatically</comment></data>
+  <data name="RunAsAdmin" xml:space="preserve"><value>Запустить от имени администратора</value><comment>Run [an app] as administartor</comment></data>
+  <data name="OpenFolderInCmdAsAdmin" xml:space="preserve"><value>Открыть текущую папку в командной строке от имени администратора</value></data>
+  <data name="RunFileAsAdmin" xml:space="preserve"><value>Запустить выбранный файл от имени администратора</value></data>
+  <data name="NotSpecified" xml:space="preserve"><value>Не указано</value><comment>[It's] Not specified</comment></data>
+  <data name="On" xml:space="preserve"><value>Вкл.</value><comment>[It's turned] On</comment></data>
+  <data name="Off" xml:space="preserve"><value>Выкл.</value><comment>[It's turned] Off </comment></data>
+  <data name="Auto" xml:space="preserve"><value>Авто</value><comment>Auto = Automatically</comment></data>
+</root>
