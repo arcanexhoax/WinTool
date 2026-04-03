@@ -1,8 +1,8 @@
-﻿using SHDocVw;
+﻿using Microsoft.Extensions.Logging;
+using SHDocVw;
 using Shell32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using WinTool.Models;
 using WinTool.Native;
 using WinTool.Native.Shell;
@@ -12,11 +12,12 @@ namespace WinTool.Services;
 
 using ShellWindow = (string? Path, IShellBrowser Browser);
 
-public class Shell(StaThreadService staThreadService)
+public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
 {
     private const int SWC_DESKTOP = 8;
     private const int SWFO_NEEDDISPATCH = 1;
 
+    private readonly ILogger _logger = logger;
     private readonly StaThreadService _staThreadService = staThreadService;
     private readonly Guid SID_STopLevelBrowser = new("4C96BE40-915C-11CF-99D3-00AA004AE837");
 
@@ -138,7 +139,7 @@ public class Shell(StaThreadService staThreadService)
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error getting selected item at index {i}: {ex}");
+                _logger.LogWarning(ex, "Error getting selected item at index {Index}", i);
             }
 
             if (path is null)

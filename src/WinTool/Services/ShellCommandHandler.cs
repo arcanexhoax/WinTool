@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -13,10 +14,11 @@ using WinTool.Views.Shortcuts;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(Shell shell, ViewFactory viewFactory, StaThreadService staThreadService)
+public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shell, ViewFactory viewFactory, StaThreadService staThreadService)
 {
     private const string NewFileTemplate = "NewFile.txt";
 
+    private readonly ILogger _logger = logger;
     private readonly Shell _shell = shell;
     private readonly ViewFactory _viewFactory = viewFactory;
     private readonly StaThreadService _staThreadService = staThreadService;
@@ -86,6 +88,8 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory, StaThread
         {
             using var fileStream = File.Create(path);
             fileStream.SetLength(size);
+
+            _logger.LogInformation("Created file {FilePath} of size {Size} bytes", path, size);
         }, clp.ToString());
     }
 
@@ -152,7 +156,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory, StaThread
 
         if (!File.Exists(selectedItem))
         {
-            MessageBox.ShowError(string.Format(Resources.FileNotFound, selectedItem));
+            _logger.LogWarning("File {FilePath} does not exist", selectedItem);
             return;
         }
 
@@ -167,7 +171,7 @@ public class ShellCommandHandler(Shell shell, ViewFactory viewFactory, StaThread
         }
         catch (Win32Exception ex) when (ex.NativeErrorCode == 1155)
         {
-            Debug.WriteLine($"File {fileName} is unable to run as admin");
+            _logger.LogInformation("File {FilePath} is unable to run as admin, running without admin privileges", fileName);
             Process.Start(fileName, args, false);
         }
     }

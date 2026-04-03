@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -23,6 +24,8 @@ public enum SizeUnit : long
 
 public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<string, CreateFileOutput>
 {
+    private readonly ILogger _logger;
+
     private Action<Result<CreateFileOutput>>? _onResult;
 
     [ObservableProperty]
@@ -52,8 +55,10 @@ public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<st
     public RelayCommand CreateCommand { get; }
     public RelayCommand CloseWindowCommand { get; }
 
-    public CreateFileViewModel()
+    public CreateFileViewModel(ILogger<CreateFileViewModel> logger)
     {
+        _logger = logger;
+
         SelectedSizeUnit = SizeUnit.B;
         SizeUnits = new ObservableCollection<SizeUnit>(Enum.GetValues<SizeUnit>());
 
@@ -85,6 +90,7 @@ public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<st
 
         if (!CheckIfFileValid(filePath, FileName, sizeBytes, out string? errorMessage))
         {
+            _logger.LogInformation("File is not valid: {ErrorMessage}", errorMessage);
             MessageBox.ShowError(errorMessage);
             return;
         }

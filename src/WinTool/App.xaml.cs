@@ -1,6 +1,7 @@
 ﻿using GlobalKeyInterceptor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
@@ -26,6 +27,7 @@ namespace WinTool;
 public partial class App : Application
 {
     private readonly IHost _app;
+    private readonly ILogger _logger;
 
     public App()
     {
@@ -34,6 +36,7 @@ public partial class App : Application
         var builder = Host.CreateApplicationBuilder();
 
         builder.AddConfigurationFileProvider();
+        builder.AddNLogConfiguration();
 
         builder.Services.Configure<SettingsOptions>(builder.Configuration.GetSection(nameof(SettingsOptions)));
         builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection(nameof(FeaturesOptions)));
@@ -72,11 +75,13 @@ public partial class App : Application
         builder.Services.AddHostedService(sp => sp.GetRequiredService<KeyboardLayoutManager>());
 
         _app = builder.Build();
+        _logger = _app.Services.GetRequiredService<ILogger<App>>();
     }
 
     protected override async void OnStartup(StartupEventArgs e)
     {
         await _app.StartAsync();
+        _logger.LogInformation("Application started with arguments: {Arguments}", string.Join(' ', e.Args));
 
         var clp = CommandLineParameters.Parse(e.Args);
         var settings = _app.Services.GetRequiredService<IOptions<SettingsOptions>>().Value;
@@ -121,7 +126,7 @@ public partial class App : Application
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error creating file {createFile.FilePath}: {ex.Message}");
+                _logger.LogError(ex, "Error creating file {FilePath}", createFile.FilePath);
                 MessageBox.ShowError(string.Format(WinTool.Properties.Resources.FileCreationError, createFile.FilePath, ex.Message));
             }
         }
@@ -130,6 +135,8 @@ public partial class App : Application
     protected override async void OnExit(ExitEventArgs e)
     {
         Mutex.Release();
+        _logger.LogInformation("Application is shutting down");
+
         await _app.StopAsync();
         base.OnExit(e);
     }

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:WinTool.Properties"
-             xmlns:cc="clr-namespace:WinTool.UI.Controls"
+             xmlns:ctrl="clr-namespace:WinTool.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Border Style="{DynamicResource MainContentBorderStyle}">
@@ -36,10 +36,10 @@
 
                             <TextBlock Text="{x:Static p:Resources.EnableSwitchLanguagePopup}" />
 
-                            <cc:ToggleSwitch IsChecked="{Binding EnableSwitchLanguagePopup}"
-                                             ShowStateContent="True"
-                                             StateContentPosition="Left"
-                                             Grid.Column="2" />
+                            <ctrl:ToggleSwitch IsChecked="{Binding EnableSwitchLanguagePopup}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="2" />
                         </Grid>
                     </Border>
                 </StackPanel>

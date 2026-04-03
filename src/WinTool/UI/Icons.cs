@@ -1,6 +1,6 @@
 ﻿namespace WinTool.UI;
 
-public class Icons
+public static class Icons
 {
     public const string KnowledgeArticle = "\xF000";
     public const string Page = "\xE7C3";
@@ -11,4 +11,5 @@ public class Icons
     public const string CommandPrompt = "\xE756";
     public const string Theme = "\xE790";
     public const string Power = "\xE945";
+    public const string Edit = "\xE70F";
 }

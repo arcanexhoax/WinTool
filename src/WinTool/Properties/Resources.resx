@@ -129,9 +129,6 @@
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="CommandExecutionError" xml:space="preserve">
-    <value>Failed to execute command {0}: {1}</value>
-  </data>
   <data name="ConvertToLowercase" xml:space="preserve">
     <value>Convert selected text to lowercase</value>
   </data>
@@ -173,9 +170,6 @@
   </data>
   <data name="FileHasForbiddenChars" xml:space="preserve">
     <value>File '{0}' has forbidden characters</value>
-  </data>
-  <data name="FileNotFound" xml:space="preserve">
-    <value>File '{0}' doesn't exist.</value>
   </data>
   <data name="FilePathInvalid" xml:space="preserve">
     <value>File path '{0}' is invalid</value>

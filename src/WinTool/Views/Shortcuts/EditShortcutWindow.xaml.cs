@@ -24,7 +24,6 @@ public partial class EditShortcutWindow : DialogWindow<EditShortcutInput, Shortc
     {
         if (_handle == NativeMethods.GetForegroundWindow())
         {
-            Debug.WriteLine(e.Shortcut);
             (DataContext as EditShortcutViewModel)!.Shortcut = e.Shortcut;
         }
     }

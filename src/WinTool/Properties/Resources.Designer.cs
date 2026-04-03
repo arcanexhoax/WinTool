@@ -151,15 +151,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to execute command {0}: {1}.
-        /// </summary>
-        public static string CommandExecutionError {
-            get {
-                return ResourceManager.GetString("CommandExecutionError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Convert selected text to lowercase.
         /// </summary>
         public static string ConvertToLowercase {
@@ -300,15 +291,6 @@ namespace WinTool.Properties {
         public static string FileHasForbiddenChars {
             get {
                 return ResourceManager.GetString("FileHasForbiddenChars", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File &apos;{0}&apos; doesn&apos;t exist..
-        /// </summary>
-        public static string FileNotFound {
-            get {
-                return ResourceManager.GetString("FileNotFound", resourceCulture);
             }
         }
         

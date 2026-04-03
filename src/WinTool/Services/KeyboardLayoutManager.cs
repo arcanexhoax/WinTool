@@ -1,11 +1,11 @@
 ﻿using GlobalKeyInterceptor;
 using GlobalKeyInterceptor.Utils;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -18,6 +18,7 @@ namespace WinTool.Services;
 
 public class KeyboardLayoutManager : BackgroundService
 {
+    private readonly ILogger _logger;
     private readonly IKeyInterceptor _keyInterceptor;
     private readonly IOptionsMonitor<FeaturesOptions> _featuresOptions;
 
@@ -34,6 +35,7 @@ public class KeyboardLayoutManager : BackgroundService
         get; private set
         {
             field = value;
+            _logger.LogInformation("Available keyboard layouts: {Layouts}", string.Join(", ", value.Select(c => c.NativeName)));
             LayoutsListChanged?.Invoke(value);
         }
     } = [];
@@ -42,8 +44,9 @@ public class KeyboardLayoutManager : BackgroundService
     public event Action<CultureInfo>? LayoutChanged;
     public event Action<IEnumerable<CultureInfo>>? LayoutsListChanged;
 
-    public KeyboardLayoutManager(IKeyInterceptor keyInterceptor, IOptionsMonitor<FeaturesOptions> featuresOptions)
+    public KeyboardLayoutManager(ILogger<KeyboardLayoutManager> logger, IKeyInterceptor keyInterceptor, IOptionsMonitor<FeaturesOptions> featuresOptions)
     {
+        _logger = logger;
         _keyInterceptor = keyInterceptor;
         _featuresOptions = featuresOptions;
         _featuresOptions.OnChange((o, _) =>
@@ -74,6 +77,7 @@ public class KeyboardLayoutManager : BackgroundService
         AllCultures = OrderKeyboardLayouts(_allLayouts);
 
         _keyInterceptor.ShortcutPressed += OnShortcutPressed;
+        _logger.LogInformation("KeyboardLayoutManager started");
     }
 
     public void Stop()
@@ -84,6 +88,7 @@ public class KeyboardLayoutManager : BackgroundService
         _isStarted = false;
         _checkLayoutCts?.Cancel();
         _keyInterceptor.ShortcutPressed -= OnShortcutPressed;
+        _logger.LogInformation("KeyboardLayoutManager stopped");
     }
 
     private async void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
@@ -174,7 +179,7 @@ public class KeyboardLayoutManager : BackgroundService
                     CheckLayoutsList();
 
                     var currentCulture = ConvertToCultureInfo(currentLayout);
-                    Debug.WriteLine($"New layout: {currentCulture.NativeName}");
+                    _logger.LogDebug("New layout: {Layout}", currentCulture.NativeName);
                     LayoutChanged?.Invoke(currentCulture);
 
                     break;
@@ -186,7 +191,7 @@ public class KeyboardLayoutManager : BackgroundService
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error in keyboard layout checking: {ex}");
+            _logger.LogError(ex, "Error in keyboard layout checking");
         }
     }
 
@@ -317,7 +322,7 @@ public class KeyboardLayoutManager : BackgroundService
         }
         catch (CultureNotFoundException)
         {
-            Debug.WriteLine($"Culture not found for HKL: {hkl:X}");
+            _logger.LogWarning("Culture not found for HKL: {HKL:X}", hkl);
             return CultureInfo.InvariantCulture;
         }
     }

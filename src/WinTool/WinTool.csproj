@@ -16,6 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="nlog.config" />
 		<None Remove="Resources\icon.ico" />
 		<None Remove="Resources\Icons\idea.png" />
 		<None Remove="Resources\Icons\keyboard.png" />
@@ -54,12 +55,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <EmbeddedResource Include="nlog.config">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Resource Include="Resources\icon.ico" />
 		<Resource Include="Resources\Icons\idea.png" />
 		<Resource Include="Resources\Icons\keyboard.png" />
 		<Resource Include="Resources\Icons\settings.png" />
 		<Resource Include="Resources\logo.png" />
 	</ItemGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
@@ -69,6 +77,8 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
+		<PackageReference Include="NLog" Version="6.1.2" />
+		<PackageReference Include="NLog.Extensions.Logging" Version="6.1.2" />
 		<PackageReference Include="System.IO.Abstractions" Version="22.1.0" />
 	</ItemGroup>
 

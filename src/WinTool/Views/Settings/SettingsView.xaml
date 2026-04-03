@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:WinTool.Properties"
              xmlns:ui="clr-namespace:WinTool.UI"
-             xmlns:cc="clr-namespace:WinTool.UI.Controls"
+             xmlns:ctrl="clr-namespace:WinTool.UI.Controls"
              xmlns:settings="clr-namespace:WinTool.ViewModels.Settings"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
@@ -40,10 +40,10 @@
 
                             <TextBlock Text="{x:Static p:Resources.LaunchOnStartup}" />
 
-                            <cc:ToggleSwitch IsChecked="{Binding LaunchOnWindowsStartup}"
-                                             ShowStateContent="True"
-                                             StateContentPosition="Left"
-                                             Grid.Column="2" />
+                            <ctrl:ToggleSwitch IsChecked="{Binding LaunchOnWindowsStartup}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="2" />
                         </Grid>
                     </Border>
 
@@ -58,10 +58,10 @@
 
                             <TextBlock Text="{x:Static p:Resources.AlwaysRunAsAdmin}" />
 
-                            <cc:ToggleSwitch IsChecked="{Binding AlwaysRunAsAdmin}"
-                                             ShowStateContent="True"
-                                             StateContentPosition="Left"
-                                             Grid.Column="2" />
+                            <ctrl:ToggleSwitch IsChecked="{Binding AlwaysRunAsAdmin}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="2" />
                         </Grid>
                     </Border>
 

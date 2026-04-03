@@ -1,13 +1,10 @@
 ﻿using GlobalKeyInterceptor;
-using GlobalKeyInterceptor.Utils;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using WinTool.Extensions;
 using WinTool.Models;
 using WinTool.Options;
 using WinTool.Properties;
@@ -17,22 +14,25 @@ namespace WinTool.Services;
 
 public class ShortcutsService : BackgroundService
 {
+    private readonly ILogger _logger;
+    private readonly IKeyInterceptor _keyInterceptor;
     private readonly WritableOptions<ShortcutsOptions> _options;
     private readonly ShellCommandHandler _shellCommandHandler;
     private readonly ShortcutContext _shortcutContext;
     private readonly Shell _shell;
-    private readonly IKeyInterceptor _keyInterceptor;
 
     public Dictionary<string, ShortcutCommand> AvailableCommands { get; }
     public Dictionary<Shortcut, ShortcutCommand> Shortcuts { get; } = [];
 
     public ShortcutsService(
+        ILogger<ShortcutsService> logger,
+        IKeyInterceptor keyInterceptor,
         WritableOptions<ShortcutsOptions> options,
         ShellCommandHandler shellCommandHandler,
         ShortcutContext shortcutContext,
-        Shell shell,
-        IKeyInterceptor keyInterceptor)
+        Shell shell)
     {
+        _logger = logger;
         _options = options;
         _shellCommandHandler = shellCommandHandler;
         _shortcutContext = shortcutContext;
@@ -78,7 +78,7 @@ public class ShortcutsService : BackgroundService
 
         Task.Run(() =>
         {
-            Debug.WriteLine($"Executing {shortcutCommand.Id}");
+            _logger.LogDebug("Executing shortcut command {CommandId}", shortcutCommand.Id);
 
             try
             {
@@ -86,9 +86,7 @@ public class ShortcutsService : BackgroundService
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to execute command {shortcutCommand.Id}: {ex.Message}");
-                // TODO fix: message box is minimized
-                MessageBox.ShowError(string.Format(Resources.CommandExecutionError, shortcutCommand.Id, ex.Message));
+                _logger.LogError(ex, "Failed to execute command {CommandId}", shortcutCommand.Id);
             }
         });
 
@@ -107,5 +105,6 @@ public class ShortcutsService : BackgroundService
         Shortcuts[newShortcut] = shortcutCommand;
 
         _options.Update(o => o.Shortcuts[shortcutCommand.Id] = shortcutCommand.Shortcut.ToString());
+        _logger.LogInformation("Shortcut for command {CommandId} updated to {Shortcut}", shortcutCommand.Id, newShortcut);
     }
 }
