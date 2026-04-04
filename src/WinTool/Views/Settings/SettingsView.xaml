@@ -27,59 +27,30 @@
                 <StackPanel MaxWidth="1000">
                     <TextBlock Text="{x:Static p:Resources.General}"
                                Style="{StaticResource BodyStrongTextBlockStyle}" />
-                    
+
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 8 0 0">
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{x:Static p:Resources.LaunchOnStartup}" />
+                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Text="{StaticResource Icon.Language}"
+                                       Margin="0 0 18 0" />
 
-                            <ctrl:ToggleSwitch IsChecked="{Binding LaunchOnWindowsStartup}"
-                                               ShowStateContent="True"
-                                               StateContentPosition="Left"
-                                               Grid.Column="2" />
-                        </Grid>
-                    </Border>
-
-                    <Border Style="{DynamicResource CardBorderStyle}"
-                            Margin="0 2 0 0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Text="{x:Static p:Resources.AlwaysRunAsAdmin}" />
-
-                            <ctrl:ToggleSwitch IsChecked="{Binding AlwaysRunAsAdmin}"
-                                               ShowStateContent="True"
-                                               StateContentPosition="Left"
-                                               Grid.Column="2" />
-                        </Grid>
-                    </Border>
-
-                    <Border Style="{DynamicResource CardBorderStyle}"
-                            Margin="0 2 0 0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Text="{x:Static p:Resources.Language}" />
+                            <TextBlock Text="{x:Static p:Resources.Language}"
+                                       Grid.Column="1"/>
 
                             <ComboBox Width="150"
                                       HorizontalAlignment="Right"
                                       SelectedValue="{Binding SelectedLanguage}"
                                       SelectedValuePath="Tag"
-                                      Grid.Column="2">
+                                      Grid.Column="3">
                                 <ComboBoxItem Tag="en"
                                               Content="English" />
                                 <ComboBoxItem Tag="de"
@@ -141,6 +112,60 @@
                                 </ComboBox>
                             </Grid>
                         </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="{x:Static p:Resources.Startup}"
+                               Style="{StaticResource BodyStrongTextBlockStyle}"
+                               Margin="0 36 0 0"/>
+
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 8 0 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Text="{StaticResource Icon.PowerButton}"
+                                       Margin="0 0 18 0" />
+
+                            <TextBlock Text="{x:Static p:Resources.LaunchOnStartup}"
+                                       Grid.Column="1"/>
+
+                            <ctrl:ToggleSwitch IsChecked="{Binding LaunchOnWindowsStartup}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="3" />
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 2 0 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Text="{StaticResource Icon.Shield}"
+                                       Margin="0 0 18 0" />
+
+                            <TextBlock Text="{x:Static p:Resources.AlwaysRunAsAdmin}"
+                                       Grid.Column="1"/>
+
+                            <ctrl:ToggleSwitch IsChecked="{Binding AlwaysRunAsAdmin}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="3" />
+                        </Grid>
                     </Border>
 
                     <TextBlock Text="{x:Static p:Resources.Appearance}"

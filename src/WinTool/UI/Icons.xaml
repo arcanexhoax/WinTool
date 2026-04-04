@@ -10,7 +10,10 @@
     <sys:String x:Key="Icon.CommandPrompt">&#xE756;</sys:String>
     <sys:String x:Key="Icon.Theme">&#xE790;</sys:String>
     <sys:String x:Key="Icon.Power">&#xE945;</sys:String>
+    <sys:String x:Key="Icon.PowerButton">&#xE7E8;</sys:String>
+    <sys:String x:Key="Icon.Shield">&#xEA18;</sys:String>
     <sys:String x:Key="Icon.Edit">&#xE70F;</sys:String>
+    <sys:String x:Key="Icon.Language">&#xF2B7;</sys:String>
 
     <!-- Shortcut command icons (keyed by command ID for convention-based lookup) -->
     <sys:String x:Key="Icon.CreateFile">&#xF000;</sys:String>
