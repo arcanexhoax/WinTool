@@ -62,7 +62,7 @@ public class WritableOptionsTests
 
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
         featuresOptions.Update(o => o.EnableInputPopup = false);
-        settingsOptions.Update(o => o.AppTheme = ViewModels.Settings.AppTheme.Light);
+        settingsOptions.Update(o => o.AppTheme = WinTool.ViewModels.Settings.AppTheme.Light);
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
 
@@ -90,7 +90,7 @@ public class WritableOptionsTests
 
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
         featuresOptions.Update(o => o.EnableInputPopup = true);
-        settingsOptions.Update(o => o.AppTheme = ViewModels.Settings.AppTheme.Light);
+        settingsOptions.Update(o => o.AppTheme = WinTool.ViewModels.Settings.AppTheme.Light);
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
 
@@ -158,8 +158,8 @@ public class WritableOptionsTests
         var sp = BuildServiceProvider(_appSettingsPath);
         var settings = sp.GetRequiredService<WritableOptions<SettingsOptions>>().CurrentValue;
 
-        Assert.Equal(ViewModels.Settings.AppTheme.System, settings.AppTheme);
-        Assert.Equal(ViewModels.Settings.AnimationMode.Auto, settings.AnimationMode);
+        Assert.Equal(WinTool.ViewModels.Settings.AppTheme.System, settings.AppTheme);
+        Assert.Equal(WinTool.ViewModels.Settings.AnimationMode.Auto, settings.AnimationMode);
         Assert.Equal(App.SystemUICulture.TwoLetterISOLanguageName, settings.Language);
     }
 
