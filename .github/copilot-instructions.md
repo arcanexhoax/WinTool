@@ -11,8 +11,9 @@
 - Use the `github-actions-templates` skill during work with GitHub Actions workflow files.
 - Always use the `dotnet-wpf` skill when working with code.
 
-## Build
-- When building WinTool, follow [building.md](building.md).
+## Build and Test
+- When building WinTool, follow the [Build](building.md#build) section in [building.md](building.md).
+- When testing WinTool, follow the [Test](building.md#test) section in [building.md](building.md).
 
 ## XAML Style
 - When editing XAML, follow [xaml-style.md](xaml-style.md).

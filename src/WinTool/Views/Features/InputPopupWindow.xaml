@@ -43,8 +43,7 @@
                     <TranslateTransform x:Name="SelectionTranslate" />
                 </Grid.RenderTransform>
 
-                <Border Margin="2"
-                        CornerRadius="6"
+                <Border CornerRadius="6"
                         BorderThickness="1"
                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
                         BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}" />
