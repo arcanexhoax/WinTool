@@ -35,6 +35,7 @@ public partial class App : Application
 
     private string? _currentLanguage;
     private AppTheme _currentTheme;
+    private InputPopupWindow? _inputPopupWindow;
     private MainWindow? _mainWindow;
 
     public static CultureInfo SystemUICulture { get; } = Thread.CurrentThread.CurrentUICulture;
@@ -60,26 +61,28 @@ public partial class App : Application
         builder.Services.AddTransient<CreateFileWindow>();
         builder.Services.AddTransient<RunWithArgsWindow>();
         builder.Services.AddTransient<EditShortcutWindow>();
-        builder.Services.AddSingleton<InputPopupWindow>();
-        builder.Services.AddSingleton<MainViewModel>();
-        builder.Services.AddSingleton<InputPopupViewModel>();
-        builder.Services.AddSingleton<ShortcutsViewModel>();
-        builder.Services.AddSingleton<FeaturesViewModel>();
-        builder.Services.AddSingleton<SettingsViewModel>();
-        builder.Services.AddSingleton<CreateFileViewModel>();
-        builder.Services.AddSingleton<RunWithArgsViewModel>();
-        builder.Services.AddSingleton<EditShortcutViewModel>();
+        builder.Services.AddTransient<InputPopupWindow>();
+        builder.Services.AddTransient<MainViewModel>();
+        builder.Services.AddTransient<InputPopupViewModel>();
+        builder.Services.AddTransient<ShortcutsViewModel>();
+        builder.Services.AddTransient<FeaturesViewModel>();
+        builder.Services.AddTransient<SettingsViewModel>();
+        builder.Services.AddTransient<CreateFileViewModel>();
+        builder.Services.AddTransient<RunWithArgsViewModel>();
+        builder.Services.AddTransient<EditShortcutViewModel>();
         builder.Services.AddSingleton<ShellCommandHandler>();
         builder.Services.AddSingleton<Shell>();
         builder.Services.AddSingleton<KeyboardLayoutManager>();
         builder.Services.AddSingleton<StaThreadService>();
+        builder.Services.AddSingleton<ShortcutsService>();
         builder.Services.AddSingleton<ViewFactory>();
+        builder.Services.AddSingleton<ShortcutContext>();
+        builder.Services.AddSingleton<CreateFileDialogState>();
+        builder.Services.AddSingleton<RunWithArgsDialogState>();
+        builder.Services.AddSingleton<IKeyInterceptor>(new KeyInterceptor());
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
-        builder.Services.AddSingleton<IKeyInterceptor>(new KeyInterceptor());
-        builder.Services.AddSingleton<ShortcutContext>();
-        builder.Services.AddSingleton<ShortcutsService>();
         builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
         builder.Services.AddSingleton<IPostConfigureOptions<SettingsOptions>, PostConfigureSettingsOptions>();
 
@@ -106,7 +109,7 @@ public partial class App : Application
         RunAsAdminIfNeeded(settings, clp);
 
         // activate the popup window
-        _app.Services.GetRequiredService<InputPopupWindow>();
+        _inputPopupWindow = _app.Services.GetRequiredService<InputPopupWindow>();
         _mainWindow = _app.Services.GetRequiredService<MainWindow>();
 
         if (clp.BackgroundParameter is null)

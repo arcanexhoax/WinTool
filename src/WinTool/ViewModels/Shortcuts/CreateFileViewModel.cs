@@ -25,6 +25,7 @@ public enum SizeUnit : long
 public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<string, CreateFileOutput>
 {
     private readonly ILogger _logger;
+    private readonly CreateFileDialogState _state;
 
     private Action<Result<CreateFileOutput>>? _onResult;
 
@@ -55,12 +56,15 @@ public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<st
     public RelayCommand CreateCommand { get; }
     public RelayCommand CloseWindowCommand { get; }
 
-    public CreateFileViewModel(ILogger<CreateFileViewModel> logger)
+    public CreateFileViewModel(ILogger<CreateFileViewModel> logger, CreateFileDialogState state)
     {
         _logger = logger;
+        _state = state;
 
-        SelectedSizeUnit = SizeUnit.B;
         SizeUnits = new ObservableCollection<SizeUnit>(Enum.GetValues<SizeUnit>());
+        FileName = _state.FileName;
+        Size = _state.Size;
+        SelectedSizeUnit = _state.SelectedSizeUnit;
 
         CreateCommand = new RelayCommand(CreateFile);
         CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<CreateFileOutput>(false)));
@@ -78,7 +82,13 @@ public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<st
         AreOptionsOpened = Size > 0;
     }
 
-    public void OnClose() => _onResult = null;
+    public void OnClose()
+    {
+        _state.FileName = FileName;
+        _state.Size = Size;
+        _state.SelectedSizeUnit = SelectedSizeUnit;
+        _onResult = null;
+    }
 
     private void CreateFile()
     {

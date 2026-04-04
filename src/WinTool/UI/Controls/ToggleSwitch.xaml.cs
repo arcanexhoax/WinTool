@@ -18,7 +18,7 @@ public class ToggleSwitch : PrimitiveToggleButton
         nameof(CurrentContent),
         typeof(object),
         typeof(ToggleSwitch),
-        new PropertyMetadata(WinTool.Properties.Resources.Off));
+        new PropertyMetadata(null));
 
     public static readonly DependencyProperty CurrentContentProperty = CurrentContentPropertyKey.DependencyProperty;
 
@@ -38,13 +38,13 @@ public class ToggleSwitch : PrimitiveToggleButton
         nameof(OnContent),
         typeof(object),
         typeof(ToggleSwitch),
-        new FrameworkPropertyMetadata(WinTool.Properties.Resources.On, FrameworkPropertyMetadataOptions.AffectsMeasure, OnStateContentPropertyChanged));
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, OnStateContentPropertyChanged));
 
     public static readonly DependencyProperty OffContentProperty = DependencyProperty.Register(
         nameof(OffContent),
         typeof(object),
         typeof(ToggleSwitch),
-        new FrameworkPropertyMetadata(WinTool.Properties.Resources.Off, FrameworkPropertyMetadataOptions.AffectsMeasure, OnStateContentPropertyChanged));
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, OnStateContentPropertyChanged));
 
     static ToggleSwitch()
     {
@@ -122,11 +122,11 @@ public class ToggleSwitch : PrimitiveToggleButton
 
     private object ResolveOnContent()
     {
-        return OnContent ?? WinTool.Properties.Resources.On;
+        return OnContent ?? Properties.Resources.On;
     }
 
     private object ResolveOffContent()
     {
-        return OffContent ?? WinTool.Properties.Resources.Off;
+        return OffContent ?? Properties.Resources.Off;
     }
 }

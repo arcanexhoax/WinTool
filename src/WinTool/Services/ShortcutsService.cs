@@ -7,9 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using WinTool.Models;
 using WinTool.Options;
-using WinTool.Properties;
-using WinTool.UI;
-
 namespace WinTool.Services;
 
 public class ShortcutsService : BackgroundService
@@ -42,14 +39,14 @@ public class ShortcutsService : BackgroundService
 
         AvailableCommands = new Dictionary<string, ShortcutCommand>()
         {
-            { ShortcutNames.CreateFile, new(ShortcutNames.CreateFile, null, _shellCommandHandler.CreateFileInteractive, Icons.KnowledgeArticle, Resources.CreateFile) },
-            { ShortcutNames.FastFileCreation, new(ShortcutNames.FastFileCreation, null, _shellCommandHandler.CreateFileFast, Icons.Page, Resources.FastFileCreation) },
-            { ShortcutNames.SelectedItemCopyPath, new(ShortcutNames.SelectedItemCopyPath, null, _shellCommandHandler.CopyFilePath, Icons.Copy, Resources.SelectedItemCopyPath) },
-            { ShortcutNames.SelectedItemCopyName, new(ShortcutNames.SelectedItemCopyName, null, _shellCommandHandler.CopyFileName, Icons.Rename, Resources.SelectedItemCopyName) },
-            { ShortcutNames.RunFileAsAdmin, new(ShortcutNames.RunFileAsAdmin, null, _shellCommandHandler.RunFileAsAdmin, Icons.ProtectedDocument, Resources.RunFileAsAdmin) },
-            { ShortcutNames.RunFileWithArgs, new(ShortcutNames.RunFileWithArgs, null, _shellCommandHandler.RunFileWithArgs, Icons.OpenFile, Resources.RunFileWithArgs) },
-            { ShortcutNames.OpenFolderInCmd, new(ShortcutNames.OpenFolderInCmd, null, _shellCommandHandler.OpenInCmd, Icons.CommandPrompt, Resources.OpenFolderInCmd) },
-            { ShortcutNames.OpenFolderInCmdAsAdmin, new(ShortcutNames.OpenFolderInCmdAsAdmin, null, _shellCommandHandler.OpenInCmdAsAdmin, Icons.CommandPrompt, Resources.OpenFolderInCmdAsAdmin) }
+            { ShortcutNames.CreateFile, new(ShortcutNames.CreateFile, null, _shellCommandHandler.CreateFileInteractive) },
+            { ShortcutNames.FastFileCreation, new(ShortcutNames.FastFileCreation, null, _shellCommandHandler.CreateFileFast) },
+            { ShortcutNames.SelectedItemCopyPath, new(ShortcutNames.SelectedItemCopyPath, null, _shellCommandHandler.CopyFilePath) },
+            { ShortcutNames.SelectedItemCopyName, new(ShortcutNames.SelectedItemCopyName, null, _shellCommandHandler.CopyFileName) },
+            { ShortcutNames.RunFileAsAdmin, new(ShortcutNames.RunFileAsAdmin, null, _shellCommandHandler.RunFileAsAdmin) },
+            { ShortcutNames.RunFileWithArgs, new(ShortcutNames.RunFileWithArgs, null, _shellCommandHandler.RunFileWithArgs) },
+            { ShortcutNames.OpenFolderInCmd, new(ShortcutNames.OpenFolderInCmd, null, _shellCommandHandler.OpenInCmd) },
+            { ShortcutNames.OpenFolderInCmdAsAdmin, new(ShortcutNames.OpenFolderInCmdAsAdmin, null, _shellCommandHandler.OpenInCmdAsAdmin) }
         };
     }
 

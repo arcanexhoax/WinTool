@@ -4,7 +4,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:WinTool.Properties"
-             xmlns:ui="clr-namespace:WinTool.UI"
              xmlns:ctrl="clr-namespace:WinTool.UI.Controls"
              xmlns:settings="clr-namespace:WinTool.ViewModels.Settings"
              mc:Ignorable="d"
@@ -116,7 +115,7 @@
 
                                 <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
                                            FontSize="18"
-                                           Text="{x:Static ui:Icons.Power}"
+                                           Text="{StaticResource Icon.Power}"
                                            Margin="0 0 18 0" />
 
                                 <StackPanel Grid.Column="1">
@@ -159,7 +158,7 @@
 
                             <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
                                        FontSize="18"
-                                       Text="{x:Static ui:Icons.Theme}"
+                                       Text="{StaticResource Icon.Theme}"
                                        Margin="0 0 18 0"/>
                             <TextBlock Text="{x:Static p:Resources.AppTheme}"
                                        HorizontalAlignment="Left"

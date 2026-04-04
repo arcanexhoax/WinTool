@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GlobalKeyInterceptor;
+using System.Windows;
 using WinTool.Models;
+using WinTool.Properties;
 using WinTool.Services;
 using WinTool.Views.Shortcuts;
 
@@ -41,8 +43,8 @@ public partial class ShortcutViewModel : ObservableObject
         _id = shortcutCommand.Id;
 
         Shortcut = shortcutCommand.Shortcut;
-        Icon = shortcutCommand.Icon;
-        Description = shortcutCommand.Description;
+        Icon = (string)Application.Current.FindResource($"Icon.{shortcutCommand.Id}");
+        Description = Resources.ResourceManager.GetString(shortcutCommand.Id)!;
 
         EditShortcutCommand = new RelayCommand(Edit);
     }
