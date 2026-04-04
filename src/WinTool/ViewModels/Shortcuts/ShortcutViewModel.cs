@@ -15,17 +15,8 @@ public partial class ShortcutViewModel : ObservableObject
     private readonly ShortcutsService _shortcutsService;
     private readonly ViewFactory _viewFactory;
 
-    public Shortcut? Shortcut
-    {
-        get; set
-        {
-            field = value;
-            ShortcutString = value?.ToFormattedString();
-        }
-    }
-
     [ObservableProperty]
-    public partial string? ShortcutString { get; set; }
+    public partial Shortcut? Shortcut { get; set; }
 
     public string Icon { get; }
 
@@ -33,14 +24,11 @@ public partial class ShortcutViewModel : ObservableObject
 
     public RelayCommand EditShortcutCommand { get; }
 
-    public ShortcutViewModel(
-        ShortcutsService shortcutsService,
-        ShortcutCommand shortcutCommand,
-        ViewFactory viewFactory)
+    public ShortcutViewModel(ShortcutsService shortcutsService, ShortcutCommand shortcutCommand, ViewFactory viewFactory)
     {
+        _id = shortcutCommand.Id;
         _shortcutsService = shortcutsService;
         _viewFactory = viewFactory;
-        _id = shortcutCommand.Id;
 
         Shortcut = shortcutCommand.Shortcut;
         Icon = (string)Application.Current.FindResource($"Icon.{shortcutCommand.Id}");
