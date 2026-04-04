@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:WinTool.Properties"
              xmlns:ctrl="clr-namespace:WinTool.UI.Controls"
+             xmlns:ui="clr-namespace:WinTool.UI"
              xmlns:settings="clr-namespace:WinTool.ViewModels.Settings"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
@@ -23,6 +24,7 @@
 
             <ScrollViewer Margin="0 24 0 0"
                           Padding="0 0 20 0"
+                          ui:ScrollViewerExtensions.AutoHideScrollBars="True"
                           Grid.Row="1">
                 <StackPanel MaxWidth="1000">
                     <TextBlock Text="{x:Static p:Resources.General}"
