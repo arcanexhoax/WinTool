@@ -1,7 +1,7 @@
 # WinTool
 
 ![NET](https://img.shields.io/badge/.NET%2010-%23512BD4)
-![Version](https://img.shields.io/badge/Version-0.9.5-%230c7ebf)
+![Version](https://img.shields.io/badge/Version-0.10.0-%230c7ebf)
 [![License](https://img.shields.io/github/license/arcanexhoax/WinTool.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/WinTool/master/LICENSE)
 
 WinTool is a utility that adds useful features and shortcuts to Windows, enhancing everyday experience.
@@ -26,7 +26,7 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 ## Features
 - Input popup: a keyboard layout switching popup near active caret in any app
 
-<img src="./docs/input-popup.png" />
+<img src="./docs/input-popup.gif" />
 
 <br>
 
