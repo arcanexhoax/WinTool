@@ -13,9 +13,11 @@
                     ShowInTaskbar="False"
                     SizeToContent="Width"
                     Height="40">
-    <Border Background="{DynamicResource AcrylicLayoutBrush}" 
+    <Border x:Name="RootBorder"
+            Background="{DynamicResource AcrylicLayoutBrush}" 
             BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
-            BorderThickness="1">
+            BorderThickness="1"
+            CornerRadius="6">
         <Grid>
             <ItemsControl x:Name="LanguageItemsControl" 
                           ItemsSource="{Binding AllLanguages}">

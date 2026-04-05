@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Shell;
 using WinTool.Models;
 using WinTool.Native;
@@ -32,23 +31,30 @@ public class FluentWindow : Window
         _handleSource = HwndSource.FromHwnd(_handle);
 
         RemoveTitlebarBackground();
+
+        if (Environment.OSVersion.Version.Build < 22000)
+            RemoveBackdrop();
     }
 
     protected void ApplyBackdrop(WindowBackdropType backdropType)
     {
-        var pvAttr = 1u; // 1 to enable, 0 to disable
-        var dwmAttr = DWMWINDOWATTRIBUTE.DWMWA_MICA_EFFECT;
+        var build = Environment.OSVersion.Version.Build;
 
-        if (Environment.OSVersion.Version.Build < 22053)
+        if (build < 22000)
+            return;
+
+        if (build < 22053)
         {
             if (backdropType != WindowBackdropType.None)
-                ApplyWindowAttribute(dwmAttr, pvAttr);
+            {
+                var pvAttr = 1u;
+                ApplyWindowAttribute(DWMWINDOWATTRIBUTE.DWMWA_MICA_EFFECT, pvAttr);
+            }
 
             return;
         }
 
-        dwmAttr = DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE;
-        pvAttr = (uint)(backdropType switch
+        var systemPvAttr = (uint)(backdropType switch
         {
             WindowBackdropType.Auto => DWMSBT.AUTO,
             WindowBackdropType.Mica => DWMSBT.MAINWINDOW,
@@ -57,7 +63,7 @@ public class FluentWindow : Window
             _ => DWMSBT.DISABLE,        
         });
 
-        ApplyWindowAttribute(dwmAttr, pvAttr);
+        ApplyWindowAttribute(DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, systemPvAttr);
     }
 
     protected void ApplyDarkMode()
@@ -79,7 +85,7 @@ public class FluentWindow : Window
 
         if (_handleSource?.RootVisual is Window window)
         {
-            window.Background = (SolidColorBrush)Application.Current.Resources["EmptyBackdropBrush"];
+            window.SetResourceReference(BackgroundProperty, "EmptyBackdropBrush");
         }
     }
 
