@@ -13,6 +13,7 @@ public static class LoggingExtensions
         builder.Logging.ClearProviders();
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
 
+        // TODO delete when installer is added
         using var stream = typeof(App).Assembly.GetManifestResourceStream("WinTool.nlog.config");
         using var reader = new StreamReader(stream!);
         NLog.LogManager.Configuration = XmlLoggingConfiguration.CreateFromXmlString(reader.ReadToEnd());

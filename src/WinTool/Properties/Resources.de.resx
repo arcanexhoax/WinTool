@@ -193,6 +193,9 @@
   <data name="InputPopup" xml:space="preserve">
     <value>Eingabe-Popup</value>
   </data>
+  <data name="InputPopupDescription" xml:space="preserve">
+    <value>Zeigt beim Sprachwechsel das aktuelle Tastaturlayout neben dem Textcursor an</value>
+  </data>
   <data name="WindowsExplorer" xml:space="preserve">
     <value>Windows-Explorer</value>
   </data>

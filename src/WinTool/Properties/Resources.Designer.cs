@@ -302,6 +302,15 @@ namespace WinTool.Properties {
                 return ResourceManager.GetString("InputPopup", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Shows the current keyboard layout near the text cursor when you switch languages.
+        /// </summary>
+        public static string InputPopupDescription {
+            get {
+                return ResourceManager.GetString("InputPopupDescription", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Launch on Windows startup.

@@ -193,6 +193,9 @@
   <data name="InputPopup" xml:space="preserve">
     <value>Giriş açılır penceresi</value>
   </data>
+  <data name="InputPopupDescription" xml:space="preserve">
+    <value>Dili değiştirdiğinizde geçerli klavye düzenini metin imlecinin yanında gösterir</value>
+  </data>
   <data name="WindowsExplorer" xml:space="preserve">
     <value>Windows Gezgini</value>
   </data>

@@ -193,6 +193,9 @@
   <data name="InputPopup" xml:space="preserve">
     <value>Fenêtre contextuelle de saisie</value>
   </data>
+  <data name="InputPopupDescription" xml:space="preserve">
+    <value>Affiche la disposition actuelle du clavier près du curseur de texte lors du changement de langue</value>
+  </data>
   <data name="WindowsExplorer" xml:space="preserve">
     <value>Explorateur Windows</value>
   </data>

@@ -249,6 +249,9 @@
   <data name="InputPopup" xml:space="preserve">
     <value>Input Popup</value>
   </data>
+  <data name="InputPopupDescription" xml:space="preserve">
+    <value>Shows the current keyboard layout near the text cursor when you switch languages</value>
+  </data>
   <data name="WindowsExplorer" xml:space="preserve">
     <value>Windows Explorer</value>
   </data>

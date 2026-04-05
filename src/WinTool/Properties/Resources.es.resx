@@ -193,6 +193,9 @@
   <data name="InputPopup" xml:space="preserve">
     <value>Ventana emergente de entrada</value>
   </data>
+  <data name="InputPopupDescription" xml:space="preserve">
+    <value>Muestra la distribución de teclado actual junto al cursor de texto al cambiar de idioma</value>
+  </data>
   <data name="WindowsExplorer" xml:space="preserve">
     <value>Explorador de Windows</value>
   </data>

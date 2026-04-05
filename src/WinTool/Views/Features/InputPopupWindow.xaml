@@ -19,24 +19,6 @@
             BorderThickness="1"
             CornerRadius="6">
         <Grid>
-            <ItemsControl x:Name="LanguageItemsControl" 
-                          ItemsSource="{Binding AllLanguages}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Width="{x:Static local:InputPopupWindow.SelectionItemWidth}">
-                            <TextBlock Text="{Binding Name}"
-                                       Padding="8 16"
-                                       HorizontalAlignment="Center" />
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
             <Grid x:Name="SelectionOverlay"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Stretch"
@@ -62,6 +44,24 @@
                     </Border.RenderTransform>
                 </Border>
             </Grid>
+
+            <ItemsControl x:Name="LanguageItemsControl"
+                          ItemsSource="{Binding AllLanguages}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="{x:Static local:InputPopupWindow.SelectionItemWidth}">
+                            <TextBlock Text="{Binding Name}"
+                                       Padding="8 16"
+                                       HorizontalAlignment="Center" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Border>
 </views:FluentWindow>
