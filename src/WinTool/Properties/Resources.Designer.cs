@@ -61,16 +61,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Album.
-        /// </summary>
-        public static string Album {
-            get {
-                return ResourceManager.GetString("Album", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Already running as admin but got: {0}.
+        ///   Looks up a localized string similar to The app is already running as administrator, but an unauthorized access error occurred: {0}.
         /// </summary>
         public static string AlreadyRunnningAsAdminError {
             get {
@@ -147,33 +138,6 @@ namespace WinTool.Properties {
         public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to execute command {0}: {1}.
-        /// </summary>
-        public static string CommandExecutionError {
-            get {
-                return ResourceManager.GetString("CommandExecutionError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Convert selected text to lowercase.
-        /// </summary>
-        public static string ConvertToLowercase {
-            get {
-                return ResourceManager.GetString("ConvertToLowercase", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Convert selected text to uppercase.
-        /// </summary>
-        public static string ConvertToUppercase {
-            get {
-                return ResourceManager.GetString("ConvertToUppercase", resourceCulture);
             }
         }
         
@@ -304,15 +268,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File &apos;{0}&apos; doesn&apos;t exist..
-        /// </summary>
-        public static string FileNotFound {
-            get {
-                return ResourceManager.GetString("FileNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to File path &apos;{0}&apos; is invalid.
         /// </summary>
         public static string FilePathInvalid {
@@ -345,6 +300,24 @@ namespace WinTool.Properties {
         public static string InputPopup {
             get {
                 return ResourceManager.GetString("InputPopup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shows the current keyboard layout near the text cursor when you switch languages.
+        /// </summary>
+        public static string InputPopupDescription {
+            get {
+                return ResourceManager.GetString("InputPopupDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
             }
         }
         
@@ -529,7 +502,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to set windows startup. {0}.
+        ///   Looks up a localized string similar to Could not set the app to start with Windows. {0}.
         /// </summary>
         public static string SetWindowsStartupError {
             get {
@@ -561,6 +534,15 @@ namespace WinTool.Properties {
         public static string Size {
             get {
                 return ResourceManager.GetString("Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startup.
+        /// </summary>
+        public static string Startup {
+            get {
+                return ResourceManager.GetString("Startup", resourceCulture);
             }
         }
         

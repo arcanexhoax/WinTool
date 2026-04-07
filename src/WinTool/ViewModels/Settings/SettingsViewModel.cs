@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System;
-using System.Diagnostics;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Extensions;
@@ -29,6 +29,7 @@ public class SettingsViewModel : ObservableObject
     private const string RegKeyName = "WinTool";
 
     private readonly string _executionFilePath;
+    private readonly ILogger _logger;
     private readonly WritableOptions<SettingsOptions> _settingsOptions;
 
     private bool _isInitializing;
@@ -59,7 +60,7 @@ public class SettingsViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error setting Windows startup: {ex.Message}");
+                _logger.LogError(ex, "Error setting Windows startup");
                 MessageBox.ShowError(string.Format(Resources.SetWindowsStartupError, ex.Message));
             }
         }
@@ -98,10 +99,22 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
-    public SettingsViewModel(WritableOptions<SettingsOptions> settingsOptions)
+    public string? SelectedLanguage
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.Language = value);
+            }
+        }
+    }
+
+    public SettingsViewModel(ILogger<SettingsViewModel> logger, WritableOptions<SettingsOptions> settingsOptions)
     {
         // use arg "/background" to start app in background mode
         _executionFilePath = $"{Environment.ProcessPath!} {BackgroundParameter.ParameterName}";
+        _logger = logger;
         _settingsOptions = settingsOptions;
         _isInitializing = true;
 
@@ -109,6 +122,7 @@ public class SettingsViewModel : ObservableObject
         AlwaysRunAsAdmin = _settingsOptions.CurrentValue.AlwaysRunAsAdmin;
         SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
         SelectedAnimationMode = _settingsOptions.CurrentValue.AnimationMode;
+        SelectedLanguage = _settingsOptions.CurrentValue.Language;
 
         _isInitializing = false;
     }

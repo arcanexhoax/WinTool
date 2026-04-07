@@ -1,4 +1,5 @@
-﻿using System;
+﻿﻿using NLog;
+using System;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Threading;
@@ -9,6 +10,7 @@ namespace WinTool.Extensions;
 
 public static class ProcessExtensions
 {
+    private static readonly Logger s_logger = LogManager.GetCurrentClassLogger();
     private static readonly bool s_isAdmin;
 
     static ProcessExtensions()
@@ -30,7 +32,7 @@ public static class ProcessExtensions
             }
             catch (UnauthorizedAccessException ex) when (s_isAdmin)
             {
-                Debug.WriteLine($"Already running as admin but got: {ex.Message}");
+                s_logger.Error(ex, "Already running as admin but got an unauthorized access error");
                 MessageBox.ShowError(string.Format(Resources.AlreadyRunnningAsAdminError, ex.Message));
             }
             catch (UnauthorizedAccessException)
@@ -49,7 +51,7 @@ public static class ProcessExtensions
             }
             catch (Exception iex)
             {
-                Debug.WriteLine("Failed to start process with UAC: " + iex.Message);
+                s_logger.Error(iex, "Failed to start process with UAC");
                 MessageBox.ShowError(string.Format(Resources.RunAsAdminError, iex.Message));
             }
         }

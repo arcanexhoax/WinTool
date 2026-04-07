@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AlreadyRunnningAsAdminError" xml:space="preserve">
+    <value>Aplikacja jest już uruchomiona jako administrator, ale otrzymano: {0}</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Zamknij</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Utwórz</value>
+  </data>
+  <data name="CreateFile" xml:space="preserve">
+    <value>Utwórz plik</value>
+  </data>
+  <data name="DriveNotFound" xml:space="preserve">
+    <value>Nie można odnaleźć dysku '{0}'.</value>
+    <comment>Unable to find drive '[D:\]'.</comment>
+  </data>
+  <data name="EnableSwitchLanguagePopup" xml:space="preserve">
+    <value>Włącz wyskakujące okno wprowadzania</value>
+  </data>
+  <data name="EnterNewShortcut" xml:space="preserve">
+    <value>Wprowadź nowy skrót klawiszowy</value>
+    <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>WinTool. Błąd</value>
+  </data>
+  <data name="FastFileCreation" xml:space="preserve">
+    <value>Szybkie tworzenie pliku</value>
+  </data>
+  <data name="Features" xml:space="preserve">
+    <value>Funkcje</value>
+  </data>
+  <data name="FileAlreadyExists" xml:space="preserve">
+    <value>Plik '{0}' już istnieje.</value>
+  </data>
+  <data name="FileConsistsOnlyOfDots" xml:space="preserve">
+    <value>Plik '{0}' składa się wyłącznie z kropek</value>
+  </data>
+  <data name="FileCreationError" xml:space="preserve">
+    <value>Nie udało się utworzyć pliku '{0}': {1}</value>
+  </data>
+  <data name="FileHasForbiddenChars" xml:space="preserve">
+    <value>Plik '{0}' zawiera niedozwolone znaki</value>
+  </data>
+  <data name="FilePathInvalid" xml:space="preserve">
+    <value>Ścieżka pliku '{0}' jest nieprawidłowa</value>
+  </data>
+  <data name="GetSettingsError" xml:space="preserve">
+    <value>Nie udało się pobrać ustawień: {0}</value>
+  </data>
+  <data name="LaunchOnStartup" xml:space="preserve">
+    <value>Uruchamiaj wraz z systemem Windows</value>
+    <comment>Launch [this app] on Windows startup</comment>
+  </data>
+  <data name="Startup" xml:space="preserve">
+    <value>Uruchamianie</value>
+    <comment>Startup [of this app]</comment>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Otwórz</value>
+  </data>
+  <data name="OpenFolderInCmd" xml:space="preserve">
+    <value>Otwórz bieżący folder w wierszu polecenia</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Opcje</value>
+  </data>
+  <data name="OutOfMemory" xml:space="preserve">
+    <value>Dysk '{0}' ma tylko {1} wolnych bajtów (zażądano {2}).</value>
+    <comment>The drive '[D:\]' has only [10] free bytes (requested [20]).</comment>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Uruchom</value>
+    <comment>Run [an app]</comment>
+  </data>
+  <data name="RunAsAdminError" xml:space="preserve">
+    <value>Nie udało się uruchomić WinTool jako administrator: {0}</value>
+  </data>
+  <data name="RunFormat" xml:space="preserve">
+    <value>Uruchom „{0}” z argumentami</value>
+    <comment>Run [an app] "[calc.exe]" with arguments</comment>
+  </data>
+  <data name="RunFileWithArgs" xml:space="preserve">
+    <value>Uruchom wybrany plik z argumentami</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Zapisz</value>
+  </data>
+  <data name="SelectedItemCopyName" xml:space="preserve">
+    <value>Kopiuj nazwę wybranego lub otwartego elementu</value>
+    <comment>Item = file/folder</comment>
+  </data>
+  <data name="SelectedItemCopyPath" xml:space="preserve">
+    <value>Kopiuj ścieżkę do wybranego lub otwartego elementu</value>
+    <comment>Item = file/folder</comment>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Ustawienia</value>
+  </data>
+  <data name="SetWindowsStartupError" xml:space="preserve">
+    <value>Nie udało się ustawić uruchamiania aplikacji wraz z systemem Windows. {0}</value>
+  </data>
+  <data name="Shortcuts" xml:space="preserve">
+    <value>Skróty klawiszowe</value>
+    <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Rozmiar</value>
+  </data>
+  <data name="EditShortcutTip" xml:space="preserve">
+    <value>Skrót klawiszowy powinien zaczynać się od co najmniej jednego klawisza modyfikującego (Ctrl, Shift, Alt, Win)</value>
+  </data>
+  <data name="TrayToolTip" xml:space="preserve">
+    <value>Kliknij dwukrotnie, aby otworzyć, kliknij prawym przyciskiem, aby wyświetlić menu</value>
+    <comment>Double click to open [this app], right click -  [open] menu of [this app]</comment>
+  </data>
+  <data name="UpdateSettingsError" xml:space="preserve">
+    <value>Nie udało się zaktualizować ustawień: {0}</value>
+  </data>
+  <data name="WinTool" xml:space="preserve">
+    <value>WinTool</value>
+  </data>
+  <data name="ShortcutAlreadyUsed" xml:space="preserve">
+    <value>Ten skrót klawiszowy jest już używany dla „{0}”.</value>
+    <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
+  </data>
+  <data name="InputPopup" xml:space="preserve">
+    <value>Wyskakujące okno wprowadzania</value>
+  </data>
+  <data name="InputPopupDescription" xml:space="preserve">
+    <value>Pokazuje bieżący układ klawiatury obok kursora tekstowego podczas zmiany języka</value>
+  </data>
+  <data name="WindowsExplorer" xml:space="preserve">
+    <value>Eksplorator Windows</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Ogólne</value>
+    <comment>General [settings]</comment>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Wygląd</value>
+    <comment>[This app] Appearance</comment>
+  </data>
+  <data name="AppTheme" xml:space="preserve">
+    <value>Motyw aplikacji</value>
+    <comment>App theme (dark/light/system)</comment>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Jasny</value>
+    <comment>Light [theme]</comment>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Ciemny</value>
+    <comment>Dark [theme]</comment>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>Systemowy</value>
+    <comment>System [theme]</comment>
+  </data>
+  <data name="AlwaysRunAsAdmin" xml:space="preserve">
+    <value>Zawsze uruchamiaj jako administrator</value>
+    <comment>Always run [apps] as administrator</comment>
+  </data>
+  <data name="Animations" xml:space="preserve">
+    <value>Animacje</value>
+    <comment>[UI] Animations</comment>
+  </data>
+  <data name="AnimationsAutoDescription" xml:space="preserve">
+    <value>Tryb automatyczny wyłącza animacje w sesjach zdalnych, gdy animacje systemu Windows są wyłączone lub gdy aktywny jest tryb oszczędzania energii</value>
+    <comment>Auto = Automatically</comment>
+  </data>
+  <data name="RunAsAdmin" xml:space="preserve">
+    <value>Uruchom jako administrator</value>
+    <comment>Run [an app] as administartor</comment>
+  </data>
+  <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
+    <value>Otwórz bieżący folder w wierszu polecenia jako administrator</value>
+  </data>
+  <data name="RunFileAsAdmin" xml:space="preserve">
+    <value>Uruchom wybrany plik jako administrator</value>
+  </data>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>Nie określono</value>
+    <comment>[It's] Not specified</comment>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>Włączone</value>
+    <comment>[It's turned] On</comment>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Wyłączone</value>
+    <comment>[It's turned] Off </comment>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Auto</value>
+    <comment>Auto = Automatically</comment>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Język</value>
+    <comment>App display language</comment>
+  </data>
+</root>

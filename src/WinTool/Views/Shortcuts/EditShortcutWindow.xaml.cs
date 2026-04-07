@@ -1,6 +1,5 @@
 ﻿using GlobalKeyInterceptor;
-using System.Diagnostics;
-using System.Windows.Interop;
+using GlobalKeyInterceptor.Utils;
 using WinTool.Models;
 using WinTool.Native;
 using WinTool.ViewModels.Shortcuts;
@@ -24,7 +23,9 @@ public partial class EditShortcutWindow : DialogWindow<EditShortcutInput, Shortc
     {
         if (_handle == NativeMethods.GetForegroundWindow())
         {
-            Debug.WriteLine(e.Shortcut);
+            if (!e.Shortcut.Key.IsModifier)
+                e.IsHandled = true;
+
             (DataContext as EditShortcutViewModel)!.Shortcut = e.Shortcut;
         }
     }

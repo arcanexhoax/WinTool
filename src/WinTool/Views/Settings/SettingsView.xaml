@@ -4,12 +4,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:WinTool.Properties"
+             xmlns:ctrl="clr-namespace:WinTool.UI.Controls"
              xmlns:ui="clr-namespace:WinTool.UI"
              xmlns:settings="clr-namespace:WinTool.ViewModels.Settings"
-             mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
              d:DesignHeight="450"
-             d:DesignWidth="800">
+             d:DesignWidth="800"
+             mc:Ignorable="d">
     <Border Style="{DynamicResource MainContentBorderStyle}">
         <Grid>
             <Grid.RowDefinitions>
@@ -17,77 +18,159 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Style="{StaticResource TitleTextBlockStyle}"
-                       Text="{x:Static p:Resources.Settings}"
+            <TextBlock Text="{x:Static p:Resources.Settings}"
+                       Style="{StaticResource TitleTextBlockStyle}"
                        MaxWidth="1000" />
 
-            <ScrollViewer Margin="0 24 0 0"
+            <ScrollViewer ui:ScrollViewerExtensions.AutoHideScrollBars="True"
+                          Margin="0 24 0 0"
                           Padding="0 0 20 0"
                           Grid.Row="1">
                 <StackPanel MaxWidth="1000">
                     <TextBlock Text="{x:Static p:Resources.General}"
                                Style="{StaticResource BodyStrongTextBlockStyle}" />
-                    
+
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 8 0 0">
-                        <CheckBox Content="{x:Static p:Resources.LaunchOnStartup}"
-                                  IsChecked="{Binding LaunchOnWindowsStartup}"
-                                  HorizontalAlignment="Left"
-                                  VerticalAlignment="Top" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{StaticResource Icon.Language}"
+                                       FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Margin="0 0 18 0" />
+
+                            <TextBlock Text="{x:Static p:Resources.Language}"
+                                       Grid.Column="1" />
+
+                            <ComboBox SelectedValue="{Binding SelectedLanguage}"
+                                      SelectedValuePath="Tag"
+                                      Width="150"
+                                      HorizontalAlignment="Right"
+                                      Grid.Column="3">
+                                <ComboBoxItem Content="English"
+                                              Tag="en" />
+                                <ComboBoxItem Content="Deutsch"
+                                              Tag="de" />
+                                <ComboBoxItem Content="Español"
+                                              Tag="es" />
+                                <ComboBoxItem Content="Français"
+                                              Tag="fr" />
+                                <ComboBoxItem Content="Polski"
+                                              Tag="pl" />
+                                <ComboBoxItem Content="Português"
+                                              Tag="pt" />
+                                <ComboBoxItem Content="Русский"
+                                              Tag="ru" />
+                                <ComboBoxItem Content="Türkçe"
+                                              Tag="tr" />
+                                <ComboBoxItem Content="Українська"
+                                              Tag="uk" />
+                            </ComboBox>
+                        </Grid>
                     </Border>
 
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 2 0 0">
-                        <CheckBox Content="{x:Static p:Resources.AlwaysRunAsAdmin}"
-                                  IsChecked="{Binding AlwaysRunAsAdmin}"
-                                  HorizontalAlignment="Left"
-                                  VerticalAlignment="Top" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{StaticResource Icon.Power}"
+                                       FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Margin="0 0 18 0" />
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{x:Static p:Resources.Animations}" />
+
+                                <TextBlock Text="{x:Static p:Resources.AnimationsAutoDescription}"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Foreground="{DynamicResource SystemFillColorNeutralBrush}"
+                                           Margin="0 4 0 0" />
+                            </StackPanel>
+
+                            <ComboBox SelectedValue="{Binding SelectedAnimationMode}"
+                                      SelectedValuePath="Tag"
+                                      Width="150"
+                                      HorizontalAlignment="Right"
+                                      Grid.Column="3">
+                                <ComboBoxItem Content="{x:Static p:Resources.Auto}"
+                                              Tag="{x:Static settings:AnimationMode.Auto}" />
+                                <ComboBoxItem Content="{x:Static p:Resources.On}"
+                                              Tag="{x:Static settings:AnimationMode.On}" />
+                                <ComboBoxItem Content="{x:Static p:Resources.Off}"
+                                              Tag="{x:Static settings:AnimationMode.Off}" />
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Text="{x:Static p:Resources.Startup}"
+                               Style="{StaticResource BodyStrongTextBlockStyle}"
+                               Margin="0 36 0 0" />
+
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 8 0 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{StaticResource Icon.PowerButton}"
+                                       FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Margin="0 0 18 0" />
+
+                            <TextBlock Text="{x:Static p:Resources.LaunchOnStartup}"
+                                       Grid.Column="1" />
+
+                            <ctrl:ToggleSwitch IsChecked="{Binding LaunchOnWindowsStartup}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="3" />
+                        </Grid>
                     </Border>
 
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 2 0 0">
-                        <StackPanel>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                                <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                           FontSize="18"
-                                           Text="{x:Static ui:Icons.Power}"
-                                           Margin="0 0 18 0" />
+                            <TextBlock Text="{StaticResource Icon.Shield}"
+                                       FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Margin="0 0 18 0" />
 
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="{x:Static p:Resources.Animations}" />
+                            <TextBlock Text="{x:Static p:Resources.AlwaysRunAsAdmin}"
+                                       Grid.Column="1" />
 
-                                    <TextBlock Text="{x:Static p:Resources.AnimationsAutoDescription}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{DynamicResource SystemFillColorNeutralBrush}"
-                                               Margin="0 4 0 0" />
-                                </StackPanel>
-
-                                <ComboBox Width="150"
-                                          HorizontalAlignment="Right"
-                                          SelectedValue="{Binding SelectedAnimationMode}"
-                                          SelectedValuePath="Tag"
-                                          Grid.Column="3">
-                                    <ComboBoxItem Tag="{x:Static settings:AnimationMode.Auto}"
-                                                  Content="{x:Static p:Resources.Auto}" />
-                                    <ComboBoxItem Tag="{x:Static settings:AnimationMode.On}"
-                                                  Content="{x:Static p:Resources.On}" />
-                                    <ComboBoxItem Tag="{x:Static settings:AnimationMode.Off}"
-                                                  Content="{x:Static p:Resources.Off}" />
-                                </ComboBox>
-                            </Grid>
-                        </StackPanel>
+                            <ctrl:ToggleSwitch IsChecked="{Binding AlwaysRunAsAdmin}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="3" />
+                        </Grid>
                     </Border>
 
                     <TextBlock Text="{x:Static p:Resources.Appearance}"
                                Style="{StaticResource BodyStrongTextBlockStyle}"
-                               Margin="0 36 0 0"/>
+                               Margin="0 36 0 0" />
 
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 8 0 0">
@@ -98,25 +181,25 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            <TextBlock Text="{StaticResource Icon.Theme}"
+                                       FontFamily="{StaticResource SymbolThemeFontFamily}"
                                        FontSize="18"
-                                       Text="{x:Static ui:Icons.Theme}"
-                                       Margin="0 0 18 0"/>
+                                       Margin="0 0 18 0" />
                             <TextBlock Text="{x:Static p:Resources.AppTheme}"
                                        HorizontalAlignment="Left"
-                                       Grid.Column="1"/>
-                            
-                            <ComboBox Width="150"
-                                      HorizontalAlignment="Right"
-                                      SelectedValue="{Binding SelectedAppTheme}"
+                                       Grid.Column="1" />
+
+                            <ComboBox SelectedValue="{Binding SelectedAppTheme}"
                                       SelectedValuePath="Tag"
+                                      Width="150"
+                                      HorizontalAlignment="Right"
                                       Grid.Column="2">
-                                <ComboBoxItem Tag="{x:Static settings:AppTheme.System}"
-                                              Content="{x:Static p:Resources.System}" />
-                                <ComboBoxItem Tag="{x:Static settings:AppTheme.Light}"
-                                              Content="{x:Static p:Resources.Light}" />
-                                <ComboBoxItem Tag="{x:Static settings:AppTheme.Dark}"
-                                              Content="{x:Static p:Resources.Dark}" />
+                                <ComboBoxItem Content="{x:Static p:Resources.System}"
+                                              Tag="{x:Static settings:AppTheme.System}" />
+                                <ComboBoxItem Content="{x:Static p:Resources.Light}"
+                                              Tag="{x:Static settings:AppTheme.Light}" />
+                                <ComboBoxItem Content="{x:Static p:Resources.Dark}"
+                                              Tag="{x:Static settings:AppTheme.Dark}" />
                             </ComboBox>
                         </Grid>
                     </Border>

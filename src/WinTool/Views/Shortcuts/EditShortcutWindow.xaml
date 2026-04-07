@@ -3,6 +3,7 @@
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:c="clr-namespace:Hoax.WpfConverters;assembly=Hoax.WpfConverters"
+                   xmlns:ctrl="clr-namespace:WinTool.UI.Controls"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                    xmlns:gke="clr-namespace:GlobalKeyInterceptor;assembly=GlobalKeyInterceptor"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -37,10 +38,9 @@
 
                 <Border Padding="0 50 0 24">
                     <StackPanel>
-                        <TextBlock FontSize="30"
-                                   FontWeight="SemiBold"
-                                   Text="{Binding ShortcutString}"
-                                   HorizontalAlignment="Center" />
+                        <ctrl:Shortcut Value="{Binding Shortcut}"
+                                       HorizontalAlignment="Center"
+                                       FontSize="30" />
 
                         <TextBlock Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                                    Text="{Binding ErrorText}"

@@ -26,6 +26,7 @@ public partial class InputPopupWindow : FluentWindow
     private readonly IOptionsMonitor<SettingsOptions> _settingsOptions;
     private readonly InputPopupViewModel _viewModel;
     private readonly Timer _hideTimer = new(1500) { AutoReset = false };
+    private readonly bool _isWindows10 = Environment.OSVersion.Version.Build < 22000;
 
     private int _lastIndicatorIndex = -1;
     private bool _isHiding;
@@ -36,6 +37,13 @@ public partial class InputPopupWindow : FluentWindow
 
     public InputPopupWindow(InputPopupViewModel vm, IKeyInterceptor keyInterceptor, IOptionsMonitor<SettingsOptions> settingsOptions)
     {
+        if (_isWindows10)
+        {
+            WindowStyle = WindowStyle.None;
+            AllowsTransparency = true;
+            Background = Brushes.Transparent;
+        }
+
         InitializeComponent();
         DataContext = vm;
 
@@ -77,6 +85,15 @@ public partial class InputPopupWindow : FluentWindow
         NativeMethods.ShowWindowAsPopup(_handle);
         RemoveTitlebar();
         ApplyBackdrop(WindowBackdropType.Acrylic);
+
+        if (_isWindows10)
+        {
+            if (_handleSource?.CompositionTarget != null)
+                _handleSource.CompositionTarget.BackgroundColor = Colors.Transparent;
+
+            Background = Brushes.Transparent;
+            RootBorder.SetResourceReference(System.Windows.Controls.Border.BackgroundProperty, "EmptyBackdropBrush");
+        }
 
         _handleSource!.AddHook(WndProc);
     }

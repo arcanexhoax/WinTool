@@ -117,26 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Album" xml:space="preserve">
-    <value>Album</value>
-  </data>
   <data name="AlreadyRunnningAsAdminError" xml:space="preserve">
-    <value>Already running as admin but got: {0}</value>
+    <value>The app is already running as administrator, but an unauthorized access error occurred: {0}</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
-  </data>
-  <data name="CommandExecutionError" xml:space="preserve">
-    <value>Failed to execute command {0}: {1}</value>
-  </data>
-  <data name="ConvertToLowercase" xml:space="preserve">
-    <value>Convert selected text to lowercase</value>
-  </data>
-  <data name="ConvertToUppercase" xml:space="preserve">
-    <value>Convert selected text to uppercase</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Create</value>
@@ -146,12 +134,14 @@
   </data>
   <data name="DriveNotFound" xml:space="preserve">
     <value>Unable to find drive '{0}'.</value>
+    <comment>Unable to find drive '[D:\]'.</comment>
   </data>
   <data name="EnableSwitchLanguagePopup" xml:space="preserve">
     <value>Enable Input Popup</value>
   </data>
   <data name="EnterNewShortcut" xml:space="preserve">
     <value>Enter a new shortcut</value>
+    <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
   </data>
   <data name="Error" xml:space="preserve">
     <value>WinTool. Error</value>
@@ -174,9 +164,6 @@
   <data name="FileHasForbiddenChars" xml:space="preserve">
     <value>File '{0}' has forbidden characters</value>
   </data>
-  <data name="FileNotFound" xml:space="preserve">
-    <value>File '{0}' doesn't exist.</value>
-  </data>
   <data name="FilePathInvalid" xml:space="preserve">
     <value>File path '{0}' is invalid</value>
   </data>
@@ -185,6 +172,11 @@
   </data>
   <data name="LaunchOnStartup" xml:space="preserve">
     <value>Launch on Windows startup</value>
+    <comment>Launch [this app] on Windows startup</comment>
+  </data>
+  <data name="Startup" xml:space="preserve">
+    <value>Startup</value>
+    <comment>Startup [of this app]</comment>
   </data>
   <data name="Open" xml:space="preserve">
     <value>Open</value>
@@ -197,15 +189,18 @@
   </data>
   <data name="OutOfMemory" xml:space="preserve">
     <value>The drive '{0}' has only {1} free bytes (requested {2}).</value>
+    <comment>The drive '[D:\]' has only [10] free bytes (requested [20]).</comment>
   </data>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
+    <comment>Run [an app]</comment>
   </data>
   <data name="RunAsAdminError" xml:space="preserve">
     <value>Run WinTool as admin failed: {0}</value>
   </data>
   <data name="RunFormat" xml:space="preserve">
     <value>Run "{0}" with arguments</value>
+    <comment>Run [an app] "[calc.exe]" with arguments</comment>
   </data>
   <data name="RunFileWithArgs" xml:space="preserve">
     <value>Run selected file with arguments</value>
@@ -215,18 +210,21 @@
   </data>
   <data name="SelectedItemCopyName" xml:space="preserve">
     <value>Copy name of selected/opened item</value>
+    <comment>Item = file/folder</comment>
   </data>
   <data name="SelectedItemCopyPath" xml:space="preserve">
     <value>Copy path to selected/opened item</value>
+    <comment>Item = file/folder</comment>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
   <data name="SetWindowsStartupError" xml:space="preserve">
-    <value>Unable to set windows startup. {0}</value>
+    <value>Could not set the app to start with Windows. {0}</value>
   </data>
   <data name="Shortcuts" xml:space="preserve">
     <value>Shortcuts</value>
+    <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
   </data>
   <data name="Size" xml:space="preserve">
     <value>Size</value>
@@ -236,6 +234,7 @@
   </data>
   <data name="TrayToolTip" xml:space="preserve">
     <value>Double click to open, right click - menu</value>
+    <comment>Double click to open [this app], right click - [open] menu [of this app]</comment>
   </data>
   <data name="UpdateSettingsError" xml:space="preserve">
     <value>Failed to update settings: {0}</value>
@@ -245,42 +244,56 @@
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>The shortcut is already used for "{0}".</value>
+    <comment>Shortcut = hotkey (e.g. Ctrl + A)</comment>
   </data>
   <data name="InputPopup" xml:space="preserve">
     <value>Input Popup</value>
+  </data>
+  <data name="InputPopupDescription" xml:space="preserve">
+    <value>Shows the current keyboard layout near the text cursor when you switch languages</value>
   </data>
   <data name="WindowsExplorer" xml:space="preserve">
     <value>Windows Explorer</value>
   </data>
   <data name="General" xml:space="preserve">
     <value>General</value>
+    <comment>General [settings]</comment>
   </data>
   <data name="Appearance" xml:space="preserve">
     <value>Appearance</value>
+    <comment>[This app] Appearance</comment>
   </data>
   <data name="AppTheme" xml:space="preserve">
     <value>App theme</value>
+    <comment>App theme (dark/light/system)</comment>
   </data>
   <data name="Light" xml:space="preserve">
     <value>Light</value>
+    <comment>Light [theme]</comment>
   </data>
   <data name="Dark" xml:space="preserve">
     <value>Dark</value>
+    <comment>Dark [theme]</comment>
   </data>
   <data name="System" xml:space="preserve">
     <value>System</value>
+    <comment>System [theme]</comment>
   </data>
   <data name="AlwaysRunAsAdmin" xml:space="preserve">
     <value>Always run as administrator</value>
+    <comment>Always run [apps] as administrator</comment>
   </data>
   <data name="Animations" xml:space="preserve">
     <value>Animations</value>
+    <comment>[UI] Animations</comment>
   </data>
   <data name="AnimationsAutoDescription" xml:space="preserve">
     <value>Auto disables animations in remote sessions, when Windows animations are turned off, or when energy saver is active</value>
+    <comment>Auto = Automatically</comment>
   </data>
   <data name="RunAsAdmin" xml:space="preserve">
     <value>Run as administrator</value>
+    <comment>Run [an app] as administartor</comment>
   </data>
   <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
     <value>Open current folder in command prompt as admin</value>
@@ -290,14 +303,22 @@
   </data>
   <data name="NotSpecified" xml:space="preserve">
     <value>Not specified</value>
+    <comment>[It's] Not specified</comment>
   </data>
   <data name="On" xml:space="preserve">
     <value>On</value>
+    <comment>[It's turned] On</comment>
   </data>
   <data name="Off" xml:space="preserve">
     <value>Off</value>
+    <comment>[It's turned] Off </comment>
   </data>
   <data name="Auto" xml:space="preserve">
     <value>Auto</value>
+    <comment>Auto = Automatically</comment>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+    <comment>App display language</comment>
   </data>
 </root>

@@ -17,5 +17,6 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="4" />
         <Setter Property="Padding" Value="20 10" />
+        <Setter Property="MinHeight" Value="60" />
     </Style>
 </ResourceDictionary>

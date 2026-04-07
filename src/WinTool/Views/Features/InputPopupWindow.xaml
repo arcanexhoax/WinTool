@@ -13,28 +13,12 @@
                     ShowInTaskbar="False"
                     SizeToContent="Width"
                     Height="40">
-    <Border Background="{DynamicResource AcrylicLayoutBrush}" 
+    <Border x:Name="RootBorder"
+            Background="{DynamicResource AcrylicLayoutBrush}" 
             BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
-            BorderThickness="1">
+            BorderThickness="1"
+            CornerRadius="6">
         <Grid>
-            <ItemsControl x:Name="LanguageItemsControl" 
-                          ItemsSource="{Binding AllLanguages}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Width="{x:Static local:InputPopupWindow.SelectionItemWidth}">
-                            <TextBlock Text="{Binding Name}"
-                                       Padding="8 16"
-                                       HorizontalAlignment="Center" />
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
             <Grid x:Name="SelectionOverlay"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Stretch"
@@ -43,8 +27,7 @@
                     <TranslateTransform x:Name="SelectionTranslate" />
                 </Grid.RenderTransform>
 
-                <Border Margin="2"
-                        CornerRadius="6"
+                <Border CornerRadius="6"
                         BorderThickness="1"
                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
                         BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}" />
@@ -61,6 +44,24 @@
                     </Border.RenderTransform>
                 </Border>
             </Grid>
+
+            <ItemsControl x:Name="LanguageItemsControl"
+                          ItemsSource="{Binding AllLanguages}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="{x:Static local:InputPopupWindow.SelectionItemWidth}">
+                            <TextBlock Text="{Binding Name}"
+                                       Padding="8 16"
+                                       HorizontalAlignment="Center" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Border>
 </views:FluentWindow>

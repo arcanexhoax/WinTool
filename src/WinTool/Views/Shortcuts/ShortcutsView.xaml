@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:WinTool.Properties"
              xmlns:shortcuts="clr-namespace:WinTool.Views.Shortcuts"
+             xmlns:ui="clr-namespace:WinTool.UI"
              xmlns:vm="clr-namespace:WinTool.ViewModels.Shortcuts"
              d:DataContext="{d:DesignInstance Type=vm:ShortcutsViewModel}"
              mc:Ignorable="d" 
@@ -22,7 +23,8 @@
 
             <ScrollViewer Grid.Row="1"
                           Margin="0 24 0 0"
-                          Padding="0 0 20 0">
+                          Padding="0 0 20 0"
+                          ui:ScrollViewerExtensions.AutoHideScrollBars="True">
                 <StackPanel MaxWidth="1000">
                     <TextBlock Text="{x:Static p:Resources.WindowsExplorer}"
                                Style="{StaticResource BodyStrongTextBlockStyle}" />

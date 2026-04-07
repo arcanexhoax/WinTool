@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -12,17 +13,11 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public enum SizeUnit : long
-{
-    B  = 1,
-    KB = 1024,
-    MB = 1_048_576,
-    GB = 1_073_741_824,
-    TB = 1_099_511_627_776,
-}
-
 public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<string, CreateFileOutput>
 {
+    private readonly ILogger _logger;
+    private readonly CreateFileDialogState _state;
+
     private Action<Result<CreateFileOutput>>? _onResult;
 
     [ObservableProperty]
@@ -52,10 +47,15 @@ public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<st
     public RelayCommand CreateCommand { get; }
     public RelayCommand CloseWindowCommand { get; }
 
-    public CreateFileViewModel()
+    public CreateFileViewModel(ILogger<CreateFileViewModel> logger, CreateFileDialogState state)
     {
-        SelectedSizeUnit = SizeUnit.B;
+        _logger = logger;
+        _state = state;
+
         SizeUnits = new ObservableCollection<SizeUnit>(Enum.GetValues<SizeUnit>());
+        FileName = _state.FileName;
+        Size = _state.Size;
+        SelectedSizeUnit = _state.SelectedSizeUnit;
 
         CreateCommand = new RelayCommand(CreateFile);
         CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<CreateFileOutput>(false)));
@@ -73,7 +73,13 @@ public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<st
         AreOptionsOpened = Size > 0;
     }
 
-    public void OnClose() => _onResult = null;
+    public void OnClose()
+    {
+        _state.FileName = FileName;
+        _state.Size = Size;
+        _state.SelectedSizeUnit = SelectedSizeUnit;
+        _onResult = null;
+    }
 
     private void CreateFile()
     {
@@ -81,58 +87,54 @@ public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<st
             return;
 
         long sizeBytes = Size * (long)SelectedSizeUnit;
-        string filePath = Path.Combine(FullFolderPath, FileName);
+        var result = ValidateCreateFileOutput(FullFolderPath, FileName, sizeBytes);
 
-        if (!CheckIfFileValid(filePath, FileName, sizeBytes, out string? errorMessage))
+        if (!result.Success)
         {
-            MessageBox.ShowError(errorMessage);
+            _logger.LogInformation("File is not valid: {ErrorMessage}", result.Message);
+            MessageBox.ShowError(result.Message);
             return;
         }
 
-        _onResult?.Invoke(new Result<CreateFileOutput>(true, new CreateFileOutput(filePath, sizeBytes)));
+        _onResult?.Invoke(result);
     }
 
-    private bool CheckIfFileValid(string filePath, string fileName, long sizeBytes, out string? errorMessage)
+    internal static Result<CreateFileOutput> ValidateCreateFileOutput(string folderPath, string fileName, long sizeBytes)
     {
+        string filePath = Path.Combine(folderPath, fileName);
+
         if (fileName.All(c => c == '.'))
         {
-            errorMessage = string.Format(Resources.FileConsistsOnlyOfDots, filePath);
-            return false;
+            return new(false, Message: string.Format(Resources.FileConsistsOnlyOfDots, filePath));
         }
 
         if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
         {
-            errorMessage = string.Format(Resources.FileHasForbiddenChars, filePath);
-            return false;
+            return new(false, Message: string.Format(Resources.FileHasForbiddenChars, filePath));
         }
 
         if (File.Exists(filePath))
         {
-            errorMessage = string.Format(Resources.FileAlreadyExists, filePath);
-            return false;
+            return new(false, Message: string.Format(Resources.FileAlreadyExists, filePath));
         }
 
         string? driveLetter = Path.GetPathRoot(filePath);
         if (string.IsNullOrEmpty(driveLetter))
         {
-            errorMessage = string.Format(Resources.FilePathInvalid, filePath);
-            return false;
+            return new(false, Message: string.Format(Resources.FilePathInvalid, filePath));
         }
 
         var drive = DriveInfo.GetDrives().FirstOrDefault(d => string.Equals(d.Name, driveLetter, StringComparison.InvariantCultureIgnoreCase));
         if (drive is null)
         {
-            errorMessage = string.Format(Resources.DriveNotFound, driveLetter);
-            return false;
+            return new(false, Message: string.Format(Resources.DriveNotFound, driveLetter));
         }
 
         if (drive.AvailableFreeSpace < sizeBytes)
         {
-            errorMessage = string.Format(Resources.OutOfMemory, driveLetter, drive.AvailableFreeSpace, sizeBytes);
-            return false;
+            return new(false, Message: string.Format(Resources.OutOfMemory, driveLetter, drive.AvailableFreeSpace, sizeBytes));
         }
 
-        errorMessage = null;
-        return true;
+        return new(true, new CreateFileOutput(filePath, sizeBytes));
     }
 }

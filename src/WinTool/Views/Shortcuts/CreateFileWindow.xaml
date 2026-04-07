@@ -91,6 +91,7 @@
 
                 <Button Command="{Binding CreateCommand}"
                         Content="{x:Static p:Resources.Create}"
+                        Style="{DynamicResource AccentButtonStyle}"
                         HorizontalAlignment="Stretch" />
                 <Button Command="{Binding CloseWindowCommand}"
                         Content="{x:Static p:Resources.Cancel}"

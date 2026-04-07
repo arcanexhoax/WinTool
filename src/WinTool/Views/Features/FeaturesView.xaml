@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:WinTool.Properties"
+             xmlns:ctrl="clr-namespace:WinTool.UI.Controls"
+             xmlns:ui="clr-namespace:WinTool.UI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Border Style="{DynamicResource MainContentBorderStyle}">
@@ -19,18 +21,41 @@
 
             <ScrollViewer Grid.Row="1"
                           Margin="0 24 0 0"
-                          Padding="0 0 20 0">
+                          Padding="0 0 20 0"
+                          ui:ScrollViewerExtensions.AutoHideScrollBars="True">
                 <StackPanel MaxWidth="1000">
                     <TextBlock Text="{x:Static p:Resources.InputPopup}"
                                Style="{StaticResource BodyStrongTextBlockStyle}" />
 
                     <Border Style="{DynamicResource CardBorderStyle}"
                             Margin="0 8 0 0">
-                        <CheckBox Content="{x:Static p:Resources.EnableSwitchLanguagePopup}"
-                                    IsChecked="{Binding EnableSwitchLanguagePopup}"
-                                    Height="32"
-                                    VerticalAlignment="Top"
-                                    HorizontalAlignment="Left" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{StaticResource Icon.SwitchApps}"
+                                       FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Margin="0 0 18 0" />
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{x:Static p:Resources.EnableSwitchLanguagePopup}" />
+
+                                <TextBlock Text="{x:Static p:Resources.InputPopupDescription}"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Foreground="{DynamicResource SystemFillColorNeutralBrush}"
+                                           Margin="0 4 0 0" />
+                            </StackPanel>
+
+                            <ctrl:ToggleSwitch IsChecked="{Binding EnableSwitchLanguagePopup}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="3" />
+                        </Grid>
                     </Border>
                 </StackPanel>
             </ScrollViewer>

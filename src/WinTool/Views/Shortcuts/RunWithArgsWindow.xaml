@@ -68,6 +68,7 @@
 
                 <Button Command="{Binding RunCommand}"
                         Content="{x:Static p:Resources.Run}"
+                        Style="{DynamicResource AccentButtonStyle}"
                         HorizontalAlignment="Stretch" />
                 <Button Command="{Binding CloseWindowCommand}"
                         Content="{x:Static p:Resources.Cancel}"

@@ -1,6 +1,13 @@
+## v0.10.0
+- Added localizations for `German`, `Spanish`, `French`, `Polish`, `Portuguese`, `Russian`, `Turkish`, and `Ukrainian`
+- Added language selection in settings
+- Improved UI across the app
+- Fixed Fluent theme rendering in Windows 10
+
 ## v0.9.5
 - Added keyboard layout preview in Input popup when switching with `Win + Space` (shows the upcoming layout before releasing `Win`)
 - Added animated transition between keyboard layouts in Input popup
+- Added possibility to manage animations in settings
 - Fixed: Input Popup could appear without backdrop
 - Fixed: Input Popup now correctly adjusts to the screen
 

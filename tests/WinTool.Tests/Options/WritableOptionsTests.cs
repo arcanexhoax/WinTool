@@ -27,7 +27,9 @@ public class WritableOptionsTests
                 "SettingsOptions": {
                     "WindowsStartupEnabled": "False",
                     "AlwaysRunAsAdmin": "True",
-                    "AppTheme": "Dark"
+                    "AppTheme": "Dark",
+                    "AnimationMode": "On",
+                    "Language": "uk"
                 },
                 "FeaturesOptions": { "EnableInputPopup": "False" },
                 "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Alt + F1" } }
@@ -43,6 +45,8 @@ public class WritableOptionsTests
         Assert.False(settings.WindowsStartupEnabled);
         Assert.True(settings.AlwaysRunAsAdmin);
         Assert.Equal("Dark", settings.AppTheme.ToString());
+        Assert.Equal("On", settings.AnimationMode.ToString());
+        Assert.Equal("uk", settings.Language);
         Assert.False(features.EnableInputPopup);
         Assert.Equal("Alt + F1", shortcuts.Shortcuts["CreateFile"]);
         Assert.Equal("Ctrl + Shift + E", shortcuts.Shortcuts["FastFileCreation"]);
@@ -58,7 +62,7 @@ public class WritableOptionsTests
 
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
         featuresOptions.Update(o => o.EnableInputPopup = false);
-        settingsOptions.Update(o => o.AppTheme = ViewModels.Settings.AppTheme.Light);
+        settingsOptions.Update(o => o.AppTheme = WinTool.ViewModels.Settings.AppTheme.Light);
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
 
@@ -86,7 +90,7 @@ public class WritableOptionsTests
 
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
         featuresOptions.Update(o => o.EnableInputPopup = true);
-        settingsOptions.Update(o => o.AppTheme = ViewModels.Settings.AppTheme.Light);
+        settingsOptions.Update(o => o.AppTheme = WinTool.ViewModels.Settings.AppTheme.Light);
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
 
@@ -137,6 +141,37 @@ public class WritableOptionsTests
         Assert.DoesNotContain("NonExistentShortcut", shortcutsOptions.CurrentValue.Shortcuts);
     }
 
+    [Fact]
+    public void SettingsOptions_ValidatesInvalidValues()
+    {
+        var json = """
+            {
+                "SettingsOptions": {
+                    "AppTheme": "999",
+                    "AnimationMode": "999",
+                    "Language": "invalid"
+                }
+            }
+            """;
+        _fileSystem.File.WriteAllText(_appSettingsPath, json);
+
+        var sp = BuildServiceProvider(_appSettingsPath);
+        var settings = sp.GetRequiredService<WritableOptions<SettingsOptions>>().CurrentValue;
+
+        Assert.Equal(WinTool.ViewModels.Settings.AppTheme.System, settings.AppTheme);
+        Assert.Equal(WinTool.ViewModels.Settings.AnimationMode.Auto, settings.AnimationMode);
+        Assert.Equal(App.SystemUICulture.TwoLetterISOLanguageName, settings.Language);
+    }
+
+    [Fact]
+    public void SettingsOptions_UsesSystemLanguageWhenMissing()
+    {
+        var sp = BuildServiceProvider(_appSettingsPath);
+        var settings = sp.GetRequiredService<WritableOptions<SettingsOptions>>().CurrentValue;
+
+        Assert.Equal(App.SystemUICulture.TwoLetterISOLanguageName, settings.Language);
+    }
+
     private ServiceProvider BuildServiceProvider(string jsonFile)
     {
         var services = new ServiceCollection();
@@ -157,6 +192,7 @@ public class WritableOptionsTests
         services.AddSingleton<IOptionsMonitor<SettingsOptions>, OptionsMonitor<SettingsOptions>>();
         services.AddSingleton<IOptionsMonitor<FeaturesOptions>, OptionsMonitor<FeaturesOptions>>();
         services.AddSingleton<IOptionsMonitor<ShortcutsOptions>, OptionsMonitor<ShortcutsOptions>>();
+        services.AddSingleton<IPostConfigureOptions<SettingsOptions>, PostConfigureSettingsOptions>();
         services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
         services.AddSingleton<WritableOptions<SettingsOptions>>();
         services.AddSingleton<WritableOptions<FeaturesOptions>>();

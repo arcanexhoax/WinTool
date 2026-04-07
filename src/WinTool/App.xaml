@@ -9,6 +9,9 @@
                 <ResourceDictionary Source="/UI/Controls/TextBlock.xaml" />
                 <ResourceDictionary Source="/UI/Controls/Border.xaml" />
                 <ResourceDictionary Source="/UI/Controls/Colors.xaml" />
+                <ResourceDictionary Source="/UI/Controls/Shortcut.xaml" />
+                <ResourceDictionary Source="/UI/Controls/ToggleSwitch.xaml" />
+                <ResourceDictionary Source="/UI/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using NLog;
+using System;
 using UIAutomationClient;
 using WinTool.Native;
 
@@ -10,7 +10,8 @@ public class CaretHelper
     private const int TextPatternId = 10014;
     private const int TextPattern2Id = 10024;
 
-    private static CUIAutomation s_automation = new();
+    private static readonly Logger s_logger = LogManager.GetCurrentClassLogger();
+    private static readonly CUIAutomation s_automation = new();
 
     public static RECT? GetCaretRect()
     {
@@ -20,7 +21,7 @@ public class CaretHelper
 
         if (IsRectValid(caretRect))
         {
-            Debug.WriteLine("Used TextPattern2 to get caret rect.");
+            s_logger.Debug("Used TextPattern2 to get caret rect.");
             return caretRect;
         }
 
@@ -31,7 +32,7 @@ public class CaretHelper
 
         if (IsRectValid(caretRect))
         {
-            Debug.WriteLine("Used AccessibleCaretRect to get caret rect.");
+            s_logger.Debug("Used AccessibleCaretRect to get caret rect.");
             return caretRect;
         }
 
@@ -39,7 +40,7 @@ public class CaretHelper
 
         if (IsRectValid(caretRect))
         {
-            Debug.WriteLine("Used TextPattern to get caret rect.");
+            s_logger.Debug("Used TextPattern to get caret rect.");
             return caretRect;
         }
 

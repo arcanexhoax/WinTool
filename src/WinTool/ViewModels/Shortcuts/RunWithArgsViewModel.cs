@@ -9,6 +9,8 @@ namespace WinTool.ViewModels.Shortcuts;
 
 public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, RunWithArgsOutput>
 {
+    private readonly RunWithArgsDialogState _state;
+
     private Action<Result<RunWithArgsOutput>>? _onResult;
 
     [ObservableProperty]
@@ -32,8 +34,13 @@ public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<s
     public RelayCommand RunCommand { get; }
     public RelayCommand CloseWindowCommand { get; }
 
-    public RunWithArgsViewModel()
+    public RunWithArgsViewModel(RunWithArgsDialogState state)
     {
+        _state = state;
+
+        Args = _state.Args;
+        RunAsAdmin = _state.RunAsAdmin;
+
         RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(true, new RunWithArgsOutput(Args, RunAsAdmin))));
         CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(false)));
     }
@@ -48,5 +55,10 @@ public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<s
         AreOptionsOpened = RunAsAdmin;
     }
 
-    public void OnClose() => _onResult = null;
+    public void OnClose()
+    {
+        _state.Args = Args;
+        _state.RunAsAdmin = RunAsAdmin;
+        _onResult = null;
+    }
 }

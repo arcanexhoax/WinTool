@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <sys:String x:Key="Icon.KnowledgeArticle">&#xF000;</sys:String>
+    <sys:String x:Key="Icon.Page">&#xE7C3;</sys:String>
+    <sys:String x:Key="Icon.Rename">&#xE8AC;</sys:String>
+    <sys:String x:Key="Icon.Copy">&#xE8C8;</sys:String>
+    <sys:String x:Key="Icon.OpenFile">&#xE8E5;</sys:String>
+    <sys:String x:Key="Icon.ProtectedDocument">&#xE8A6;</sys:String>
+    <sys:String x:Key="Icon.CommandPrompt">&#xE756;</sys:String>
+    <sys:String x:Key="Icon.Theme">&#xE790;</sys:String>
+    <sys:String x:Key="Icon.Power">&#xE945;</sys:String>
+    <sys:String x:Key="Icon.PowerButton">&#xE7E8;</sys:String>
+    <sys:String x:Key="Icon.Shield">&#xEA18;</sys:String>
+    <sys:String x:Key="Icon.Edit">&#xE70F;</sys:String>
+    <sys:String x:Key="Icon.Language">&#xF2B7;</sys:String>
+    <sys:String x:Key="Icon.SwitchApps">&#xE8F9;</sys:String>
+
+    <!-- Shortcut command icons (keyed by command ID for convention-based lookup) -->
+    <sys:String x:Key="Icon.CreateFile">&#xF000;</sys:String>
+    <sys:String x:Key="Icon.FastFileCreation">&#xE7C3;</sys:String>
+    <sys:String x:Key="Icon.SelectedItemCopyPath">&#xE8C8;</sys:String>
+    <sys:String x:Key="Icon.SelectedItemCopyName">&#xE8AC;</sys:String>
+    <sys:String x:Key="Icon.RunFileAsAdmin">&#xE8A6;</sys:String>
+    <sys:String x:Key="Icon.RunFileWithArgs">&#xE8E5;</sys:String>
+    <sys:String x:Key="Icon.OpenFolderInCmd">&#xE756;</sys:String>
+    <sys:String x:Key="Icon.OpenFolderInCmdAsAdmin">&#xE756;</sys:String>
+</ResourceDictionary>
