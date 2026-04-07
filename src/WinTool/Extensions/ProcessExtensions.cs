@@ -1,5 +1,5 @@
-﻿using System;
-﻿using NLog;
+﻿﻿using NLog;
+using System;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Threading;

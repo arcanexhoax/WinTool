@@ -61,7 +61,7 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The app already running as admin but got: {0}.
+        ///   Looks up a localized string similar to The app is already running as administrator, but an unauthorized access error occurred: {0}.
         /// </summary>
         public static string AlreadyRunnningAsAdminError {
             get {
@@ -302,7 +302,7 @@ namespace WinTool.Properties {
                 return ResourceManager.GetString("InputPopup", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Shows the current keyboard layout near the text cursor when you switch languages.
         /// </summary>
@@ -313,29 +313,20 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Launch on Windows startup.
-        /// </summary>
-        public static string LaunchOnStartup {
-            get {
-                return ResourceManager.GetString("LaunchOnStartup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Startup.
-        /// </summary>
-        public static string Startup {
-            get {
-                return ResourceManager.GetString("Startup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launch on Windows startup.
+        /// </summary>
+        public static string LaunchOnStartup {
+            get {
+                return ResourceManager.GetString("LaunchOnStartup", resourceCulture);
             }
         }
         
@@ -543,6 +534,15 @@ namespace WinTool.Properties {
         public static string Size {
             get {
                 return ResourceManager.GetString("Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startup.
+        /// </summary>
+        public static string Startup {
+            get {
+                return ResourceManager.GetString("Startup", resourceCulture);
             }
         }
         

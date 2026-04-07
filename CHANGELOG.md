@@ -1,8 +1,7 @@
 ## v0.10.0
 - Added localizations for `German`, `Spanish`, `French`, `Polish`, `Portuguese`, `Russian`, `Turkish`, and `Ukrainian`
 - Added language selection in settings
-- Improved `Features` and `Settings` tabs UI
-- Small UI improvement of `Input popup`
+- Improved UI across the app
 - Fixed Fluent theme rendering in Windows 10
 
 ## v0.9.5

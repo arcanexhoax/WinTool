@@ -220,16 +220,19 @@ public partial class App : Application
 
     private void OnSettingsChanged(SettingsOptions settings, string? _)
     {
-        if (settings.AppTheme != _currentTheme)
+        Current.Dispatcher.BeginInvoke(() =>
         {
-            ApplyTheme(settings.AppTheme);
-        }
+            if (settings.AppTheme != _currentTheme)
+            {
+                ApplyTheme(settings.AppTheme);
+            }
 
-        if (settings.Language != _currentLanguage)
-        {
-            ApplyLanguage(settings.Language);
-            RecreateMainWindow();
-        }
+            if (settings.Language != _currentLanguage)
+            {
+                ApplyLanguage(settings.Language);
+                RecreateMainWindow();
+            }
+        });
     }
 
     protected override async void OnExit(ExitEventArgs e)

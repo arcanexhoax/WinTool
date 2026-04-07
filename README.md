@@ -24,7 +24,7 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 <br>
 
 ## Features
-- Input popup: a keyboard layout switching popup near active caret in any app
+- Input popup. Shows the current keyboard layout near the text cursor when you switch languages
 
 <img src="./docs/input-popup.gif" />
 

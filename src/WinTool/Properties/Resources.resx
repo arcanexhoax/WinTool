@@ -234,7 +234,7 @@
   </data>
   <data name="TrayToolTip" xml:space="preserve">
     <value>Double click to open, right click - menu</value>
-    <comment>Double click to open [this app], right click -  [open] menu of [this app]</comment>
+    <comment>Double click to open [this app], right click - [open] menu [of this app]</comment>
   </data>
   <data name="UpdateSettingsError" xml:space="preserve">
     <value>Failed to update settings: {0}</value>

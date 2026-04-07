@@ -13,15 +13,6 @@ using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public enum SizeUnit : long
-{
-    B  = 1,
-    KB = 1024,
-    MB = 1_048_576,
-    GB = 1_073_741_824,
-    TB = 1_099_511_627_776,
-}
-
 public partial class CreateFileViewModel : ObservableObject, IDialogViewModel<string, CreateFileOutput>
 {
     private readonly ILogger _logger;
