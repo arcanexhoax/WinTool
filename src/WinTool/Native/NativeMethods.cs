@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using WinTool.Utils;
@@ -85,6 +85,9 @@ namespace WinTool.Native
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern uint GetCurrentThreadId();
 
+        [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+        private static extern int SHLoadIndirectString(string source, StringBuilder output, uint outputLength, nint reserved);
+
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
 
@@ -144,6 +147,14 @@ namespace WinTool.Native
         public static string? GetWindowText(nint hWnd) => GetTextFrom(hWnd, GetWindowText);
 
         public static string? GetClassName(nint hWnd) => GetTextFrom(hWnd, GetClassName);
+
+        public static string? LoadIndirectString(string source)
+        {
+            var output = new StringBuilder(256);
+            int result = SHLoadIndirectString(source, output, (uint)output.Capacity, nint.Zero);
+
+            return result >= 0 && output.Length > 0 ? output.ToString() : null;
+        }
 
         public static bool ShowWindow(string windowTitle)
         {
