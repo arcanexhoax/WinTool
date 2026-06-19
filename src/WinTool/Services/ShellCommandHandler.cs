@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -27,16 +27,16 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
 
     public void CreateFileFast()
     {
-        string? path = _shell.GetActiveShellPath();
+        var path = _shell.GetActiveShellPath();
 
         if (string.IsNullOrEmpty(path))
             return;
 
-        DirectoryInfo di = new(path);
-        int num = 0;
+        var di = new DirectoryInfo(path);
+        var num = 0;
 
-        string? fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
-        string? extension = Path.GetExtension(NewFileTemplate);
+        var fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
+        var extension = Path.GetExtension(NewFileTemplate);
 
         // TODO test it after new file name template will match Windows behavior
         var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
@@ -88,6 +88,8 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
         {
             using var fileStream = File.Create(path);
             fileStream.SetLength(size);
+
+            _shell.BeginRename(path);
 
             _logger.LogInformation("Created file {FilePath} of size {Size} bytes", path, size);
         }, clp.ToString());

@@ -21,6 +21,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
@@ -34,7 +35,7 @@
                    TextTrimming="CharacterEllipsis"
                    Grid.Column="1" />
 
-        <Border Grid.Column="2">
+        <Border Grid.Column="3">
             <StackPanel Orientation="Horizontal"
                         Background="Transparent"
                         HorizontalAlignment="Right">

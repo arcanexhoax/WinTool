@@ -1,10 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using WinTool.Extensions;
@@ -37,7 +33,7 @@ public class CustomFileConfigurationProvider(string filePath, JsonSerializerOpti
         }
 
         var json = _file.ReadAllText(_filePath);
-        var data = JsonSerializer.Deserialize<Dictionary<string, object?>>(json)!;
+        var data = JsonSerializer.Deserialize<Dictionary<string, object?>>(json);
 
         if (data == null)
         {
