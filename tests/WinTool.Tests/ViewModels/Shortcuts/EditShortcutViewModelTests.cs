@@ -54,7 +54,7 @@ public class EditShortcutViewModelTests
             Shortcuts = new Dictionary<string, string?>
             {
                 [ShortcutNames.CreateFile] = "Ctrl + E",
-                [ShortcutNames.FastFileCreation] = "Ctrl + Shift + E"
+                [ShortcutNames.SelectedItemCopyPath] = "Ctrl + Shift + C"
             }
         };
         var viewModel = CreateViewModel(options);

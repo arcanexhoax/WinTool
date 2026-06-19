@@ -13,7 +13,6 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 ## Shortcuts
 ### Windows Explorer
 - Create file
-- Fast file creation
 - Copy path to selected/opened item
 - Copy name of selected/opened item
 - Run selected file as admin

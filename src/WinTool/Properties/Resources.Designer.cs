@@ -142,15 +142,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create.
-        /// </summary>
-        public static string Create {
-            get {
-                return ResourceManager.GetString("Create", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create file.
         /// </summary>
         public static string CreateFile {
@@ -165,15 +156,6 @@ namespace WinTool.Properties {
         public static string Dark {
             get {
                 return ResourceManager.GetString("Dark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to find drive &apos;{0}&apos;..
-        /// </summary>
-        public static string DriveNotFound {
-            get {
-                return ResourceManager.GetString("DriveNotFound", resourceCulture);
             }
         }
         
@@ -214,15 +196,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fast file creation.
-        /// </summary>
-        public static string FastFileCreation {
-            get {
-                return ResourceManager.GetString("FastFileCreation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Features.
         /// </summary>
         public static string Features {
@@ -232,47 +205,11 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File &apos;{0}&apos; already exists..
-        /// </summary>
-        public static string FileAlreadyExists {
-            get {
-                return ResourceManager.GetString("FileAlreadyExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File &apos;{0}&apos; consists only of dots.
-        /// </summary>
-        public static string FileConsistsOnlyOfDots {
-            get {
-                return ResourceManager.GetString("FileConsistsOnlyOfDots", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to create file &apos;{0}&apos;: {1}.
         /// </summary>
         public static string FileCreationError {
             get {
                 return ResourceManager.GetString("FileCreationError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File &apos;{0}&apos; has forbidden characters.
-        /// </summary>
-        public static string FileHasForbiddenChars {
-            get {
-                return ResourceManager.GetString("FileHasForbiddenChars", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File path &apos;{0}&apos; is invalid.
-        /// </summary>
-        public static string FilePathInvalid {
-            get {
-                return ResourceManager.GetString("FilePathInvalid", resourceCulture);
             }
         }
         
@@ -403,15 +340,6 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The drive &apos;{0}&apos; has only {1} free bytes (requested {2})..
-        /// </summary>
-        public static string OutOfMemory {
-            get {
-                return ResourceManager.GetString("OutOfMemory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string Run {
@@ -525,15 +453,6 @@ namespace WinTool.Properties {
         public static string Shortcuts {
             get {
                 return ResourceManager.GetString("Shortcuts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Size.
-        /// </summary>
-        public static string Size {
-            get {
-                return ResourceManager.GetString("Size", resourceCulture);
             }
         }
         

@@ -49,7 +49,7 @@ public class WritableOptionsTests
         Assert.Equal("uk", settings.Language);
         Assert.False(features.EnableInputPopup);
         Assert.Equal("Alt + F1", shortcuts.Shortcuts["CreateFile"]);
-        Assert.Equal("Ctrl + Shift + E", shortcuts.Shortcuts["FastFileCreation"]);
+        Assert.Equal("Ctrl + Shift + C", shortcuts.Shortcuts["SelectedItemCopyPath"]);
     }
 
     [Fact]
@@ -115,8 +115,8 @@ public class WritableOptionsTests
             {
                 "ShortcutsOptions": { 
                     "Shortcuts": { 
-                        "CreateFile": "Ctrl + Shift + E",
-                        "FastFileCreation": "ctrl+shift+e",
+                        "CreateFile": "Ctrl + Shift + P",
+                        "RunFileAsAdmin": "ctrl+shift+p",
                         "RunFileWithArgs": "ctrl+p",
                         "OpenFolderInCmd": "abc",
                         "SelectedItemCopyName" : "A",
@@ -131,8 +131,8 @@ public class WritableOptionsTests
         var sp = BuildServiceProvider(_appSettingsPath);
         var shortcutsOptions = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
 
-        Assert.Equal("Ctrl + Shift + E", shortcutsOptions.CurrentValue.Shortcuts["CreateFile"]);
-        Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["FastFileCreation"]);
+        Assert.Equal("Ctrl + Shift + P", shortcutsOptions.CurrentValue.Shortcuts["CreateFile"]);
+        Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["RunFileAsAdmin"]);
         Assert.Equal("ctrl+p", shortcutsOptions.CurrentValue.Shortcuts["RunFileWithArgs"]);
         Assert.Null(shortcutsOptions.CurrentValue.Shortcuts["OpenFolderInCmd"]);
         Assert.Equal("Ctrl + Shift + X", shortcutsOptions.CurrentValue.Shortcuts["SelectedItemCopyName"]);

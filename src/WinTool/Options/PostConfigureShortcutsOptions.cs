@@ -1,4 +1,4 @@
-﻿using GlobalKeyInterceptor;
+using GlobalKeyInterceptor;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,6 @@ public class PostConfigureShortcutsOptions : IPostConfigureOptions<ShortcutsOpti
     private readonly Dictionary<string, string> _defaultShortcuts = new()
     {
         { ShortcutNames.CreateFile, "Ctrl + E" },
-        { ShortcutNames.FastFileCreation, "Ctrl + Shift + E" },
         { ShortcutNames.SelectedItemCopyPath, "Ctrl + Shift + C" },
         { ShortcutNames.SelectedItemCopyName, "Ctrl + Shift + X" },
         { ShortcutNames.RunFileAsAdmin, "Ctrl + Shift + StandardEnter" },

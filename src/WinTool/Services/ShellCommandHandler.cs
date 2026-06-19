@@ -25,7 +25,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
 
     public bool IsBackgroundMode { get; set; } = true;
 
-    public void CreateFileFast()
+    public void CreateFile()
     {
         var path = _shell.GetActiveShellPath();
 
@@ -57,22 +57,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
         CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
     }
 
-    public void CreateFileInteractive()
-    {
-        string? path = _shell.GetActiveShellPath();
-
-        if (string.IsNullOrEmpty(path))
-            return;
-
-        var result = _viewFactory.ShowDialog<CreateFileWindow, string, CreateFileOutput>(path);
-
-        if (result is not { Success: true, Data: { } data })
-            return;
-
-        CreateFile(data.FilePath, data.Size);
-    }
-
-    public void CreateFile(string path, long size = 0)
+    public void CreateFile(string path)
     {
         var clp = new CommandLineParameters()
         {
@@ -80,18 +65,15 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
             CreateFileParameter = new CreateFileParameter()
             {
                 FilePath = path,
-                Size = size
             }
         };
 
         Process.ExecuteAsAdmin(() =>
         {
-            using var fileStream = File.Create(path);
-            fileStream.SetLength(size);
-
+            File.Create(path).Dispose();
             _shell.BeginRename(path);
 
-            _logger.LogInformation("Created file {FilePath} of size {Size} bytes", path, size);
+            _logger.LogInformation("Created file '{FilePath}'.", path);
         }, clp.ToString());
     }
 
