@@ -11,10 +11,12 @@ namespace WinTool.Native
         public const int CHILDID_SELF = 0;
         public const uint OBJID_CARET = 0xFFFFFFF8;
         public const int GA_ROOTOWNER = 3;
+        public const int WM_GETMINMAXINFO = 0x0024;
         public const int WM_NCACTIVATE = 0x0086;
 
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_NOACTIVATE = 0x0010;
         private const uint SWP_SHOWWINDOW = 0x0040;
 
@@ -106,6 +108,9 @@ namespace WinTool.Native
         [DllImport("user32.dll")]
         static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+        [DllImport("user32.dll")]
+        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern IntPtr GetKeyboardLayout(uint idThread);
 
@@ -178,6 +183,14 @@ namespace WinTool.Native
 
             SetWindowLong(hwnd, GWL.GWL_EXSTYLE, exStyle);
             SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
+
+        public static void SetWindowWidth(nint hwnd, int width)
+        {
+            if (!GetWindowRect(hwnd, out var rect))
+                return;
+
+            SetWindowPos(hwnd, nint.Zero, 0, 0, width, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
         }
 
         public static void RemoveTitlebar(nint handle)

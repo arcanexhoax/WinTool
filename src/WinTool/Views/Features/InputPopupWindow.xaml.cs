@@ -1,8 +1,9 @@
-﻿using GlobalKeyInterceptor;
+using GlobalKeyInterceptor;
 using GlobalKeyInterceptor.Utils;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -20,6 +21,7 @@ public partial class InputPopupWindow : FluentWindow
     private const double AppearAnimTimeMs = 200;
     private const double AppearOffsetY = 20;
     private const double SelectionAnimTimeMs = 150;
+    private const int MinTrackWidthOffset = 6 * sizeof(int);
     public const double SelectionItemWidth = 48;
 
     private readonly IKeyInterceptor _keyInterceptor;
@@ -88,9 +90,7 @@ public partial class InputPopupWindow : FluentWindow
 
         if (_isWindows10)
         {
-            if (_handleSource?.CompositionTarget != null)
-                _handleSource.CompositionTarget.BackgroundColor = Colors.Transparent;
-
+            _handleSource?.CompositionTarget?.BackgroundColor = Colors.Transparent;
             Background = Brushes.Transparent;
             RootBorder.SetResourceReference(System.Windows.Controls.Border.BackgroundProperty, "EmptyBackdropBrush");
         }
@@ -107,8 +107,11 @@ public partial class InputPopupWindow : FluentWindow
         if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty && (x, y) == _lastPosition)
             return;
 
+        var width = GetContentWidth();
+        Width = width;
+
         var shouldAnimate = _settingsOptions.CurrentValue.AnimationMode.ShouldAnimate;
-        var (finalTop, flipped) = AdjustWindowToScreen(caretPixelX, caretPixelY, x, y, Height, dpiAtPoint);
+        var (finalTop, flipped) = AdjustWindowToScreen(caretPixelX, caretPixelY, x, y, width, Height, dpiAtPoint);
         _flippedAbove = flipped;
         _animatedTop = finalTop;
 
@@ -124,6 +127,9 @@ public partial class InputPopupWindow : FluentWindow
         _currentHideAnimGuid = Guid.Empty;
 
         Show();
+
+        var caltucatedWidth = (int)Math.Ceiling(width * DpiUtils.GetDpiForWindow(_handle) / DpiUtils.DefaultDpiX);
+        NativeMethods.SetWindowWidth(_handle, caltucatedWidth);
         NativeMethods.DefWindowProc(_handle, NativeMethods.WM_NCACTIVATE, 1, 0);
 
         if (shouldAnimate)
@@ -273,16 +279,17 @@ public partial class InputPopupWindow : FluentWindow
         AccentScale.BeginAnimation(ScaleTransform.ScaleXProperty, squeezeAnim);
     }
 
-    private (double FinalTop, bool FlippedAbove) AdjustWindowToScreen(int caretPixelX, int caretPixelY, double caretX, double caretY, double height, int dpiAtPoint)
+    private double GetContentWidth()
     {
-        var width = ActualWidth;
+        if (Content is not UIElement content)
+            return ActualWidth;
 
-        if (width == 0 && Content is UIElement content)
-        {
-            content.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            width = content.DesiredSize.Width;
-        }
+        content.Measure(new Size(double.PositiveInfinity, Height));
+        return content.DesiredSize.Width;
+    }
 
+    private (double FinalTop, bool FlippedAbove) AdjustWindowToScreen(int caretPixelX, int caretPixelY, double caretX, double caretY, double width, double height, int dpiAtPoint)
+    {
         var workingArea = DpiUtils.GetWorkingAreaAt(caretPixelX, caretPixelY);
         var screenRight = workingArea.Right * DpiUtils.DefaultDpiX / dpiAtPoint;
         var screenBottom = workingArea.Bottom * DpiUtils.DefaultDpiY / dpiAtPoint;
@@ -300,6 +307,13 @@ public partial class InputPopupWindow : FluentWindow
 
     private nint WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
     {
+        if (msg == NativeMethods.WM_GETMINMAXINFO)
+        {
+            Marshal.WriteInt32(lParam, MinTrackWidthOffset, 0);
+            handled = true;
+            return nint.Zero;
+        }
+
         if (msg == NativeMethods.WM_NCACTIVATE)
         {
             handled = true;

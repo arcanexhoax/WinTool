@@ -11,7 +11,7 @@
                     ResizeMode="NoResize"
                     Focusable="False"
                     ShowInTaskbar="False"
-                    SizeToContent="Width"
+                    SizeToContent="Manual"
                     Height="40">
     <Border x:Name="RootBorder"
             Background="{DynamicResource AcrylicLayoutBrush}" 

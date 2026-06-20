@@ -7,7 +7,7 @@
 WinTool is a utility that adds useful features and shortcuts to Windows, enhancing everyday experience.
 
 <br>
-<img src="./docs/main-window.png" />
+<img src="./docs/images/main-window.png" />
 <br>
 
 ## Shortcuts
@@ -25,7 +25,7 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 ## Features
 - Input popup. Shows the current keyboard layout near the text cursor when you switch languages
 
-<img src="./docs/input-popup.gif" />
+<img src="./docs/images/input-popup.gif" />
 
 <br>
 
