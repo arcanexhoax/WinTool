@@ -84,17 +84,8 @@ namespace WinTool.Native
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern uint GetCurrentThreadId();
-
         [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
         private static extern int SHLoadIndirectString(string source, StringBuilder output, uint outputLength, nint reserved);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool GetCaretPos(out POINT lpPoint);
 
         [DllImport("user32.dll")]
         internal static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
