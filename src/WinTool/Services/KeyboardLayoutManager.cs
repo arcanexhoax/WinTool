@@ -1,4 +1,4 @@
-﻿using GlobalKeyInterceptor;
+using GlobalKeyInterceptor;
 using GlobalKeyInterceptor.Utils;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

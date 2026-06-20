@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using WinTool.Extensions;
 using WinTool.Native;
 using WinTool.Options;
@@ -34,6 +35,7 @@ public partial class InputPopupWindow : FluentWindow
     private bool _isHiding;
     private bool _flippedAbove;
     private double _animatedTop;
+    private double _windowWidth;
     private (double X, double Y) _lastPosition;
     private Guid _currentHideAnimGuid;
 
@@ -69,7 +71,17 @@ public partial class InputPopupWindow : FluentWindow
             });
         };
     }
-    
+
+    public void RefreshBackdrop()
+    {
+        if (_handle == nint.Zero || _isWindows10)
+            return;
+
+        Dispatcher.BeginInvoke(
+            () => ApplyBackdrop(WindowBackdropType.Acrylic),
+            DispatcherPriority.ApplicationIdle);
+    }
+
     private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
     {
         if (e.Shortcut.Modifier is KeyModifier.Shift or KeyModifier.None
@@ -103,12 +115,17 @@ public partial class InputPopupWindow : FluentWindow
         var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretPixelX, caretPixelY);
         var x = caretPixelX * DpiUtils.DefaultDpiX / dpiAtPoint;
         var y = caretPixelY * DpiUtils.DefaultDpiY / dpiAtPoint;
-
-        if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty && (x, y) == _lastPosition)
-            return;
-
         var width = GetContentWidth();
-        Width = width;
+
+        UpdateWindowWidth(width, dpiAtPoint);
+
+        if (Visibility == Visibility.Visible
+            && _currentHideAnimGuid == Guid.Empty
+            && (x, y) == _lastPosition
+            && _windowWidth == width)
+        {
+            return;
+        }
 
         var shouldAnimate = _settingsOptions.CurrentValue.AnimationMode.ShouldAnimate;
         var (finalTop, flipped) = AdjustWindowToScreen(caretPixelX, caretPixelY, x, y, width, Height, dpiAtPoint);
@@ -128,8 +145,14 @@ public partial class InputPopupWindow : FluentWindow
 
         Show();
 
-        var caltucatedWidth = (int)Math.Ceiling(width * DpiUtils.GetDpiForWindow(_handle) / DpiUtils.DefaultDpiX);
-        NativeMethods.SetWindowWidth(_handle, caltucatedWidth);
+        if (_windowWidth != width)
+        {
+            if (width >= SystemParameters.MinimumWindowWidth)
+                _windowWidth = width;
+            else
+                SetNativeWindowWidth(width, DpiUtils.GetDpiForWindow(_handle));
+        }
+
         NativeMethods.DefWindowProc(_handle, NativeMethods.WM_NCACTIVATE, 1, 0);
 
         if (shouldAnimate)
@@ -281,11 +304,32 @@ public partial class InputPopupWindow : FluentWindow
 
     private double GetContentWidth()
     {
-        if (Content is not UIElement content)
-            return ActualWidth;
+        var borderWidth = RootBorder.BorderThickness.Left + RootBorder.BorderThickness.Right;
+        return (_viewModel.AllLanguages?.Count ?? 0) * SelectionItemWidth + borderWidth;
+    }
 
-        content.Measure(new Size(double.PositiveInfinity, Height));
-        return content.DesiredSize.Width;
+    private void UpdateWindowWidth(double width, int dpi)
+    {
+        if (_windowWidth == width)
+            return;
+
+        Width = width;
+
+        if (_handle == nint.Zero)
+            return;
+
+        if (width >= SystemParameters.MinimumWindowWidth)
+            _windowWidth = width;
+        else if (Visibility != Visibility.Visible)
+            SetNativeWindowWidth(width, dpi);
+    }
+
+    private void SetNativeWindowWidth(double width, int dpi)
+    {
+        var calculatedWidth = (int)Math.Ceiling(width * dpi / DpiUtils.DefaultDpiX);
+        NativeMethods.SetWindowWidth(_handle, calculatedWidth);
+
+        _windowWidth = width;
     }
 
     private (double FinalTop, bool FlippedAbove) AdjustWindowToScreen(int caretPixelX, int caretPixelY, double caretX, double caretY, double width, double height, int dpiAtPoint)

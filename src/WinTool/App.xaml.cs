@@ -222,6 +222,7 @@ public partial class App : Application
             if (settings.AppTheme != _currentTheme)
             {
                 ApplyTheme(settings.AppTheme);
+                _inputPopupWindow?.RefreshBackdrop();
             }
 
             if (settings.Language != _currentLanguage)
