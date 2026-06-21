@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -106,7 +105,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
         var selectedItems = _shell.GetSelectedItems();
 
         if (selectedItems is [{ Path: var selectedItem }])
-            RunFileAsAdminOptional(selectedItem, null, true);
+            Process.Start(selectedItem, null, true);
     }
 
     public void RunFileWithArgs()
@@ -127,20 +126,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
             return;
         }
 
-        RunFileAsAdminOptional(selectedItem, data.Args, data.RunAsAdmin);
-    }
-
-    private void RunFileAsAdminOptional(string fileName, string? args, bool asAdmin)
-    {
-        try
-        {
-            Process.Start(fileName, args, asAdmin);
-        }
-        catch (Win32Exception ex) when (ex.NativeErrorCode == 1155)
-        {
-            _logger.LogInformation("File {FilePath} is unable to run as admin, running without admin privileges", fileName);
-            Process.Start(fileName, args, false);
-        }
+        Process.Start(selectedItem, data.Args, data.RunAsAdmin);
     }
 
     public void OpenInCmd() => OpenInCmd(false);

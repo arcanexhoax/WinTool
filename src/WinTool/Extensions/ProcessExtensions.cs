@@ -1,5 +1,6 @@
-﻿﻿using NLog;
+using NLog;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Threading;
@@ -56,7 +57,7 @@ public static class ProcessExtensions
             }
         }
 
-        public static void Start(string fileName, string? args, bool asAdmin = false)
+        public static void Start(string fileName, string? args, bool asAdmin)
         {
             var psi = new ProcessStartInfo()
             {
@@ -64,6 +65,27 @@ public static class ProcessExtensions
                 FileName = fileName,
                 Verb = asAdmin ? "runas" : string.Empty,
                 UseShellExecute = true,
+            };
+
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Win32Exception ex) when (asAdmin && ex.NativeErrorCode == 1155)
+            {
+                StartWithElevatedCmd(fileName, args);
+            }
+        }
+
+        private static void StartWithElevatedCmd(string fileName, string? args)
+        {
+            var psi = new ProcessStartInfo()
+            {
+                Arguments = $"/d /v:off /c start \"\" \"{fileName}\" {args}",
+                FileName = "cmd.exe",
+                Verb = "runas",
+                UseShellExecute = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
             };
 
             Process.Start(psi);
