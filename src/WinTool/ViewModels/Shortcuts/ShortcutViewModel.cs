@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GlobalKeyInterceptor;
 using System.Windows;
@@ -9,35 +9,21 @@ using WinTool.Views.Shortcuts;
 
 namespace WinTool.ViewModels.Shortcuts;
 
-public partial class ShortcutViewModel : ObservableObject
+public partial class ShortcutViewModel(ShortcutsService shortcutsService, ShortcutCommand shortcutCommand, ViewFactory viewFactory) : ObservableObject
 {
-    private readonly string _id;
-    private readonly ShortcutsService _shortcutsService;
-    private readonly ViewFactory _viewFactory;
+    private readonly string _id = shortcutCommand.Id;
+    private readonly ShortcutsService _shortcutsService = shortcutsService;
+    private readonly ViewFactory _viewFactory = viewFactory;
 
     [ObservableProperty]
-    public partial Shortcut? Shortcut { get; set; }
+    public partial Shortcut? Shortcut { get; set; } = shortcutCommand.Shortcut;
 
-    public string Icon { get; }
+    public string Icon { get; } = (string)Application.Current.FindResource($"Icon.{shortcutCommand.Id}");
 
-    public string Description { get; }
+    public string Description { get; } = Resources.ResourceManager.GetString(shortcutCommand.Id)!;
 
-    public RelayCommand EditShortcutCommand { get; }
-
-    public ShortcutViewModel(ShortcutsService shortcutsService, ShortcutCommand shortcutCommand, ViewFactory viewFactory)
-    {
-        _id = shortcutCommand.Id;
-        _shortcutsService = shortcutsService;
-        _viewFactory = viewFactory;
-
-        Shortcut = shortcutCommand.Shortcut;
-        Icon = (string)Application.Current.FindResource($"Icon.{shortcutCommand.Id}");
-        Description = Resources.ResourceManager.GetString(shortcutCommand.Id)!;
-
-        EditShortcutCommand = new RelayCommand(Edit);
-    }
-
-    private void Edit()
+    [RelayCommand]
+    private void EditShortcut()
     {
         var window = _viewFactory.Create<EditShortcutWindow>();
         var result = window.ShowDialog(new EditShortcutInput(Shortcut, _id));

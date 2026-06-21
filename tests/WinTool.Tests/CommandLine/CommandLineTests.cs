@@ -1,4 +1,4 @@
-﻿using WinTool.CommandLine;
+using WinTool.CommandLine;
 
 namespace WinTool.Tests.CommandLine;
 
@@ -31,13 +31,12 @@ public class CommandLineParametersTests
     [Fact]
     public void Parse_CreateFileParameter_Works()
     {
-        var args = new[] { "/createFile", "-path=test.txt", "-size=12345" };
+        var args = new[] { "/createFile", "-path=test.txt" };
         var result = CommandLineParameters.Parse(args);
 
         Assert.NotNull(result.CreateFileParameter);
         Assert.IsType<CreateFileParameter>(result.CreateFileParameter);
         Assert.Equal("test.txt", result.CreateFileParameter!.FilePath);
-        Assert.Equal(12345, result.CreateFileParameter.Size);
         Assert.Null(result.BackgroundParameter);
         Assert.Null(result.ShutdownOnEndedParameter);
     }
@@ -45,13 +44,12 @@ public class CommandLineParametersTests
     [Fact]
     public void Parse_Invalid_CreateFileParameter()
     {
-        var args = new[] { "/createFile", "-path=", "-size=abc" };
+        var args = new[] { "/createFile", "-path=" };
         var result = CommandLineParameters.Parse(args);
 
         Assert.NotNull(result.CreateFileParameter);
         Assert.IsType<CreateFileParameter>(result.CreateFileParameter);
         Assert.Null(result.CreateFileParameter!.FilePath);
-        Assert.Equal(0, result.CreateFileParameter.Size);
         Assert.Null(result.BackgroundParameter);
         Assert.Null(result.ShutdownOnEndedParameter);
     }
@@ -73,11 +71,11 @@ public class CommandLineParametersTests
     {
         var background = new BackgroundParameter();
         var shutdown = new ShutdownOnEndedParameter();
-        var createFile = new CreateFileParameter { FilePath = "file.bin", Size = 1000 };
+        var createFile = new CreateFileParameter { FilePath = "file.bin" };
 
         Assert.Equal("/background", background.ToString());
         Assert.Equal("/shutdownOnEnded", shutdown.ToString());
-        Assert.Equal("/createFile -path=\"file.bin\" -size=1000", createFile.ToString());
+        Assert.Equal("/createFile -path=\"file.bin\"", createFile.ToString());
     }
 
     [Fact]
@@ -86,13 +84,13 @@ public class CommandLineParametersTests
         var clp = new CommandLineParameters
         {
             BackgroundParameter = new BackgroundParameter(),
-            CreateFileParameter = new CreateFileParameter { FilePath = "abc.txt", Size = 42 },
+            CreateFileParameter = new CreateFileParameter { FilePath = "abc.txt" },
             ShutdownOnEndedParameter = new ShutdownOnEndedParameter()
         };
         var result = clp.ToString().Trim();
 
         Assert.Contains("/background", result);
-        Assert.Contains("/createFile -path=\"abc.txt\" -size=42", result);
+        Assert.Contains("/createFile -path=\"abc.txt\"", result);
         Assert.Contains("/shutdownOnEnded", result);
     }
 }

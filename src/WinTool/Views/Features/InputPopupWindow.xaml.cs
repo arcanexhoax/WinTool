@@ -1,11 +1,13 @@
-﻿using GlobalKeyInterceptor;
+using GlobalKeyInterceptor;
 using GlobalKeyInterceptor.Utils;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using WinTool.Extensions;
 using WinTool.Native;
 using WinTool.Options;
@@ -20,6 +22,7 @@ public partial class InputPopupWindow : FluentWindow
     private const double AppearAnimTimeMs = 200;
     private const double AppearOffsetY = 20;
     private const double SelectionAnimTimeMs = 150;
+    private const int MinTrackWidthOffset = 6 * sizeof(int);
     public const double SelectionItemWidth = 48;
 
     private readonly IKeyInterceptor _keyInterceptor;
@@ -32,6 +35,7 @@ public partial class InputPopupWindow : FluentWindow
     private bool _isHiding;
     private bool _flippedAbove;
     private double _animatedTop;
+    private double _windowWidth;
     private (double X, double Y) _lastPosition;
     private Guid _currentHideAnimGuid;
 
@@ -67,7 +71,17 @@ public partial class InputPopupWindow : FluentWindow
             });
         };
     }
-    
+
+    public void RefreshBackdrop()
+    {
+        if (_handle == nint.Zero || _isWindows10)
+            return;
+
+        Dispatcher.BeginInvoke(
+            () => ApplyBackdrop(WindowBackdropType.Acrylic),
+            DispatcherPriority.ApplicationIdle);
+    }
+
     private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
     {
         if (e.Shortcut.Modifier is KeyModifier.Shift or KeyModifier.None
@@ -88,9 +102,7 @@ public partial class InputPopupWindow : FluentWindow
 
         if (_isWindows10)
         {
-            if (_handleSource?.CompositionTarget != null)
-                _handleSource.CompositionTarget.BackgroundColor = Colors.Transparent;
-
+            _handleSource?.CompositionTarget?.BackgroundColor = Colors.Transparent;
             Background = Brushes.Transparent;
             RootBorder.SetResourceReference(System.Windows.Controls.Border.BackgroundProperty, "EmptyBackdropBrush");
         }
@@ -103,12 +115,20 @@ public partial class InputPopupWindow : FluentWindow
         var dpiAtPoint = DpiUtils.GetDpiForNearestMonitor(caretPixelX, caretPixelY);
         var x = caretPixelX * DpiUtils.DefaultDpiX / dpiAtPoint;
         var y = caretPixelY * DpiUtils.DefaultDpiY / dpiAtPoint;
+        var width = GetContentWidth();
 
-        if (Visibility == Visibility.Visible && _currentHideAnimGuid == Guid.Empty && (x, y) == _lastPosition)
+        UpdateWindowWidth(width, dpiAtPoint);
+
+        if (Visibility == Visibility.Visible
+            && _currentHideAnimGuid == Guid.Empty
+            && (x, y) == _lastPosition
+            && _windowWidth == width)
+        {
             return;
+        }
 
         var shouldAnimate = _settingsOptions.CurrentValue.AnimationMode.ShouldAnimate;
-        var (finalTop, flipped) = AdjustWindowToScreen(caretPixelX, caretPixelY, x, y, Height, dpiAtPoint);
+        var (finalTop, flipped) = AdjustWindowToScreen(caretPixelX, caretPixelY, x, y, width, Height, dpiAtPoint);
         _flippedAbove = flipped;
         _animatedTop = finalTop;
 
@@ -124,6 +144,15 @@ public partial class InputPopupWindow : FluentWindow
         _currentHideAnimGuid = Guid.Empty;
 
         Show();
+
+        if (_windowWidth != width)
+        {
+            if (width >= SystemParameters.MinimumWindowWidth)
+                _windowWidth = width;
+            else
+                SetNativeWindowWidth(width, DpiUtils.GetDpiForWindow(_handle));
+        }
+
         NativeMethods.DefWindowProc(_handle, NativeMethods.WM_NCACTIVATE, 1, 0);
 
         if (shouldAnimate)
@@ -273,16 +302,38 @@ public partial class InputPopupWindow : FluentWindow
         AccentScale.BeginAnimation(ScaleTransform.ScaleXProperty, squeezeAnim);
     }
 
-    private (double FinalTop, bool FlippedAbove) AdjustWindowToScreen(int caretPixelX, int caretPixelY, double caretX, double caretY, double height, int dpiAtPoint)
+    private double GetContentWidth()
     {
-        var width = ActualWidth;
+        var borderWidth = RootBorder.BorderThickness.Left + RootBorder.BorderThickness.Right;
+        return (_viewModel.AllLanguages?.Count ?? 0) * SelectionItemWidth + borderWidth;
+    }
 
-        if (width == 0 && Content is UIElement content)
-        {
-            content.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            width = content.DesiredSize.Width;
-        }
+    private void UpdateWindowWidth(double width, int dpi)
+    {
+        if (_windowWidth == width)
+            return;
 
+        Width = width;
+
+        if (_handle == nint.Zero)
+            return;
+
+        if (width >= SystemParameters.MinimumWindowWidth)
+            _windowWidth = width;
+        else if (Visibility != Visibility.Visible)
+            SetNativeWindowWidth(width, dpi);
+    }
+
+    private void SetNativeWindowWidth(double width, int dpi)
+    {
+        var calculatedWidth = (int)Math.Ceiling(width * dpi / DpiUtils.DefaultDpiX);
+        NativeMethods.SetWindowWidth(_handle, calculatedWidth);
+
+        _windowWidth = width;
+    }
+
+    private (double FinalTop, bool FlippedAbove) AdjustWindowToScreen(int caretPixelX, int caretPixelY, double caretX, double caretY, double width, double height, int dpiAtPoint)
+    {
         var workingArea = DpiUtils.GetWorkingAreaAt(caretPixelX, caretPixelY);
         var screenRight = workingArea.Right * DpiUtils.DefaultDpiX / dpiAtPoint;
         var screenBottom = workingArea.Bottom * DpiUtils.DefaultDpiY / dpiAtPoint;
@@ -300,6 +351,13 @@ public partial class InputPopupWindow : FluentWindow
 
     private nint WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
     {
+        if (msg == NativeMethods.WM_GETMINMAXINFO)
+        {
+            Marshal.WriteInt32(lParam, MinTrackWidthOffset, 0);
+            handled = true;
+            return nint.Zero;
+        }
+
         if (msg == NativeMethods.WM_NCACTIVATE)
         {
             handled = true;

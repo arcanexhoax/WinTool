@@ -18,7 +18,6 @@
 
     <!-- Shortcut command icons (keyed by command ID for convention-based lookup) -->
     <sys:String x:Key="Icon.CreateFile">&#xF000;</sys:String>
-    <sys:String x:Key="Icon.FastFileCreation">&#xE7C3;</sys:String>
     <sys:String x:Key="Icon.SelectedItemCopyPath">&#xE8C8;</sys:String>
     <sys:String x:Key="Icon.SelectedItemCopyName">&#xE8AC;</sys:String>
     <sys:String x:Key="Icon.RunFileAsAdmin">&#xE8A6;</sys:String>

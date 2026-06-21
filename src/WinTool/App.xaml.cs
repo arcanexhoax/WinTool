@@ -1,4 +1,4 @@
-﻿#pragma warning disable WPF0001
+#pragma warning disable WPF0001
 using GlobalKeyInterceptor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -58,7 +58,6 @@ public partial class App : Application
         builder.Services.AddTransient<ShortcutsView>();
         builder.Services.AddTransient<FeaturesView>();
         builder.Services.AddTransient<SettingsView>();
-        builder.Services.AddTransient<CreateFileWindow>();
         builder.Services.AddTransient<RunWithArgsWindow>();
         builder.Services.AddTransient<EditShortcutWindow>();
         builder.Services.AddTransient<InputPopupWindow>();
@@ -67,7 +66,6 @@ public partial class App : Application
         builder.Services.AddTransient<ShortcutsViewModel>();
         builder.Services.AddTransient<FeaturesViewModel>();
         builder.Services.AddTransient<SettingsViewModel>();
-        builder.Services.AddTransient<CreateFileViewModel>();
         builder.Services.AddTransient<RunWithArgsViewModel>();
         builder.Services.AddTransient<EditShortcutViewModel>();
         builder.Services.AddSingleton<ShellCommandHandler>();
@@ -77,7 +75,6 @@ public partial class App : Application
         builder.Services.AddSingleton<ShortcutsService>();
         builder.Services.AddSingleton<ViewFactory>();
         builder.Services.AddSingleton<ShortcutContext>();
-        builder.Services.AddSingleton<CreateFileDialogState>();
         builder.Services.AddSingleton<RunWithArgsDialogState>();
         builder.Services.AddSingleton<IKeyInterceptor>(new KeyInterceptor());
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
@@ -138,16 +135,16 @@ public partial class App : Application
 
     private void HandleOperations(ShellCommandHandler commandHandler, CommandLineParameters clp)
     {
-        if (clp.CreateFileParameter is { FilePath: not (null or [])} createFile)
+        if (clp.CreateFileParameter?.FilePath is { Length: > 0 } filePath)
         {
             try
             {
-                commandHandler.CreateFile(createFile.FilePath, createFile.Size);
+                commandHandler.CreateFile(filePath);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating file {FilePath}", createFile.FilePath);
-                MessageBox.ShowError(string.Format(WinTool.Properties.Resources.FileCreationError, createFile.FilePath, ex.Message));
+                _logger.LogError(ex, "Error creating file {FilePath}", filePath);
+                MessageBox.ShowError(string.Format(WinTool.Properties.Resources.FileCreationError, filePath, ex.Message));
             }
         }
     }
@@ -225,6 +222,7 @@ public partial class App : Application
             if (settings.AppTheme != _currentTheme)
             {
                 ApplyTheme(settings.AppTheme);
+                _inputPopupWindow?.RefreshBackdrop();
             }
 
             if (settings.Language != _currentLanguage)

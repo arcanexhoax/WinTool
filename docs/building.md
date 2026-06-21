@@ -1,7 +1,3 @@
-# Build and Test WinTool
-
-Use this when I need to build or test WinTool locally.
-
 ## Build
 
 - Do not use `dotnet build`. SDK MSBuild fails here because the app project uses `COMReference` and hits `MSB4803`.

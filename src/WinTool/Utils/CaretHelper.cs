@@ -28,6 +28,14 @@ public class CaretHelper
         if (NativeMethods.GetGuiThreadInfo() is not { } info)
             return null;
 
+        caretRect = GetCaretRectByGuiThreadInfo(info);
+
+        if (IsRectValid(caretRect))
+        {
+            s_logger.Debug("Used GuiThreadInfo to get caret rect.");
+            return caretRect;
+        }
+
         caretRect = GetCaretRectByAccessible(info.hwndFocus);
 
         if (IsRectValid(caretRect))
@@ -96,6 +104,17 @@ public class CaretHelper
 
         var boundingRectangle = textRange.GetBoundingRectangles();
 
+        if ((boundingRectangle == null || boundingRectangle.Length < 4)
+            && textRange.CompareEndpoints(
+                TextPatternRangeEndpoint.TextPatternRangeEndpoint_Start,
+                textRange,
+                TextPatternRangeEndpoint.TextPatternRangeEndpoint_End) == 0)
+        {
+            var characterRange = textRange.Clone();
+            characterRange.ExpandToEnclosingUnit(TextUnit.TextUnit_Character);
+            boundingRectangle = characterRange.GetBoundingRectangles();
+        }
+
         if (boundingRectangle == null || boundingRectangle.Length < 4)
             return null;
 
@@ -105,6 +124,27 @@ public class CaretHelper
         int height = Convert.ToInt32(boundingRectangle.GetValue(3));
 
         return BuildRect(left, top, width, height);
+    }
+
+    private static RECT? GetCaretRectByGuiThreadInfo(GUITHREADINFO info)
+    {
+        if (info.hwndCaret == nint.Zero)
+            return null;
+
+        var topLeft = new POINT
+        {
+            X = info.rcCaret.left,
+            Y = info.rcCaret.top
+        };
+
+        if (!NativeMethods.ClientToScreen(info.hwndCaret, ref topLeft))
+            return null;
+
+        return BuildRect(
+            topLeft.X,
+            topLeft.Y,
+            info.rcCaret.right - info.rcCaret.left,
+            info.rcCaret.bottom - info.rcCaret.top);
     }
 
     private static RECT? GetCaretRectByAccessible(nint hwnd)
@@ -119,31 +159,6 @@ public class CaretHelper
         accessible.accLocation(out int left, out int top, out int width, out int height, NativeMethods.CHILDID_SELF);
 
         return BuildRect(left, top, width, height);
-    }
-
-    private static RECT GetCaretRectByWinApi(nint hwnd)
-    {
-        uint idAttach = 0;
-        uint curThreadId = 0;
-        POINT caretPoint;
-
-        try
-        {
-            idAttach = NativeMethods.GetWindowThreadProcessId(hwnd, out uint id);
-            curThreadId = NativeMethods.GetCurrentThreadId();
-
-            // To attach to current thread
-            var sa = NativeMethods.AttachThreadInput(idAttach, curThreadId, true);
-            var caretPos = NativeMethods.GetCaretPos(out caretPoint);
-            NativeMethods.ClientToScreen(hwnd, ref caretPoint);
-        }
-        finally
-        {
-            // To dettach from current thread
-            NativeMethods.AttachThreadInput(idAttach, curThreadId, false);
-        }
-
-        return BuildRect(caretPoint.X, caretPoint.Y, 1, 20);
     }
 
     private static bool IsRectValid(RECT? rect)

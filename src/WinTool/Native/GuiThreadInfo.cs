@@ -14,7 +14,7 @@ namespace WinTool.Native
         public IntPtr hwndMenuOwner;
         public IntPtr hwndMoveSize;
         public IntPtr hwndCaret;
-        public System.Drawing.Rectangle rcCaret;
+        public RECT rcCaret;
     }
 
     [Flags]

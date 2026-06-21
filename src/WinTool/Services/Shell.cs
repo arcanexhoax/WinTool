@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SHDocVw;
 using Shell32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using WinTool.Models;
 using WinTool.Native;
 using WinTool.Native.Shell;
@@ -10,7 +11,7 @@ using IServiceProvider = WinTool.Native.Shell.IServiceProvider;
 
 namespace WinTool.Services;
 
-using ShellWindow = (string? Path, IShellBrowser Browser);
+using ShellWindow = (string? Path, IShellBrowser Browser, IShellFolderViewDual2 View);
 
 public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
 {
@@ -34,7 +35,7 @@ public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
     {
         return _staThreadService.Invoke(() =>
         {
-            if (GetActiveShellWindow() is not (var path, _))
+            if (GetActiveShellWindow() is not (var path, _, _))
                 return null;
 
             return path;
@@ -45,10 +46,24 @@ public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
     {
         return _staThreadService.Invoke(() =>
         {
-            if (GetActiveShellWindow() is not (_, var browser))
+            if (GetActiveShellWindow() is not (_, var browser, _))
                 return [];
 
             return GetSelectedItems(browser);
+        });
+    }
+
+    public bool BeginRename(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        string fullPath = Path.GetFullPath(path);
+
+        return _staThreadService.Invoke(() =>
+        {
+            if (GetActiveShellWindow() is not (_, _, var view))
+                return false;
+
+            return BeginRename(view, fullPath);
         });
     }
 
@@ -82,7 +97,7 @@ public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
             if (activeTab == shellBrowserHandle)
             {
                 Uri.TryCreate(webBrowser.LocationURL, UriKind.Absolute, out var uri);
-                return (uri?.LocalPath, shellBrowser);
+                return (uri?.LocalPath, shellBrowser, shellFolderView);
             }
         }
 
@@ -97,10 +112,14 @@ public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
         object? obj1 = null;
         object? obj2 = null;
 
-        var serviceProvider = (IServiceProvider)shellWindows.FindWindowSW(ref obj1, ref obj2, SWC_DESKTOP, out int pHWND, SWFO_NEEDDISPATCH);
+        var webBrowser = (IWebBrowserApp)shellWindows.FindWindowSW(ref obj1, ref obj2, SWC_DESKTOP, out int pHWND, SWFO_NEEDDISPATCH);
+        var serviceProvider = (IServiceProvider)webBrowser;
         var shellBrowser = (IShellBrowser)serviceProvider.QueryService(SID_STopLevelBrowser, typeof(IShellBrowser).GUID);
 
-        return (Environment.GetFolderPath(Environment.SpecialFolder.Desktop), shellBrowser);
+        if (webBrowser.Document is not IShellFolderViewDual2 shellFolderView)
+            return null;
+
+        return (Environment.GetFolderPath(Environment.SpecialFolder.Desktop), shellBrowser, shellFolderView);
     }
 
     private List<ItemInfo> GetSelectedItems(IShellBrowser shellBrowser)
@@ -149,6 +168,21 @@ public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
         }
 
         return itemsPaths;
+    }
+
+    private bool BeginRename(IShellFolderViewDual2 shellFolderView, string path)
+    {
+        var fileName = Path.GetFileName(path);
+        FolderItem item = shellFolderView.Folder.ParseName(fileName);
+
+        if (item is null || !string.Equals(item.Path, path, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        object itemObject = item;
+        var flags = SVSI.EDIT | SVSI.DESELECTOTHERS | SVSI.ENSUREVISIBLE | SVSI.FOCUSED;
+        shellFolderView.SelectItem(ref itemObject, (int)flags);
+
+        return true;
     }
 
     private nint GetActiveExplorerTab(nint handle)

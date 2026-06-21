@@ -1,4 +1,4 @@
-﻿using GlobalKeyInterceptor;
+using GlobalKeyInterceptor;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -39,8 +39,7 @@ public class ShortcutsService : BackgroundService
 
         AvailableCommands = new Dictionary<string, ShortcutCommand>()
         {
-            { ShortcutNames.CreateFile, new(ShortcutNames.CreateFile, null, _shellCommandHandler.CreateFileInteractive) },
-            { ShortcutNames.FastFileCreation, new(ShortcutNames.FastFileCreation, null, _shellCommandHandler.CreateFileFast) },
+            { ShortcutNames.CreateFile, new(ShortcutNames.CreateFile, null, _shellCommandHandler.CreateFile) },
             { ShortcutNames.SelectedItemCopyPath, new(ShortcutNames.SelectedItemCopyPath, null, _shellCommandHandler.CopyFilePath) },
             { ShortcutNames.SelectedItemCopyName, new(ShortcutNames.SelectedItemCopyName, null, _shellCommandHandler.CopyFileName) },
             { ShortcutNames.RunFileAsAdmin, new(ShortcutNames.RunFileAsAdmin, null, _shellCommandHandler.RunFileAsAdmin) },

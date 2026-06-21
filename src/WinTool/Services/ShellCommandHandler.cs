@@ -1,22 +1,26 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Extensions;
 using WinTool.Models;
-using WinTool.Properties;
+using WinTool.Native;
 using WinTool.Views.Shortcuts;
 
 namespace WinTool.Services;
 
 public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shell, ViewFactory viewFactory, StaThreadService staThreadService)
 {
-    private const string NewFileTemplate = "NewFile.txt";
+    // File Explorer and Notepad resources used to compose the localized "New Text Document" name.
+    // The resource IDs are undocumented, so keep fallbacks.
+    private const string NewItemNameTemplateResource = "@shell32.dll,-30316";
+    private const string TextDocumentNameResource = "@notepad.exe,-469";
+    private const string NewItemNameTemplateFallback = "New %s";
+    private const string TextDocumentNameFallback = "Text Document";
 
     private readonly ILogger _logger = logger;
     private readonly Shell _shell = shell;
@@ -25,54 +29,18 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
 
     public bool IsBackgroundMode { get; set; } = true;
 
-    public void CreateFileFast()
+    public void CreateFile()
     {
-        string? path = _shell.GetActiveShellPath();
+        var path = _shell.GetActiveShellPath();
 
         if (string.IsNullOrEmpty(path))
             return;
 
-        DirectoryInfo di = new(path);
-        int num = 0;
-
-        string? fileName = Path.GetFileNameWithoutExtension(NewFileTemplate);
-        string? extension = Path.GetExtension(NewFileTemplate);
-
-        // TODO test it after new file name template will match Windows behavior
-        var numbers = di.EnumerateFiles($"{fileName}_*{extension}").Select(f =>
-        {
-            var match = Regex.Match(f.Name, $@"^{fileName}_(\d+){extension}$");
-
-            if (match.Groups.Count != 2)
-                return -1;
-
-            if (int.TryParse(match.Groups[1].Value, out int number))
-                return number;
-            return -1;
-        });
-
-        if (numbers.Any())
-            num = numbers.Max() + 1;
-
-        CreateFile(Path.Combine(path, $"{fileName}_{num}{extension}"));
+        var availablePath = GetAvailableFilePath(path, GetNewFileName());
+        CreateFile(availablePath);
     }
 
-    public void CreateFileInteractive()
-    {
-        string? path = _shell.GetActiveShellPath();
-
-        if (string.IsNullOrEmpty(path))
-            return;
-
-        var result = _viewFactory.ShowDialog<CreateFileWindow, string, CreateFileOutput>(path);
-
-        if (result is not { Success: true, Data: { } data })
-            return;
-
-        CreateFile(data.FilePath, data.Size);
-    }
-
-    public void CreateFile(string path, long size = 0)
+    public void CreateFile(string path)
     {
         var clp = new CommandLineParameters()
         {
@@ -80,16 +48,15 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
             CreateFileParameter = new CreateFileParameter()
             {
                 FilePath = path,
-                Size = size
             }
         };
 
         Process.ExecuteAsAdmin(() =>
         {
-            using var fileStream = File.Create(path);
-            fileStream.SetLength(size);
+            File.Open(path, FileMode.CreateNew).Dispose();
+            _shell.BeginRename(path);
 
-            _logger.LogInformation("Created file {FilePath} of size {Size} bytes", path, size);
+            _logger.LogInformation("Created file '{FilePath}'.", path);
         }, clp.ToString());
     }
 
@@ -186,5 +153,31 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
 
         if (!string.IsNullOrEmpty(folderPath))
             Process.Start("cmd.exe", $"/k cd /d \"{folderPath}\"", asAdmin);
+    }
+
+    internal static string GetAvailableFilePath(string directoryPath, string fileName)
+    {
+        string name = Path.GetFileNameWithoutExtension(fileName);
+        string extension = Path.GetExtension(fileName);
+        string path = Path.Combine(directoryPath, fileName);
+
+        if (!Path.Exists(path))
+            return path;
+
+        for (int number = 2; ; number++)
+        {
+            path = Path.Combine(directoryPath, $"{name} ({number}){extension}");
+
+            if (!Path.Exists(path))
+                return path;
+        }
+    }
+
+    internal static string GetNewFileName()
+    {
+        string template = NativeMethods.LoadIndirectString(NewItemNameTemplateResource) ?? NewItemNameTemplateFallback;
+        string documentName = NativeMethods.LoadIndirectString(TextDocumentNameResource) ?? TextDocumentNameFallback;
+
+        return $"{template.Replace("%s", documentName)}.txt";
     }
 }

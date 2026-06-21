@@ -1,3 +1,9 @@
+## v0.10.1
+- Unified `Create file` commands to use Explorer-style file creation with immediate renaming
+- Fixed Input popup in Windows Terminal
+- Fixed Input popup sizing when the number of keyboard layouts changes or only 2 layouts are available
+- Fixed Input popup backdrop after changing the app theme
+
 ## v0.10.0
 - Added localizations for `German`, `Spanish`, `French`, `Polish`, `Portuguese`, `Russian`, `Turkish`, and `Ukrainian`
 - Added language selection in settings

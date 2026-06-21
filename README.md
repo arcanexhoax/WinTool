@@ -1,19 +1,18 @@
 # WinTool
 
 ![NET](https://img.shields.io/badge/.NET%2010-%23512BD4)
-![Version](https://img.shields.io/badge/Version-0.10.0-%230c7ebf)
+![Version](https://img.shields.io/badge/Version-0.10.1-%230c7ebf)
 [![License](https://img.shields.io/github/license/arcanexhoax/WinTool.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/WinTool/master/LICENSE)
 
 WinTool is a utility that adds useful features and shortcuts to Windows, enhancing everyday experience.
 
 <br>
-<img src="./docs/main-window.png" />
+<img src="./docs/images/main-window.png" />
 <br>
 
 ## Shortcuts
 ### Windows Explorer
 - Create file
-- Fast file creation
 - Copy path to selected/opened item
 - Copy name of selected/opened item
 - Run selected file as admin
@@ -26,7 +25,7 @@ WinTool is a utility that adds useful features and shortcuts to Windows, enhanci
 ## Features
 - Input popup. Shows the current keyboard layout near the text cursor when you switch languages
 
-<img src="./docs/input-popup.gif" />
+<img src="./docs/images/input-popup.gif" />
 
 <br>
 
