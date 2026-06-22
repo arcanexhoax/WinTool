@@ -60,6 +60,12 @@ public class ProcessHelper
         }
     }
 
+    public void StartInCmd(string fileName, string? args, bool asAdmin)
+    {
+        var cmdArgs = GetCmdArguments(fileName, args);
+        Start("cmd.exe", cmdArgs, asAdmin);
+    }
+
     public void Start(string fileName, string? args, bool asAdmin)
     {
         if (!asAdmin && IsAdmin)
@@ -101,6 +107,16 @@ public class ProcessHelper
         Process.Start(psi);
     }
 
+    internal static string GetCmdArguments(string fileName, string? args)
+    {
+        var escapedArgs = EscapeCmdCommandLine(args);
+        var command = string.IsNullOrEmpty(escapedArgs)
+            ? $"\"{fileName}\""
+            : $"\"{fileName}\" {escapedArgs}";
+
+        return $"/d /s /v:off /k \"{command}\"";
+    }
+
     private static string EscapeCmdCommandLine(string? commandLine)
     {
         if (string.IsNullOrEmpty(commandLine))
@@ -113,7 +129,7 @@ public class ProcessHelper
         {
             if (character == '"')
                 isQuoted = !isQuoted;
-            else if (!isQuoted && character is '^' or '&' or '|' or '<' or '>' or '%')
+            else if (!isQuoted && character is '^' or '&' or '|' or '<' or '>' or '%' or '(' or ')')
                 escaped.Append('^');
 
             escaped.Append(character);

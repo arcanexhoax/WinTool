@@ -266,6 +266,10 @@
     <value>Запустити від імені адміністратора</value>
     <comment>Run [an app] as administartor</comment>
   </data>
+  <data name="KeepConsoleOpen" xml:space="preserve">
+    <value>Не закривати консоль</value>
+    <comment>Keep the console window open after the app exits</comment>
+  </data>
   <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
     <value>Відкрити поточну папку в командному рядку від імені адміністратора</value>
   </data>

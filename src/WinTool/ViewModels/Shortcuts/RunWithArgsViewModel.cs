@@ -26,6 +26,9 @@ public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<s
     public partial bool RunAsAdmin { get; set; }
 
     [ObservableProperty]
+    public partial bool KeepConsoleOpen { get; set; }
+
+    [ObservableProperty]
     public partial bool AreOptionsOpened { get; set; }
 
     [ObservableProperty]
@@ -40,8 +43,9 @@ public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<s
 
         Args = _state.Args;
         RunAsAdmin = _state.RunAsAdmin;
+        KeepConsoleOpen = _state.KeepConsoleOpen;
 
-        RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(true, new RunWithArgsOutput(Args, RunAsAdmin))));
+        RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(true, new RunWithArgsOutput(Args, RunAsAdmin, KeepConsoleOpen))));
         CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(false)));
     }
 
@@ -52,13 +56,14 @@ public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<s
         FileName = Path.GetFileName(filePath);
         FullFilePath = filePath;
         IsTextSelected = true;
-        AreOptionsOpened = RunAsAdmin;
+        AreOptionsOpened = RunAsAdmin || KeepConsoleOpen;
     }
 
     public void OnClose()
     {
         _state.Args = Args;
         _state.RunAsAdmin = RunAsAdmin;
+        _state.KeepConsoleOpen = KeepConsoleOpen;
         _onResult = null;
     }
 }

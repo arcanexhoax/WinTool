@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -126,7 +125,10 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
             return;
         }
 
-        _processHelper.Start(selectedItem, data.Args, data.RunAsAdmin);
+        if (data.KeepConsoleOpen)
+            _processHelper.StartInCmd(selectedItem, data.Args, data.RunAsAdmin);
+        else
+            _processHelper.Start(selectedItem, data.Args, data.RunAsAdmin);
     }
 
     public void OpenInCmd() => OpenInCmd(false);
