@@ -5,7 +5,7 @@ using System.Windows.Interop;
 using System.Windows.Shell;
 using WinTool.Models;
 using WinTool.Native;
-using WinTool.ViewModel;
+using WinTool.ViewModels;
 
 namespace WinTool.Views;
 
@@ -150,7 +150,7 @@ public class ModalWindow : FluentWindow
     }
 }
 
-public class DialogWindow<TIn, TOut> : ModalWindow
+public class DialogWindow<TIn, TOut> : ModalWindow, IDialog<TIn, TOut>
 {
     public DialogWindow()
     {

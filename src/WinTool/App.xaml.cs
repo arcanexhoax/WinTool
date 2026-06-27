@@ -56,10 +56,10 @@ public partial class App : Application
 
         builder.Services.AddTransient<MainWindow>();
         builder.Services.AddTransient<ShortcutsView>();
+        builder.Services.AddTransient<EditShortcutView>();
         builder.Services.AddTransient<FeaturesView>();
         builder.Services.AddTransient<SettingsView>();
         builder.Services.AddTransient<RunWithArgsWindow>();
-        builder.Services.AddTransient<EditShortcutWindow>();
         builder.Services.AddTransient<InputPopupWindow>();
         builder.Services.AddTransient<MainViewModel>();
         builder.Services.AddTransient<InputPopupViewModel>();

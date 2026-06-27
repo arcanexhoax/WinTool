@@ -25,8 +25,8 @@ public partial class ShortcutViewModel(ShortcutsService shortcutsService, Shortc
     [RelayCommand]
     private void EditShortcut()
     {
-        var window = _viewFactory.Create<EditShortcutWindow>();
-        var result = window.ShowDialog(new EditShortcutInput(Shortcut, _id));
+        var input = new EditShortcutInput(Shortcut, _id);
+        var result = _viewFactory.ShowDialog<EditShortcutView, EditShortcutInput, Shortcut>(input);
 
         if (result is not { Success: true, Data: { } newShortcut } || Shortcut == newShortcut)
             return;

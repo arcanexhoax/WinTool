@@ -2,7 +2,6 @@ using GlobalKeyInterceptor;
 using Microsoft.Extensions.Options;
 using WinTool.Models;
 using WinTool.Options;
-using WinTool.Properties;
 using WinTool.ViewModels.Shortcuts;
 
 namespace WinTool.Tests.ViewModels.Shortcuts;

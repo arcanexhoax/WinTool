@@ -7,7 +7,6 @@ using System.Linq;
 using WinTool.Models;
 using WinTool.Options;
 using WinTool.Properties;
-using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 
@@ -53,10 +52,9 @@ public partial class EditShortcutViewModel : ObservableObject, IDialogViewModel<
     {
         _name = input.Name;
         _onResult = onResult;
+        _shortcutContext.IsEditing = true;
 
         Shortcut = input.Shortcut;
-
-        _shortcutContext.IsEditing = true;
     }
 
     public void OnClose()

@@ -1,9 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.IO;
 using WinTool.Models;
-using WinTool.ViewModel;
 
 namespace WinTool.ViewModels.Shortcuts;
 

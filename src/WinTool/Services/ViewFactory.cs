@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows.Controls;
 using WinTool.Models;
@@ -12,7 +12,7 @@ public class ViewFactory(IServiceProvider sp)
 
     public T Create<T>() where T : ContentControl => _sp.GetRequiredService<T>();
 
-    public Result<TOut> ShowDialog<TDialog, TIn, TOut>(TIn input) where TDialog : DialogWindow<TIn, TOut>
+    public Result<TOut> ShowDialog<TDialog, TIn, TOut>(TIn input) where TDialog : ContentControl, IDialog<TIn, TOut>
     {
         Result<TOut>? result = null;
 
@@ -25,4 +25,3 @@ public class ViewFactory(IServiceProvider sp)
         return result ?? new Result<TOut>(false);
     }
 }
-
