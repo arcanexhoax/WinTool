@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 
 namespace WinTool.Views;
@@ -31,6 +32,7 @@ public partial class ContentDialogHost : Grid
         DialogPresenter.Content = content;
         Visibility = Visibility.Visible;
 
+        Keyboard.Focus(this);
         _showStoryboard.Begin(this, true);
     }
 
@@ -48,6 +50,9 @@ public partial class ContentDialogHost : Grid
 
     private void CompleteClose()
     {
+        if (IsKeyboardFocusWithin)
+            Keyboard.ClearFocus();
+
         Visibility = Visibility.Collapsed;
         DialogPresenter.Content = null;
     }

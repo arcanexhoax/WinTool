@@ -1,6 +1,9 @@
 <Grid x:Class="WinTool.Views.ContentDialogHost"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Focusable="True"
+      KeyboardNavigation.ControlTabNavigation="Cycle"
+      KeyboardNavigation.TabNavigation="Cycle"
       Visibility="Collapsed">
     <Grid.Resources>
         <Storyboard x:Key="OpenDialogStoryboard">
