@@ -52,6 +52,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
         _processHelper.ExecuteAsAdmin(() =>
         {
             File.Open(path, FileMode.CreateNew).Dispose();
+            NativeMethods.NotifyShellFileCreated(path);
             _shell.BeginRename(path);
 
             _logger.LogInformation("Created file '{FilePath}'.", path);
