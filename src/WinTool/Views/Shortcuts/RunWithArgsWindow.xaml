@@ -49,10 +49,17 @@
                 <Expander Header="{x:Static p:Resources.Options}"
                           IsExpanded="{Binding AreOptionsOpened}"
                           Margin="0 16 0 0">
-                    <CheckBox IsChecked="{Binding RunAsAdmin}"
-                              Content="{x:Static p:Resources.RunAsAdmin}"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top" />
+                    <StackPanel>
+                        <CheckBox Content="{x:Static p:Resources.RunAsAdmin}"
+                                  IsChecked="{Binding RunAsAdmin}"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top" />
+                        <CheckBox Content="{x:Static p:Resources.KeepConsoleOpen}"
+                                  IsChecked="{Binding KeepConsoleOpen}"
+                                  Margin="0 8 0 0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top" />
+                    </StackPanel>
                 </Expander>
             </StackPanel>
         </Border>

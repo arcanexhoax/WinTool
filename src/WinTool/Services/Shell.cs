@@ -4,6 +4,7 @@ using Shell32;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using WinTool.Models;
 using WinTool.Native;
 using WinTool.Native.Shell;
@@ -15,12 +16,15 @@ using ShellWindow = (string? Path, IShellBrowser Browser, IShellFolderViewDual2 
 
 public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
 {
+    private const int SW_SHOWNORMAL = 1;
     private const int SWC_DESKTOP = 8;
     private const int SWFO_NEEDDISPATCH = 1;
 
     private readonly ILogger _logger = logger;
     private readonly StaThreadService _staThreadService = staThreadService;
     private readonly Guid SID_STopLevelBrowser = new("4C96BE40-915C-11CF-99D3-00AA004AE837");
+
+    private IShellDispatch2? _shellDispatch;
 
     public bool IsActive
     {
@@ -64,6 +68,25 @@ public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
                 return false;
 
             return BeginRename(view, fullPath);
+        });
+    }
+
+    public void StartProcessUnelevated(string fileName, string? args = null)
+    {
+        _staThreadService.Invoke(() =>
+        {
+            var shellDispatch = GetShellDispatch();
+
+            try
+            {
+                shellDispatch.ShellExecute(fileName, args ?? string.Empty, string.Empty, string.Empty, SW_SHOWNORMAL);
+            }
+            catch (Exception ex) when (ex is COMException or InvalidOperationException)
+            {
+                _shellDispatch = null;
+                shellDispatch = GetShellDispatch();
+                shellDispatch.ShellExecute(fileName, args ?? string.Empty, string.Empty, string.Empty, SW_SHOWNORMAL);
+            }
         });
     }
 
@@ -120,6 +143,28 @@ public class Shell(ILogger<Shell> logger, StaThreadService staThreadService)
             return null;
 
         return (Environment.GetFolderPath(Environment.SpecialFolder.Desktop), shellBrowser, shellFolderView);
+    }
+
+    private IShellDispatch2 GetShellDispatch()
+    {
+        if (_shellDispatch != null)
+            return _shellDispatch;
+
+        var shell = new Shell32.Shell();
+        ShellWindows shellWindows = shell.Windows();
+
+        object? location = null;
+        object? root = null;
+        var webBrowserObj = shellWindows.FindWindowSW(ref location, ref root, SWC_DESKTOP, out _, SWFO_NEEDDISPATCH);
+
+        if (webBrowserObj is not IWebBrowserApp webBrowser
+            || webBrowser.Document is not IShellFolderViewDual2 shellFolderView
+            || shellFolderView.Application is not IShellDispatch2 shellDispatch)
+        {
+            throw new InvalidOperationException("Unable to get the desktop shell.");
+        }
+
+        return shellDispatch;
     }
 
     private List<ItemInfo> GetSelectedItems(IShellBrowser shellBrowser)

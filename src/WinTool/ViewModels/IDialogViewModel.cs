@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using WinTool.Models;
 
-namespace WinTool.ViewModel;
+namespace WinTool.ViewModels;
 
 public interface IDialogViewModel<TInput, TOutput>
 {

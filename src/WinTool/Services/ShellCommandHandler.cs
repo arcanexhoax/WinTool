@@ -1,19 +1,16 @@
 using Microsoft.Extensions.Logging;
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using WinTool.CommandLine;
-using WinTool.Extensions;
 using WinTool.Models;
 using WinTool.Native;
 using WinTool.Views.Shortcuts;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shell, ViewFactory viewFactory, StaThreadService staThreadService)
+public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shell, ViewFactory viewFactory, StaThreadService staThreadService, ProcessHelper processHelper)
 {
     // File Explorer and Notepad resources used to compose the localized "New Text Document" name.
     // The resource IDs are undocumented, so keep fallbacks.
@@ -26,6 +23,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
     private readonly Shell _shell = shell;
     private readonly ViewFactory _viewFactory = viewFactory;
     private readonly StaThreadService _staThreadService = staThreadService;
+    private readonly ProcessHelper _processHelper = processHelper;
 
     public bool IsBackgroundMode { get; set; } = true;
 
@@ -51,9 +49,10 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
             }
         };
 
-        Process.ExecuteAsAdmin(() =>
+        _processHelper.ExecuteAsAdmin(() =>
         {
             File.Open(path, FileMode.CreateNew).Dispose();
+            NativeMethods.NotifyShellFileCreated(path);
             _shell.BeginRename(path);
 
             _logger.LogInformation("Created file '{FilePath}'.", path);
@@ -106,7 +105,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
         var selectedItems = _shell.GetSelectedItems();
 
         if (selectedItems is [{ Path: var selectedItem }])
-            RunFileAsAdminOptional(selectedItem, null, true);
+            _processHelper.Start(selectedItem, null, true);
     }
 
     public void RunFileWithArgs()
@@ -127,20 +126,10 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
             return;
         }
 
-        RunFileAsAdminOptional(selectedItem, data.Args, data.RunAsAdmin);
-    }
-
-    private void RunFileAsAdminOptional(string fileName, string? args, bool asAdmin)
-    {
-        try
-        {
-            Process.Start(fileName, args, asAdmin);
-        }
-        catch (Win32Exception ex) when (ex.NativeErrorCode == 1155)
-        {
-            _logger.LogInformation("File {FilePath} is unable to run as admin, running without admin privileges", fileName);
-            Process.Start(fileName, args, false);
-        }
+        if (data.KeepConsoleOpen)
+            _processHelper.StartInCmd(selectedItem, data.Args, data.RunAsAdmin);
+        else
+            _processHelper.Start(selectedItem, data.Args, data.RunAsAdmin);
     }
 
     public void OpenInCmd() => OpenInCmd(false);
@@ -152,7 +141,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
         string? folderPath = _shell.GetActiveShellPath();
 
         if (!string.IsNullOrEmpty(folderPath))
-            Process.Start("cmd.exe", $"/k cd /d \"{folderPath}\"", asAdmin);
+            _processHelper.Start("cmd.exe", $"/k cd /d \"{folderPath}\"", asAdmin);
     }
 
     internal static string GetAvailableFilePath(string directoryPath, string fileName)

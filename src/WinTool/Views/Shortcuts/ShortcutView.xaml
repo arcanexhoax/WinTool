@@ -40,6 +40,7 @@
                         Background="Transparent"
                         HorizontalAlignment="Right">
                 <Button x:Name="EditButton"
+                        Focusable="False"
                         Visibility="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=StackPanel}, Converter={StaticResource BoolToVisConverter}}"
                         Command="{Binding EditShortcutCommand}"
                         Margin="0 0 8 0">

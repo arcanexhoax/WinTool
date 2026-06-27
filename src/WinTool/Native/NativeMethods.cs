@@ -19,6 +19,9 @@ namespace WinTool.Native
         private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_NOACTIVATE = 0x0010;
         private const uint SWP_SHOWWINDOW = 0x0040;
+        private const int SHCNE_CREATE = 0x00000002;
+        private const uint SHCNF_PATHW = 0x0005;
+        private const uint SHCNF_FLUSH = 0x1000;
 
         private static readonly IntPtr HWND_TOPMOST = new(-1);
 
@@ -87,6 +90,9 @@ namespace WinTool.Native
         [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
         private static extern int SHLoadIndirectString(string source, StringBuilder output, uint outputLength, nint reserved);
 
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern void SHChangeNotify(int wEventId, uint uFlags, string dwItem1, nint dwItem2);
+
         [DllImport("user32.dll")]
         internal static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
@@ -150,6 +156,11 @@ namespace WinTool.Native
             int result = SHLoadIndirectString(source, output, (uint)output.Capacity, nint.Zero);
 
             return result >= 0 && output.Length > 0 ? output.ToString() : null;
+        }
+
+        public static void NotifyShellFileCreated(string path)
+        {
+            SHChangeNotify(SHCNE_CREATE, SHCNF_PATHW | SHCNF_FLUSH, path, nint.Zero);
         }
 
         public static bool ShowWindow(string windowTitle)

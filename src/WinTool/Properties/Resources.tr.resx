@@ -266,6 +266,10 @@
     <value>Yönetici olarak çalıştır</value>
     <comment>Run [an app] as administartor</comment>
   </data>
+  <data name="KeepConsoleOpen" xml:space="preserve">
+    <value>Konsolu açık tut</value>
+    <comment>Keep the console window open after the app exits</comment>
+  </data>
   <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
     <value>Geçerli klasörü yönetici olarak komut isteminde aç</value>
   </data>

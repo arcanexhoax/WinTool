@@ -1,3 +1,9 @@
+## v0.10.2
+- Added support for running non-executable files as administrator
+- Added `Keep console open` option to `Run file with arguments` command
+- Improved `Create file` command speed by refreshing Explorer immediately after file creation
+- Fixed non-admin file launching when WinTool runs as administrator
+
 ## v0.10.1
 - Unified `Create file` commands to use Explorer-style file creation with immediate renaming
 - Fixed Input popup in Windows Terminal

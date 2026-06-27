@@ -248,6 +248,15 @@ namespace WinTool.Properties {
                 return ResourceManager.GetString("InputPopupDescription", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Keep console open.
+        /// </summary>
+        public static string KeepConsoleOpen {
+            get {
+                return ResourceManager.GetString("KeepConsoleOpen", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Language.

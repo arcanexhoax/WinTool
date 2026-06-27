@@ -266,6 +266,10 @@
     <value>Als Administrator ausführen</value>
     <comment>Run [an app] as administartor</comment>
   </data>
+  <data name="KeepConsoleOpen" xml:space="preserve">
+    <value>Konsole geöffnet lassen</value>
+    <comment>Keep the console window open after the app exits</comment>
+  </data>
   <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
     <value>Aktuellen Ordner als Administrator in der Eingabeaufforderung öffnen</value>
   </data>

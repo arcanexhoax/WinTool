@@ -56,10 +56,10 @@ public partial class App : Application
 
         builder.Services.AddTransient<MainWindow>();
         builder.Services.AddTransient<ShortcutsView>();
+        builder.Services.AddTransient<EditShortcutView>();
         builder.Services.AddTransient<FeaturesView>();
         builder.Services.AddTransient<SettingsView>();
         builder.Services.AddTransient<RunWithArgsWindow>();
-        builder.Services.AddTransient<EditShortcutWindow>();
         builder.Services.AddTransient<InputPopupWindow>();
         builder.Services.AddTransient<MainViewModel>();
         builder.Services.AddTransient<InputPopupViewModel>();
@@ -73,6 +73,7 @@ public partial class App : Application
         builder.Services.AddSingleton<KeyboardLayoutManager>();
         builder.Services.AddSingleton<StaThreadService>();
         builder.Services.AddSingleton<ShortcutsService>();
+        builder.Services.AddSingleton<ProcessHelper>();
         builder.Services.AddSingleton<ViewFactory>();
         builder.Services.AddSingleton<ShortcutContext>();
         builder.Services.AddSingleton<RunWithArgsDialogState>();
@@ -101,9 +102,11 @@ public partial class App : Application
         settingsMonitor.OnChange(OnSettingsChanged);
 
         var settings = settingsMonitor.CurrentValue;
+        var processHelper = _app.Services.GetRequiredService<ProcessHelper>();
+
         ApplyLanguage(settings.Language);
         ApplyTheme(settings.AppTheme);
-        RunAsAdminIfNeeded(settings, clp);
+        RunAsAdminIfNeeded(processHelper, settings, clp);
 
         // activate the popup window
         _inputPopupWindow = _app.Services.GetRequiredService<InputPopupWindow>();
@@ -127,10 +130,10 @@ public partial class App : Application
             App.Current.Shutdown();
     }
 
-    private void RunAsAdminIfNeeded(SettingsOptions settings, CommandLineParameters clp)
+    private void RunAsAdminIfNeeded(ProcessHelper processHelper, SettingsOptions settings, CommandLineParameters clp)
     {
-        if (settings.AlwaysRunAsAdmin && !Process.IsAdmin)
-            Process.RestartAsAdmin(clp.ToString());
+        if (settings.AlwaysRunAsAdmin && !processHelper.IsAdmin)
+            processHelper.RestartAsAdmin(clp.ToString());
     }
 
     private void HandleOperations(ShellCommandHandler commandHandler, CommandLineParameters clp)

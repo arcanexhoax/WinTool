@@ -31,69 +31,73 @@
             <i:InvokeCommandAction Command="{Binding WindowClosingCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Border Padding="10">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Border Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <tb:TaskbarIcon DoubleClickCommand="{Binding OpenWindowCommand}"
-                            IconSource="/Resources/icon.ico"
-                            PopupActivation="RightClick"
-                            ToolTipText="{x:Static p:Resources.TrayToolTip}"
-                            Visibility="Visible">
-                <tb:TaskbarIcon.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{x:Static p:Resources.Open}"
-                                  Command="{Binding OpenWindowCommand}" />
-                        <Separator />
-                        <MenuItem Header="{x:Static p:Resources.Close}"
-                                  Command="{Binding CloseWindowCommand}" />
-                    </ContextMenu>
-                </tb:TaskbarIcon.ContextMenu>
-            </tb:TaskbarIcon>
+                <tb:TaskbarIcon DoubleClickCommand="{Binding OpenWindowCommand}"
+                                IconSource="/Resources/icon.ico"
+                                PopupActivation="RightClick"
+                                ToolTipText="{x:Static p:Resources.TrayToolTip}"
+                                Visibility="Visible">
+                    <tb:TaskbarIcon.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{x:Static p:Resources.Open}"
+                                      Command="{Binding OpenWindowCommand}" />
+                            <Separator />
+                            <MenuItem Header="{x:Static p:Resources.Close}"
+                                      Command="{Binding CloseWindowCommand}" />
+                        </ContextMenu>
+                    </tb:TaskbarIcon.ContextMenu>
+                </tb:TaskbarIcon>
 
-            <ListView x:Name="Tabs"
-                      SelectionChanged="OnTabSelected"
-                      SelectionMode="Single">
-                <ListViewItem x:Name="ShortcutsTab">
-                    <ListViewItem.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Icons/keyboard.png"
-                                   Height="20"
-                                   Width="20"/>
-                            <TextBlock Text="{x:Static p:Resources.Shortcuts}"
-                                       Margin="16 0 0 0" />
-                        </StackPanel>
-                    </ListViewItem.Content>
-                </ListViewItem>
-                <ListViewItem x:Name="FeaturesTab">
-                    <ListViewItem.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Icons/idea.png"
-                                   Height="20"
-                                   Width="20" />
-                            <TextBlock Text="{x:Static p:Resources.Features}"
-                                       Margin="16 0 0 0" />
-                        </StackPanel>
-                    </ListViewItem.Content>
-                </ListViewItem>
-                <ListViewItem x:Name="SettingsTab">
-                    <ListViewItem.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Icons/settings.png"
-                                   Height="20"
-                                   Width="20" />
-                            <TextBlock Text="{x:Static p:Resources.Settings}"
-                                       Margin="16 0 0 0" />
-                        </StackPanel>
-                    </ListViewItem.Content>
-                </ListViewItem>
-            </ListView>
+                <ListView x:Name="Tabs"
+                          SelectionChanged="OnTabSelected"
+                          SelectionMode="Single">
+                    <ListViewItem x:Name="ShortcutsTab">
+                        <ListViewItem.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Resources/Icons/keyboard.png"
+                                       Height="20"
+                                       Width="20" />
+                                <TextBlock Text="{x:Static p:Resources.Shortcuts}"
+                                           Margin="16 0 0 0" />
+                            </StackPanel>
+                        </ListViewItem.Content>
+                    </ListViewItem>
+                    <ListViewItem x:Name="FeaturesTab">
+                        <ListViewItem.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Resources/Icons/idea.png"
+                                       Height="20"
+                                       Width="20" />
+                                <TextBlock Text="{x:Static p:Resources.Features}"
+                                           Margin="16 0 0 0" />
+                            </StackPanel>
+                        </ListViewItem.Content>
+                    </ListViewItem>
+                    <ListViewItem x:Name="SettingsTab">
+                        <ListViewItem.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Resources/Icons/settings.png"
+                                       Height="20"
+                                       Width="20" />
+                                <TextBlock Text="{x:Static p:Resources.Settings}"
+                                           Margin="16 0 0 0" />
+                            </StackPanel>
+                        </ListViewItem.Content>
+                    </ListViewItem>
+                </ListView>
 
-            <ContentControl x:Name="TabContent"
-                            Grid.Column="1" />
-        </Grid>
-    </Border>
+                <ContentControl x:Name="TabContent"
+                                Grid.Column="1" />
+            </Grid>
+        </Border>
+
+        <views:ContentDialogHost x:Name="DialogHost" />
+    </Grid>
 </views:FluentWindow>

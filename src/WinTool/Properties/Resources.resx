@@ -266,6 +266,10 @@
     <value>Run as administrator</value>
     <comment>Run [an app] as administartor</comment>
   </data>
+  <data name="KeepConsoleOpen" xml:space="preserve">
+    <value>Keep console open</value>
+    <comment>Keep the console window open after the app exits</comment>
+  </data>
   <data name="OpenFolderInCmdAsAdmin" xml:space="preserve">
     <value>Open current folder in command prompt as admin</value>
   </data>
