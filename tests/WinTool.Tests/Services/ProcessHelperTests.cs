@@ -19,4 +19,12 @@ public class ProcessHelperTests
 
         Assert.Equal("/d /s /v:off /k \"\"C:\\Tools\\tool.exe\" value^&more ^(test^)\"", arguments);
     }
+
+    [Fact]
+    public void GetCmdArguments_WithCmdMetacharacters_EscapesFilePath()
+    {
+        string arguments = ProcessHelper.GetCmdArguments(@"C:\Tools\%USERNAME% & (test)\tool.exe", null);
+
+        Assert.Equal("/d /s /v:off /k \"\"C:\\Tools\\^%USERNAME^% ^& ^(test^)\\tool.exe\"\"", arguments);
+    }
 }

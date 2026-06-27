@@ -94,10 +94,11 @@ public class ProcessHelper
 
     private void StartWithElevatedCmd(string fileName, string? args)
     {
+        var escapedFileName = EscapeCmdCommandLine(fileName);
         var escapedArgs = EscapeCmdCommandLine(args);
         var psi = new ProcessStartInfo()
         {
-            Arguments = $"/d /v:off /c start \"\" \"{fileName}\" {escapedArgs}",
+            Arguments = $"/d /v:off /c start \"\" \"{escapedFileName}\" {escapedArgs}",
             FileName = "cmd.exe",
             Verb = "runas",
             UseShellExecute = true,
@@ -109,10 +110,11 @@ public class ProcessHelper
 
     internal static string GetCmdArguments(string fileName, string? args)
     {
+        var escapedFileName = EscapeCmdCommandLine(fileName);
         var escapedArgs = EscapeCmdCommandLine(args);
         var command = string.IsNullOrEmpty(escapedArgs)
-            ? $"\"{fileName}\""
-            : $"\"{fileName}\" {escapedArgs}";
+            ? $"\"{escapedFileName}\""
+            : $"\"{escapedFileName}\" {escapedArgs}";
 
         return $"/d /s /v:off /k \"{command}\"";
     }
