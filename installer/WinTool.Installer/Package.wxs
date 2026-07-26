@@ -1,0 +1,91 @@
+<Wix
+    xmlns="http://wixtoolset.org/schemas/v4/wxs"
+    xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+    <Package Id="Hoax.WinTool"
+             Name="WinTool"
+             Manufacturer="hoax"
+             Version="$(ProductVersion)"
+             Language="1033"
+             Scope="perMachine">
+
+        <SummaryInformation Description="WinTool setup" />
+        <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+        <Icon Id="WinTool.exe" SourceFile="$(WinToolPublishDir)WinTool.exe" />
+        <Property Id="ARPPRODUCTICON" Value="WinTool.exe" />
+        <Property Id="ARPURLINFOABOUT" Value="https://github.com/arcanexhoax/WinTool" />
+
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch WinTool" />
+        <Property Id="WixShellExecTarget" Value="[#WinToolExecutable]" />
+
+        <CustomAction Id="LaunchWinTool"
+                      BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)"
+                      DllEntry="WixShellExec"
+                      Impersonate="yes"
+                      Return="ignore" />
+
+        <SetProperty Id="RemoveWinToolAutoRun"
+                     Value="&quot;[SystemFolder]reg.exe&quot; delete &quot;HKCU\Software\Microsoft\Windows\CurrentVersion\Run&quot; /v &quot;WinTool&quot; /f"
+                     Before="RemoveWinToolAutoRun"
+                     Condition="REMOVE = &quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE"
+                     Sequence="execute" />
+
+        <CustomAction Id="RemoveWinToolAutoRun"
+                      BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)"
+                      DllEntry="WixQuietExec"
+                      Execute="deferred"
+                      Impersonate="yes"
+                      Return="ignore" />
+
+        <InstallExecuteSequence>
+            <Custom Action="RemoveWinToolAutoRun"
+                    Before="RemoveFiles"
+                    Condition="REMOVE = &quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE" />
+        </InstallExecuteSequence>
+
+        <UI>
+            <Publish Dialog="ExitDialog"
+                     Control="Finish"
+                     Event="DoAction"
+                     Value="LaunchWinTool"
+                     Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 AND NOT Installed" />
+        </UI>
+
+        <ui:WixUI Id="WixUI_InstallDir"
+                  InstallDirectory="INSTALLFOLDER" />
+
+        <WixVariable Id="WixUILicenseRtf" Value="$(var.LicenseRtf)" />
+
+        <StandardDirectory Id="ProgramFiles64Folder">
+            <Directory Id="INSTALLFOLDER" Name="WinTool" />
+        </StandardDirectory>
+
+        <Component Id="WinToolComponent"
+                   Directory="INSTALLFOLDER"
+                   Bitness="always64">
+
+            <File Id="WinToolExecutable"
+                  Source="$(WinToolPublishDir)WinTool.exe"
+                  KeyPath="yes">
+
+                <Shortcut Id="WinToolStartMenuShortcut"
+                          Directory="ProgramMenuFolder"
+                          Name="WinTool"
+                          Description="Launch WinTool"
+                          WorkingDirectory="INSTALLFOLDER"
+                          Icon="WinTool.exe"
+                          Advertise="yes" />
+            </File>
+
+            <RemoveFolder Id="RemoveInstallFolder"
+                          Directory="INSTALLFOLDER"
+                          On="uninstall" />
+        </Component>
+
+        <Feature Id="MainFeature" Title="WinTool" Level="1">
+            <ComponentRef Id="WinToolComponent" />
+        </Feature>
+    </Package>
+</Wix>

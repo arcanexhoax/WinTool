@@ -45,6 +45,7 @@ git log --reverse --stat --format='%H%n%s%n%b%n---' "$tag..HEAD"
    - write in English so it matches the existing changelog;
    - include only changes that matter to ordinary users;
    - exclude internal information, secrets, noise, logs, tests, technical refactoring, or implementation details unless they affect users;
+   - do not mention fixes for features that were added earlier in the same release;
    - merge related commits into one clear bullet and avoid duplication.
 6. If the target version section already exists in [CHANGELOG.md](../../CHANGELOG.md), update it; otherwise add a new section at the top of the file.
 7. Apply any repository-specific updates from the repository-specific block below.
@@ -61,4 +62,7 @@ Quality rules:
 Repository-specific rules:
 - In [README.md](../../README.md), update the version badge `![Version](https://img.shields.io/badge/Version-<version>-%230c7ebf)` if needed.
 - In [README.md](../../README.md), update the .NET badge `![NET](https://img.shields.io/badge/.NET%2010-%23512BD4)` if needed. Derive the displayed .NET version from the `TargetFramework` value in [src/WinTool/WinTool.csproj](../../src/WinTool/WinTool.csproj). Preserve URL encoding in the badge text, for example `.NET 10` becomes `.NET%2010`.
-- In [src/WinTool/WinTool.csproj](../../src/WinTool/WinTool.csproj), update the `<Version>` value to the target version if needed.
+- In [README.md](../../README.md), verify that the documented commands and features match the commands and features that are actually available in the app. Remove README entries for commands or features that no longer exist, and add entries for available commands or features that are missing.
+- In [Directory.Build.props](../../Directory.Build.props), update the `<WinToolVersion>` value to the target version if needed.
+- In [LICENSE](../../LICENSE), update the copyright year to the current year if it is out of date.
+- In [WinTool.csproj](../../src/WinTool/WinTool.csproj), update the `<Copyright>` year to the current year if it is out of date.

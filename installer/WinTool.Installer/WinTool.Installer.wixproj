@@ -1,0 +1,46 @@
+﻿<Project Sdk="WixToolset.Sdk/7.0.0">
+    <PropertyGroup>
+        <InstallerPlatform>x64</InstallerPlatform>
+        <OutputName>WinTool-$(WinToolVersion)</OutputName>
+        <OutputPath Condition="'$(InstallerOutputPath)' != ''">$(InstallerOutputPath)</OutputPath>
+        <WinToolProject>$(MSBuildThisFileDirectory)..\..\src\WinTool\WinTool.csproj</WinToolProject>
+        <WinToolProjectDir>$(MSBuildThisFileDirectory)..\..\src\WinTool\</WinToolProjectDir>
+        <WinToolPublishDir>$(MSBuildThisFileDirectory)obj\$(Configuration)\publish\WinTool\</WinToolPublishDir>
+        <LicenseFile>$(MSBuildThisFileDirectory)..\..\LICENSE</LicenseFile>
+        <LicenseRtf>$(MSBuildThisFileDirectory)obj\$(Configuration)\License.rtf</LicenseRtf>
+        <CoreCompileDependsOn>$(CoreCompileDependsOn);PublishWinToolForInstaller</CoreCompileDependsOn>
+        <AcceptEula>wix7</AcceptEula>
+        <DefineConstants>$(DefineConstants);ProductVersion=$(WinToolVersion);WinToolProjectDir=$(WinToolProjectDir);WinToolPublishDir=$(WinToolPublishDir);LicenseRtf=$(LicenseRtf)</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="WixToolset.UI.wixext" Version="7.0.0" />
+        <PackageReference Include="WixToolset.Util.wixext" Version="7.0.0" />
+    </ItemGroup>
+
+    <Target Name="PublishWinToolForInstaller">
+        <MSBuild Projects="$(WinToolProject)"
+                 Targets="Publish"
+                 BuildInParallel="false"
+                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolPublishDir)" />
+    </Target>
+
+    <Target Name="GenerateLicenseRtf" BeforeTargets="CoreCompile">
+        <ReadLinesFromFile File="$(LicenseFile)">
+            <Output TaskParameter="Lines" ItemName="LicenseLine" />
+        </ReadLinesFromFile>
+
+        <ItemGroup>
+            <LicenseRtfLine Include="{\rtf1\ansi\deff0{\fonttbl{\f0 Segoe UI%3B}}\viewkind4\uc1\pard\f0\fs18" />
+            <LicenseRtfLine Include="@(LicenseLine->'%(Identity)\par')" />
+            <LicenseRtfLine Include="}" />
+        </ItemGroup>
+
+        <WriteLinesToFile File="$(LicenseRtf)" Lines="@(LicenseRtfLine)" Overwrite="true" />
+    </Target>
+
+    <Target Name="CopyInstallerToOutput" AfterTargets="CoreCompile">
+        <Copy SourceFiles="$(IntermediateOutputPath)$(TargetFileName)"
+              DestinationFiles="$(TargetPath)" />
+    </Target>
+</Project>

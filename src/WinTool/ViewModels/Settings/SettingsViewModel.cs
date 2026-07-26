@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System;
@@ -113,7 +113,7 @@ public class SettingsViewModel : ObservableObject
     public SettingsViewModel(ILogger<SettingsViewModel> logger, WritableOptions<SettingsOptions> settingsOptions)
     {
         // use arg "/background" to start app in background mode
-        _executionFilePath = $"{Environment.ProcessPath!} {BackgroundParameter.ParameterName}";
+        _executionFilePath = $"\"{Environment.ProcessPath!}\" {BackgroundParameter.ParameterName}";
         _logger = logger;
         _settingsOptions = settingsOptions;
         _isInitializing = true;
