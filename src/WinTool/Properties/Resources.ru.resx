@@ -296,4 +296,41 @@
     <value>Язык</value>
     <comment>App display language</comment>
   </data>
+  <data name="About" xml:space="preserve">
+    <value>О программе</value>
+    <comment>About this app</comment>
+  </data>
+  <data name="CheckForUpdates" xml:space="preserve">
+    <value>Проверить наличие обновлений</value>
+  </data>
+  <data name="CheckingForUpdates" xml:space="preserve">
+    <value>Проверка наличия обновлений…</value>
+  </data>
+  <data name="LatestVersionInstalled" xml:space="preserve">
+    <value>У вас установлена последняя версия</value>
+  </data>
+  <data name="NewVersionAvailable" xml:space="preserve">
+    <value>Доступна новая версия</value>
+  </data>
+  <data name="WhatsNew" xml:space="preserve">
+    <value>Что нового</value>
+  </data>
+  <data name="DownloadAndInstall" xml:space="preserve">
+    <value>Скачать и установить</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>Скачивание обновления</value>
+  </data>
+  <data name="LaunchingInstaller" xml:space="preserve">
+    <value>Запуск установщика…</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Повторить</value>
+  </data>
+  <data name="GitHubDescription" xml:space="preserve">
+    <value>Исходный код, система отслеживания ошибок и выпуски</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>© 2026 hoax. Все права защищены.</value>
+  </data>
 </root>

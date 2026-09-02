@@ -61,6 +61,24 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to © 2026 hoax. All rights reserved..
+        /// </summary>
+        public static string AboutDescription {
+            get {
+                return ResourceManager.GetString("AboutDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The app is already running as administrator, but an unauthorized access error occurred: {0}.
         /// </summary>
         public static string AlreadyRunnningAsAdminError {
@@ -133,6 +151,24 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check for updates.
+        /// </summary>
+        public static string CheckForUpdates {
+            get {
+                return ResourceManager.GetString("CheckForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking for updates….
+        /// </summary>
+        public static string CheckingForUpdates {
+            get {
+                return ResourceManager.GetString("CheckingForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Close {
@@ -156,6 +192,24 @@ namespace WinTool.Properties {
         public static string Dark {
             get {
                 return ResourceManager.GetString("Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download and install.
+        /// </summary>
+        public static string DownloadAndInstall {
+            get {
+                return ResourceManager.GetString("DownloadAndInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading update.
+        /// </summary>
+        public static string DownloadingUpdate {
+            get {
+                return ResourceManager.GetString("DownloadingUpdate", resourceCulture);
             }
         }
         
@@ -232,6 +286,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Source code, issue tracker, and releases.
+        /// </summary>
+        public static string GitHubDescription {
+            get {
+                return ResourceManager.GetString("GitHubDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input Popup.
         /// </summary>
         public static string InputPopup {
@@ -248,7 +311,7 @@ namespace WinTool.Properties {
                 return ResourceManager.GetString("InputPopupDescription", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Keep console open.
         /// </summary>
@@ -268,6 +331,24 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have the latest version.
+        /// </summary>
+        public static string LatestVersionInstalled {
+            get {
+                return ResourceManager.GetString("LatestVersionInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launching installer….
+        /// </summary>
+        public static string LaunchingInstaller {
+            get {
+                return ResourceManager.GetString("LaunchingInstaller", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launch on Windows startup.
         /// </summary>
         public static string LaunchOnStartup {
@@ -282,6 +363,15 @@ namespace WinTool.Properties {
         public static string Light {
             get {
                 return ResourceManager.GetString("Light", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new version is available.
+        /// </summary>
+        public static string NewVersionAvailable {
+            get {
+                return ResourceManager.GetString("NewVersionAvailable", resourceCulture);
             }
         }
         
@@ -493,11 +583,29 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Try again.
+        /// </summary>
+        public static string TryAgain {
+            get {
+                return ResourceManager.GetString("TryAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to update settings: {0}.
         /// </summary>
         public static string UpdateSettingsError {
             get {
                 return ResourceManager.GetString("UpdateSettingsError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What&apos;s new.
+        /// </summary>
+        public static string WhatsNew {
+            get {
+                return ResourceManager.GetString("WhatsNew", resourceCulture);
             }
         }
         

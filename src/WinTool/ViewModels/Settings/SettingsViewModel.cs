@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System;
@@ -10,21 +11,7 @@ using WinTool.Properties;
 
 namespace WinTool.ViewModels.Settings;
 
-public enum AppTheme
-{
-    System,
-    Light,
-    Dark
-}
-
-public enum AnimationMode
-{
-    Auto,
-    On,
-    Off
-}
-
-public class SettingsViewModel : ObservableObject
+public partial class SettingsViewModel : ObservableObject
 {
     private const string RegKeyName = "WinTool";
 
@@ -110,6 +97,24 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
+    [ObservableProperty]
+    public partial UpdateState UpdateState { get; set; }
+
+    [ObservableProperty]
+    public partial string CurrentVersion { get; set; } = typeof(SettingsViewModel).Assembly.GetName().Version?.ToString(3) ?? string.Empty;
+
+    [ObservableProperty]
+    public partial string AvailableVersion { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial double DownloadProgress { get; set; }
+
+    [ObservableProperty]
+    public partial string DownloadProgressText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string UpdateErrorMessage { get; set; } = string.Empty;
+
     public SettingsViewModel(ILogger<SettingsViewModel> logger, WritableOptions<SettingsOptions> settingsOptions)
     {
         // use arg "/background" to start app in background mode
@@ -126,4 +131,54 @@ public class SettingsViewModel : ObservableObject
 
         _isInitializing = false;
     }
+
+    [RelayCommand]
+    private void CheckForUpdates()
+    {
+    }
+
+    [RelayCommand]
+    private void ShowReleaseNotes()
+    {
+    }
+
+    [RelayCommand]
+    private void DownloadAndInstall()
+    {
+    }
+
+    [RelayCommand]
+    private void CancelUpdate()
+    {
+    }
+
+    [RelayCommand]
+    private void OpenGitHub()
+    {
+    }
+}
+
+public enum AppTheme
+{
+    System,
+    Light,
+    Dark
+}
+
+public enum AnimationMode
+{
+    Auto,
+    On,
+    Off
+}
+
+public enum UpdateState
+{
+    NotChecked,
+    Checking,
+    UpToDate,
+    Available,
+    Downloading,
+    Installing,
+    Error
 }

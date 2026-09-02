@@ -296,4 +296,41 @@
     <value>Dil</value>
     <comment>App display language</comment>
   </data>
+  <data name="About" xml:space="preserve">
+    <value>Hakkında</value>
+    <comment>About this app</comment>
+  </data>
+  <data name="CheckForUpdates" xml:space="preserve">
+    <value>Güncellemeleri denetle</value>
+  </data>
+  <data name="CheckingForUpdates" xml:space="preserve">
+    <value>Güncellemeler denetleniyor…</value>
+  </data>
+  <data name="LatestVersionInstalled" xml:space="preserve">
+    <value>En son sürümü kullanıyorsunuz</value>
+  </data>
+  <data name="NewVersionAvailable" xml:space="preserve">
+    <value>Yeni bir sürüm mevcut</value>
+  </data>
+  <data name="WhatsNew" xml:space="preserve">
+    <value>Yenilikler</value>
+  </data>
+  <data name="DownloadAndInstall" xml:space="preserve">
+    <value>İndir ve yükle</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>Güncelleme indiriliyor</value>
+  </data>
+  <data name="LaunchingInstaller" xml:space="preserve">
+    <value>Yükleyici başlatılıyor…</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Yeniden dene</value>
+  </data>
+  <data name="GitHubDescription" xml:space="preserve">
+    <value>Kaynak kodu, sorun izleyicisi ve sürümler</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>© 2026 hoax. Tüm hakları saklıdır.</value>
+  </data>
 </root>

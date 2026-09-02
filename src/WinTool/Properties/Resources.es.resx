@@ -296,4 +296,41 @@
     <value>Idioma</value>
     <comment>App display language</comment>
   </data>
+  <data name="About" xml:space="preserve">
+    <value>Acerca de</value>
+    <comment>About this app</comment>
+  </data>
+  <data name="CheckForUpdates" xml:space="preserve">
+    <value>Buscar actualizaciones</value>
+  </data>
+  <data name="CheckingForUpdates" xml:space="preserve">
+    <value>Buscando actualizaciones…</value>
+  </data>
+  <data name="LatestVersionInstalled" xml:space="preserve">
+    <value>Tienes la última versión</value>
+  </data>
+  <data name="NewVersionAvailable" xml:space="preserve">
+    <value>Hay una nueva versión disponible</value>
+  </data>
+  <data name="WhatsNew" xml:space="preserve">
+    <value>Novedades</value>
+  </data>
+  <data name="DownloadAndInstall" xml:space="preserve">
+    <value>Descargar e instalar</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>Descargando la actualización</value>
+  </data>
+  <data name="LaunchingInstaller" xml:space="preserve">
+    <value>Iniciando el instalador…</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Intentar de nuevo</value>
+  </data>
+  <data name="GitHubDescription" xml:space="preserve">
+    <value>Código fuente, seguimiento de problemas y versiones</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>© 2026 hoax. Todos los derechos reservados.</value>
+  </data>
 </root>

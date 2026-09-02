@@ -15,6 +15,7 @@
     <sys:String x:Key="Icon.Edit">&#xE70F;</sys:String>
     <sys:String x:Key="Icon.Language">&#xF2B7;</sys:String>
     <sys:String x:Key="Icon.SwitchApps">&#xE8F9;</sys:String>
+    <sys:String x:Key="Icon.Open">&#xE8A7;</sys:String>
 
     <!-- Shortcut command icons (keyed by command ID for convention-based lookup) -->
     <sys:String x:Key="Icon.CreateFile">&#xF000;</sys:String>
