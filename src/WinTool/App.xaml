@@ -1,4 +1,4 @@
-﻿<Application x:Class="WinTool.App"
+<Application x:Class="WinTool.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WinTool">
@@ -8,6 +8,7 @@
                 <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
                 <ResourceDictionary Source="/UI/Controls/TextBlock.xaml" />
                 <ResourceDictionary Source="/UI/Controls/Border.xaml" />
+                <ResourceDictionary Source="/UI/Controls/Expander.xaml" />
                 <ResourceDictionary Source="/UI/Controls/Colors.xaml" />
                 <ResourceDictionary Source="/UI/Controls/Shortcut.xaml" />
                 <ResourceDictionary Source="/UI/Controls/ToggleSwitch.xaml" />

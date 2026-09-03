@@ -303,6 +303,9 @@
   <data name="CheckForUpdates" xml:space="preserve">
     <value>Проверить наличие обновлений</value>
   </data>
+  <data name="CheckForUpdatesDescription" xml:space="preserve">
+    <value>Проверьте, доступна ли новая версия WinTool</value>
+  </data>
   <data name="CheckingForUpdates" xml:space="preserve">
     <value>Проверка наличия обновлений…</value>
   </data>

@@ -303,6 +303,9 @@
   <data name="CheckForUpdates" xml:space="preserve">
     <value>Güncellemeleri denetle</value>
   </data>
+  <data name="CheckForUpdatesDescription" xml:space="preserve">
+    <value>WinTool'un yeni bir sürümünün mevcut olup olmadığını denetleyin</value>
+  </data>
   <data name="CheckingForUpdates" xml:space="preserve">
     <value>Güncellemeler denetleniyor…</value>
   </data>

@@ -303,6 +303,9 @@
   <data name="CheckForUpdates" xml:space="preserve">
     <value>Buscar actualizaciones</value>
   </data>
+  <data name="CheckForUpdatesDescription" xml:space="preserve">
+    <value>Comprueba si hay una nueva versión de WinTool disponible</value>
+  </data>
   <data name="CheckingForUpdates" xml:space="preserve">
     <value>Buscando actualizaciones…</value>
   </data>

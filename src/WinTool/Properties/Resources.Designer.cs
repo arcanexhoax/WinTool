@@ -160,6 +160,15 @@ namespace WinTool.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check whether a new version of WinTool is available.
+        /// </summary>
+        public static string CheckForUpdatesDescription {
+            get {
+                return ResourceManager.GetString("CheckForUpdatesDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Checking for updates….
         /// </summary>
         public static string CheckingForUpdates {
