@@ -3,23 +3,34 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Extensions;
+using WinTool.Models;
 using WinTool.Options;
 using WinTool.Properties;
+using WinTool.Services;
 
 namespace WinTool.ViewModels.Settings;
 
 public partial class SettingsViewModel : ObservableObject
 {
+    private const string GitHubUri = "https://github.com/arcanexhoax/WinTool";
     private const string RegKeyName = "WinTool";
 
     private readonly string _executionFilePath;
     private readonly ILogger _logger;
+    private readonly ProcessHelper _processHelper;
     private readonly WritableOptions<SettingsOptions> _settingsOptions;
+    private readonly UpdateService _updateService;
+    private readonly Version _currentVersion = typeof(SettingsViewModel).Assembly.GetName().Version ?? new Version(0, 0, 0);
 
     private bool _isInitializing;
+    private Uri? _releaseUri;
+    private GitHubReleaseAsset? _updateAsset;
+    private CancellationTokenSource? _downloadCts;
 
     public bool LaunchOnWindowsStartup
     {
@@ -101,7 +112,7 @@ public partial class SettingsViewModel : ObservableObject
     public partial UpdateState UpdateState { get; set; }
 
     [ObservableProperty]
-    public partial string CurrentVersion { get; set; } = typeof(SettingsViewModel).Assembly.GetName().Version?.ToString(3) ?? string.Empty;
+    public partial string CurrentVersion { get; set; }
 
     [ObservableProperty]
     public partial string AvailableVersion { get; set; } = string.Empty;
@@ -115,12 +126,18 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     public partial string UpdateErrorMessage { get; set; } = string.Empty;
 
-    public SettingsViewModel(ILogger<SettingsViewModel> logger, WritableOptions<SettingsOptions> settingsOptions)
+    public SettingsViewModel(
+        ILogger<SettingsViewModel> logger,
+        ProcessHelper processHelper,
+        WritableOptions<SettingsOptions> settingsOptions,
+        UpdateService updateService)
     {
         // use arg "/background" to start app in background mode
         _executionFilePath = $"\"{Environment.ProcessPath!}\" {BackgroundParameter.ParameterName}";
         _logger = logger;
+        _processHelper = processHelper;
         _settingsOptions = settingsOptions;
+        _updateService = updateService;
         _isInitializing = true;
 
         LaunchOnWindowsStartup = _settingsOptions.CurrentValue.WindowsStartupEnabled;
@@ -128,33 +145,100 @@ public partial class SettingsViewModel : ObservableObject
         SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
         SelectedAnimationMode = _settingsOptions.CurrentValue.AnimationMode;
         SelectedLanguage = _settingsOptions.CurrentValue.Language;
+        CurrentVersion = _currentVersion.ToString(3);
 
         _isInitializing = false;
     }
 
     [RelayCommand]
-    private void CheckForUpdates()
+    private async Task CheckForUpdatesAsync()
     {
+        UpdateState = UpdateState.Checking;
+        UpdateErrorMessage = string.Empty;
+        _updateAsset = null;
+        _releaseUri = null;
+
+        try
+        {
+            var result = await _updateService.CheckForUpdateAsync(_currentVersion);
+
+            _updateAsset = result.Asset;
+            _releaseUri = result.ReleaseUri;
+            AvailableVersion = result.LatestVersion.ToString(3);
+            UpdateState = result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to check for updates");
+            UpdateErrorMessage = ex.Message;
+            UpdateState = UpdateState.Error;
+        }
     }
 
     [RelayCommand]
     private void ShowReleaseNotes()
     {
+        if (_releaseUri is not null)
+            _processHelper.Start(_releaseUri.AbsoluteUri, null, false);
     }
 
     [RelayCommand]
-    private void DownloadAndInstall()
+    private async Task DownloadAndInstallAsync()
     {
+        if (_updateAsset is null)
+            return;
+
+        using var cts = new CancellationTokenSource();
+        _downloadCts = cts;
+
+        DownloadProgress = 0;
+        DownloadProgressText = string.Empty;
+        UpdateErrorMessage = string.Empty;
+        UpdateState = UpdateState.Downloading;
+
+        var progress = new Progress<UpdateDownloadProgress>(value =>
+        {
+            DownloadProgress = value.Percentage;
+            DownloadProgressText = $"{FormatMegabytes(value.BytesReceived)} / {FormatMegabytes(value.TotalBytes)}";
+        });
+
+        try
+        {
+            await _updateService.DownloadUpdateAsync(_updateAsset, progress, cts.Token);
+            DownloadProgress = 100;
+            UpdateState = UpdateState.Available;
+        }
+        catch (OperationCanceledException) when (cts.IsCancellationRequested)
+        {
+            UpdateState = UpdateState.Available;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to download update");
+            UpdateErrorMessage = ex.Message;
+            UpdateState = UpdateState.Error;
+        }
+        finally
+        {
+            _downloadCts = null;
+        }
     }
 
     [RelayCommand]
     private void CancelUpdate()
     {
+        _downloadCts?.Cancel();
     }
 
     [RelayCommand]
     private void OpenGitHub()
     {
+        _processHelper.Start(GitHubUri, null, false);
+    }
+
+    private string FormatMegabytes(long bytes)
+    {
+        return $"{bytes / 1024d / 1024d:N1} MB";
     }
 }
 

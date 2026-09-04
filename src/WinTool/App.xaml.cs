@@ -6,8 +6,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using System;
-using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
@@ -73,6 +73,8 @@ public partial class App : Application
         builder.Services.AddSingleton<KeyboardLayoutManager>();
         builder.Services.AddSingleton<StaThreadService>();
         builder.Services.AddSingleton<ShortcutsService>();
+        builder.Services.AddSingleton<UpdateService>();
+        builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<ProcessHelper>();
         builder.Services.AddSingleton<ViewFactory>();
         builder.Services.AddSingleton<ShortcutContext>();
