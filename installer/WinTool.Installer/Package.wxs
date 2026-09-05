@@ -84,8 +84,18 @@
                           On="uninstall" />
         </Component>
 
+        <Component Id="WinToolUpdaterComponent"
+                   Directory="INSTALLFOLDER"
+                   Bitness="always64">
+
+            <File Id="WinToolUpdaterExecutable"
+                  Source="$(WinToolUpdaterPublishDir)Updater.exe"
+                  KeyPath="yes" />
+        </Component>
+
         <Feature Id="MainFeature" Title="WinTool" Level="1">
             <ComponentRef Id="WinToolComponent" />
+            <ComponentRef Id="WinToolUpdaterComponent" />
         </Feature>
     </Package>
 </Wix>

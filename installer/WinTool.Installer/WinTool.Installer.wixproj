@@ -6,11 +6,13 @@
         <WinToolProject>$(MSBuildThisFileDirectory)..\..\src\WinTool\WinTool.csproj</WinToolProject>
         <WinToolProjectDir>$(MSBuildThisFileDirectory)..\..\src\WinTool\</WinToolProjectDir>
         <WinToolPublishDir>$(MSBuildThisFileDirectory)obj\$(Configuration)\publish\WinTool\</WinToolPublishDir>
+        <WinToolUpdaterProject>$(MSBuildThisFileDirectory)..\..\src\WinTool.Updater\WinTool.Updater.csproj</WinToolUpdaterProject>
+        <WinToolUpdaterPublishDir>$(MSBuildThisFileDirectory)obj\$(Configuration)\publish\WinTool.Updater\</WinToolUpdaterPublishDir>
         <LicenseFile>$(MSBuildThisFileDirectory)..\..\LICENSE</LicenseFile>
         <LicenseRtf>$(MSBuildThisFileDirectory)obj\$(Configuration)\License.rtf</LicenseRtf>
-        <CoreCompileDependsOn>$(CoreCompileDependsOn);PublishWinToolForInstaller</CoreCompileDependsOn>
+        <CoreCompileDependsOn>$(CoreCompileDependsOn);PublishWinToolForInstaller;PublishWinToolUpdaterForInstaller</CoreCompileDependsOn>
         <AcceptEula>wix7</AcceptEula>
-        <DefineConstants>$(DefineConstants);ProductVersion=$(WinToolVersion);WinToolProjectDir=$(WinToolProjectDir);WinToolPublishDir=$(WinToolPublishDir);LicenseRtf=$(LicenseRtf)</DefineConstants>
+        <DefineConstants>$(DefineConstants);ProductVersion=$(WinToolVersion);WinToolProjectDir=$(WinToolProjectDir);WinToolPublishDir=$(WinToolPublishDir);WinToolUpdaterPublishDir=$(WinToolUpdaterPublishDir);LicenseRtf=$(LicenseRtf)</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,6 +25,13 @@
                  Targets="Publish"
                  BuildInParallel="false"
                  Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolPublishDir)" />
+    </Target>
+
+    <Target Name="PublishWinToolUpdaterForInstaller">
+        <MSBuild Projects="$(WinToolUpdaterProject)"
+                 Targets="Publish"
+                 BuildInParallel="false"
+                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolUpdaterPublishDir)" />
     </Target>
 
     <Target Name="GenerateLicenseRtf" BeforeTargets="CoreCompile">

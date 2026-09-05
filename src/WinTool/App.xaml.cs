@@ -78,6 +78,7 @@ public partial class App : Application
         builder.Services.AddSingleton<ProcessHelper>();
         builder.Services.AddSingleton<ViewFactory>();
         builder.Services.AddSingleton<ShortcutContext>();
+        builder.Services.AddSingleton<AppState>();
         builder.Services.AddSingleton<RunWithArgsDialogState>();
         builder.Services.AddSingleton<IKeyInterceptor>(new KeyInterceptor());
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();

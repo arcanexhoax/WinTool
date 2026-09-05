@@ -410,9 +410,9 @@
                                                    Margin="0 4 0 0" />
                                     </StackPanel>
 
-                                    <TextBlock Text="{x:Static p:Resources.LaunchingInstaller}">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlockStyle}">
+                                    <StackPanel>
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Installing}">
@@ -420,8 +420,13 @@
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                        </StackPanel.Style>
+
+                                        <TextBlock Text="{x:Static p:Resources.LaunchingInstaller}" />
+                                        <ProgressBar IsIndeterminate="True"
+                                                     Height="4"
+                                                     Margin="0 8 0 0" />
+                                    </StackPanel>
 
                                     <TextBlock Text="{Binding UpdateErrorMessage}"
                                                Foreground="{DynamicResource SystemFillColorCriticalBrush}"

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using WinTool.CommandLine;
 using WinTool.Models;
 
 namespace WinTool.Services;
@@ -14,6 +17,7 @@ namespace WinTool.Services;
 public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
 {
     private const string LatestReleaseUri = "https://api.github.com/repos/arcanexhoax/WinTool/releases/latest";
+    private const string UpdaterFileName = "Updater.exe";
 
     private readonly IFileSystem _fileSystem = fileSystem;
     private readonly HttpClient _httpClient = httpClient;
@@ -104,5 +108,34 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
 
             throw;
         }
+    }
+
+    public void StartUpdate(string installerPath, bool isBackground)
+    {
+        var applicationPath = Environment.ProcessPath ?? throw new InvalidOperationException("Unable to determine the WinTool path.");
+        var sourceUpdaterPath = _fileSystem.Path.Combine(AppContext.BaseDirectory, UpdaterFileName);
+
+        if (!_fileSystem.File.Exists(sourceUpdaterPath))
+            throw new FileNotFoundException("The updater was not found.", sourceUpdaterPath);
+
+        _fileSystem.Directory.CreateDirectory(_downloadDirectory);
+
+        var targetUpdaterPath = _fileSystem.Path.Combine(_downloadDirectory, UpdaterFileName);
+        _fileSystem.File.Copy(sourceUpdaterPath, targetUpdaterPath, true);
+
+        var startInfo = new ProcessStartInfo(targetUpdaterPath)
+        {
+            UseShellExecute = true,
+            Verb = "runas"
+        };
+        startInfo.ArgumentList.Add(Environment.ProcessId.ToString());
+        startInfo.ArgumentList.Add(installerPath);
+        startInfo.ArgumentList.Add(applicationPath);
+
+        if (isBackground)
+            startInfo.ArgumentList.Add(BackgroundParameter.ParameterName);
+
+        using var updater = Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start the updater.");
+        Application.Current.Shutdown();
     }
 }

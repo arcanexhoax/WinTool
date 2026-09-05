@@ -23,7 +23,7 @@ jobs:
       uses: microsoft/setup-msbuild@v3
 
     - name: Build solution
-      run: msbuild -restore -t:Build -p:Configuration=Release -p:RuntimeIdentifier=win-x64 -p:SelfContained=true -p:InstallerOutputPath="${{ github.workspace }}/${{ env.OUTPUT_DIR }}"
+      run: msbuild -restore -t:Build -p:Configuration=Release -p:Platform="Any CPU" -p:RuntimeIdentifier=win-x64 -p:SelfContained=true -p:InstallerOutputPath="${{ github.workspace }}/${{ env.OUTPUT_DIR }}"
 
     - name: Tests
       run: dotnet test -c Release -p:RuntimeIdentifier=win-x64 --no-build
@@ -62,6 +62,6 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ${{ env.OUTPUT_DIR }}/*.msi
+        artifacts: ${{ env.OUTPUT_DIR }}/WinTool-*.msi
         bodyFile: ${{ env.OUTPUT_DIR }}/${{ env.RELEASE_NOTES_PATH }}
         token: ${{ secrets.GH_USER_TOKEN }}

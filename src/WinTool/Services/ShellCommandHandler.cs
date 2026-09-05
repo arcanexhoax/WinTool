@@ -10,7 +10,7 @@ using WinTool.Views.Shortcuts;
 
 namespace WinTool.Services;
 
-public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shell, ViewFactory viewFactory, StaThreadService staThreadService, ProcessHelper processHelper)
+public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shell, ViewFactory viewFactory, StaThreadService staThreadService, ProcessHelper processHelper, AppState appState)
 {
     // File Explorer and Notepad resources used to compose the localized "New Text Document" name.
     // The resource IDs are undocumented, so keep fallbacks.
@@ -24,8 +24,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
     private readonly ViewFactory _viewFactory = viewFactory;
     private readonly StaThreadService _staThreadService = staThreadService;
     private readonly ProcessHelper _processHelper = processHelper;
-
-    public bool IsBackgroundMode { get; set; } = true;
+    private readonly AppState _appState = appState;
 
     public void CreateFile()
     {
@@ -42,7 +41,7 @@ public class ShellCommandHandler(ILogger<ShellCommandHandler> logger, Shell shel
     {
         var clp = new CommandLineParameters()
         {
-            BackgroundParameter = IsBackgroundMode ? new BackgroundParameter() : null,
+            BackgroundParameter = _appState.IsBackgroundMode ? new BackgroundParameter() : null,
             CreateFileParameter = new CreateFileParameter()
             {
                 FilePath = path,

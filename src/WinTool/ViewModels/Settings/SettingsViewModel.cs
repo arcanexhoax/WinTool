@@ -20,8 +20,8 @@ public partial class SettingsViewModel : ObservableObject
     private const string GitHubUri = "https://github.com/arcanexhoax/WinTool";
     private const string RegKeyName = "WinTool";
 
-    private readonly string _executionFilePath;
     private readonly ILogger _logger;
+    private readonly AppState _appState;
     private readonly ProcessHelper _processHelper;
     private readonly WritableOptions<SettingsOptions> _settingsOptions;
     private readonly UpdateService _updateService;
@@ -48,7 +48,7 @@ public partial class SettingsViewModel : ObservableObject
 
                 if (value)
                 {
-                    runKey.SetValue(RegKeyName, _executionFilePath);
+                    runKey.SetValue(RegKeyName, $@"""{Environment.ProcessPath!}"" {BackgroundParameter.ParameterName}");
                 }
                 else
                 {
@@ -129,15 +129,15 @@ public partial class SettingsViewModel : ObservableObject
     public SettingsViewModel(
         ILogger<SettingsViewModel> logger,
         ProcessHelper processHelper,
+        AppState appState,
         WritableOptions<SettingsOptions> settingsOptions,
         UpdateService updateService)
     {
-        // use arg "/background" to start app in background mode
-        _executionFilePath = $"\"{Environment.ProcessPath!}\" {BackgroundParameter.ParameterName}";
         _logger = logger;
         _processHelper = processHelper;
         _settingsOptions = settingsOptions;
         _updateService = updateService;
+        _appState = appState;
         _isInitializing = true;
 
         LaunchOnWindowsStartup = _settingsOptions.CurrentValue.WindowsStartupEnabled;
@@ -204,9 +204,11 @@ public partial class SettingsViewModel : ObservableObject
 
         try
         {
-            await _updateService.DownloadUpdateAsync(_updateAsset, progress, cts.Token);
+            var installerPath = await _updateService.DownloadUpdateAsync(_updateAsset, progress, cts.Token);
             DownloadProgress = 100;
-            UpdateState = UpdateState.Available;
+            UpdateState = UpdateState.Installing;
+
+            _updateService.StartUpdate(installerPath, _appState.IsBackgroundMode);
         }
         catch (OperationCanceledException) when (cts.IsCancellationRequested)
         {
@@ -214,7 +216,7 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to download update");
+            _logger.LogError(ex, "Failed to download or start update");
             UpdateErrorMessage = ex.Message;
             UpdateState = UpdateState.Error;
         }
