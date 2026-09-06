@@ -48,7 +48,7 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
 
         if (isUpdateAvailable)
         {
-            var expectedAssetName = $"WinTool-{latestVersion.ToString(3)}.msi";
+            var expectedAssetName = $"WinTool-{latestVersion.ToString(3)}.exe";
             asset = release.Assets?.FirstOrDefault(a => string.Equals(a.Name, expectedAssetName, StringComparison.OrdinalIgnoreCase));
 
             if (asset is not { DownloadUri.IsAbsoluteUri: true, Size: > 0 })

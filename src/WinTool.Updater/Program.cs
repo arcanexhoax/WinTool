@@ -45,13 +45,13 @@ internal class Program
 
     private static Process StartInstaller(string installerPath)
     {
-        var startInfo = new ProcessStartInfo("msiexec.exe")
+        var startInfo = new ProcessStartInfo(installerPath)
         {
-            Arguments = $@"/i ""{installerPath}"" /passive /norestart /L*v ""{Path.Combine(AppContext.BaseDirectory, "update.log")}""",
+            Arguments = $@"/passive /norestart /log ""{Path.Combine(AppContext.BaseDirectory, "update.log")}""",
             UseShellExecute = false,
         };
 
-        return Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start Windows Installer.");
+        return Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start the installer.");
     }
 
     private static async Task WaitForProcessExitAsync(int processId)

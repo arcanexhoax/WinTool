@@ -66,3 +66,4 @@ Repository-specific rules:
 - In [Directory.Build.props](../../Directory.Build.props), update the `<WinToolVersion>` value to the target version if needed.
 - In [LICENSE](../../LICENSE), update the copyright year to the current year if it is out of date.
 - In [WinTool.csproj](../../src/WinTool/WinTool.csproj), update the `<Copyright>` year to the current year if it is out of date.
+- In [Bundle.wxs](../../installer/WinTool.Bootstrapper/Bundle.wxs), update the .NET Desktop Runtime version if needed. Derive the version from the `TargetFramework` value in [WinTool.csproj](../../src/WinTool/WinTool.csproj), and update the search, package display name, detection condition, and payload metadata.

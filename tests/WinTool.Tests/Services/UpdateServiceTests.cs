@@ -24,7 +24,7 @@ public class UpdateServiceTests
             Assert.Contains(request.Headers.Accept, value => value.MediaType == "application/vnd.github+json");
             Assert.Equal($"WinTool/{currentVersion}", request.Headers.UserAgent.ToString());
 
-            return CreateJsonResponse($$"""{"tag_name":"{{tagName}}","html_url":"https://github.com/arcanexhoax/WinTool/releases/tag/{{tagName}}","assets":[{"name":"WinTool-{{normalizedTag}}.msi","browser_download_url":"https://github.com/arcanexhoax/WinTool/releases/download/{{tagName}}/WinTool-{{normalizedTag}}.msi","size":3}]}""");
+            return CreateJsonResponse($$"""{"tag_name":"{{tagName}}","html_url":"https://github.com/arcanexhoax/WinTool/releases/tag/{{tagName}}","assets":[{"name":"WinTool-{{normalizedTag}}.exe","browser_download_url":"https://github.com/arcanexhoax/WinTool/releases/download/{{tagName}}/WinTool-{{normalizedTag}}.exe","size":3}]}""");
         });
         var service = CreateService(handler);
 
@@ -35,7 +35,7 @@ public class UpdateServiceTests
         Assert.Equal($"https://github.com/arcanexhoax/WinTool/releases/tag/{tagName}", result.ReleaseUri.AbsoluteUri);
 
         if (expectedUpdateAvailable)
-            Assert.Equal($"WinTool-{normalizedTag}.msi", result.Asset?.Name);
+            Assert.Equal($"WinTool-{normalizedTag}.exe", result.Asset?.Name);
         else
             Assert.Null(result.Asset);
     }
@@ -64,7 +64,7 @@ public class UpdateServiceTests
         byte[] installer = [1, 2, 3, 4];
         var handler = new StubHttpMessageHandler(request =>
         {
-            Assert.Equal("https://example.test/WinTool-1.1.0.msi", request.RequestUri?.AbsoluteUri);
+            Assert.Equal("https://example.test/WinTool-1.1.0.exe", request.RequestUri?.AbsoluteUri);
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new ByteArrayContent(installer),
@@ -72,7 +72,7 @@ public class UpdateServiceTests
         });
         var fileSystem = new MockFileSystem();
         var service = CreateService(handler, fileSystem);
-        var asset = new GitHubReleaseAsset("WinTool-1.1.0.msi", new Uri("https://example.test/WinTool-1.1.0.msi"), installer.Length);
+        var asset = new GitHubReleaseAsset("WinTool-1.1.0.exe", new Uri("https://example.test/WinTool-1.1.0.exe"), installer.Length);
         var progressValues = new List<UpdateDownloadProgress>();
 
         var filePath = await service.DownloadUpdateAsync(asset, new InlineProgress<UpdateDownloadProgress>(progressValues.Add));
@@ -80,7 +80,7 @@ public class UpdateServiceTests
         var expectedFilePath = fileSystem.Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             "WinTool",
-            "WinTool-1.1.0.msi");
+            "WinTool-1.1.0.exe");
 
         Assert.Equal(expectedFilePath, filePath);
         Assert.Equal(installer, fileSystem.File.ReadAllBytes(filePath));
@@ -93,7 +93,7 @@ public class UpdateServiceTests
     {
         var fileSystem = new MockFileSystem();
         var service = new UpdateService(new HttpClient(new CancellableHttpMessageHandler()), fileSystem);
-        var asset = new GitHubReleaseAsset("WinTool-1.1.0.msi", new Uri("https://example.test/WinTool-1.1.0.msi"), 4);
+        var asset = new GitHubReleaseAsset("WinTool-1.1.0.exe", new Uri("https://example.test/WinTool-1.1.0.exe"), 4);
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var downloadTask = service.DownloadUpdateAsync(asset, cancellationToken: cancellationTokenSource.Token);

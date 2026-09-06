@@ -7,7 +7,8 @@
 & 'C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\amd64\MSBuild.exe' WinTool.slnx /p:Configuration=Debug /p:Platform="Any CPU" /nologo /v:minimal
 ```
 
-The solution also builds the installer at `installer\WinTool.Installer\bin\x64\Debug\WinTool-<version>.msi`.
+The solution builds the web installer at `installer\WinTool.Bootstrapper\bin\x64\Debug\WinTool-<version>.exe`.
+The MSI used by the web installer is built at `installer\WinTool.Installer\bin\x64\Debug\WinTool-<version>.msi`.
 
 Do not pass `Platform=x64` for the solution. `WinTool.slnx` builds with `Any CPU`, not `Debug|x64`.
 

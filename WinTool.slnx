@@ -10,6 +10,9 @@
   <Project Path="installer/WinTool.Installer/WinTool.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
     <Platform Project="x64" />
   </Project>
+  <Project Path="installer/WinTool.Bootstrapper/WinTool.Bootstrapper.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="src/WinTool.Updater/WinTool.Updater.csproj" />
   <Project Path="src/WinTool/WinTool.csproj" />
   <Project Path="tests/WinTool.Tests/WinTool.Tests.csproj" Id="82d8ccb9-9114-4542-9ad1-8d12774a6021" />

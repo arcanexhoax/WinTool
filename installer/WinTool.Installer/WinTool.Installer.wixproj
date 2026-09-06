@@ -2,7 +2,6 @@
     <PropertyGroup>
         <InstallerPlatform>x64</InstallerPlatform>
         <OutputName>WinTool-$(WinToolVersion)</OutputName>
-        <OutputPath Condition="'$(InstallerOutputPath)' != ''">$(InstallerOutputPath)</OutputPath>
         <WinToolProject>$(MSBuildThisFileDirectory)..\..\src\WinTool\WinTool.csproj</WinToolProject>
         <WinToolProjectDir>$(MSBuildThisFileDirectory)..\..\src\WinTool\</WinToolProjectDir>
         <WinToolPublishDir>$(MSBuildThisFileDirectory)obj\$(Configuration)\publish\WinTool\</WinToolPublishDir>
@@ -24,14 +23,14 @@
         <MSBuild Projects="$(WinToolProject)"
                  Targets="Publish"
                  BuildInParallel="false"
-                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolPublishDir)" />
+                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=false;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolPublishDir)" />
     </Target>
 
     <Target Name="PublishWinToolUpdaterForInstaller">
         <MSBuild Projects="$(WinToolUpdaterProject)"
                  Targets="Publish"
                  BuildInParallel="false"
-                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolUpdaterPublishDir)" />
+                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=false;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolUpdaterPublishDir)" />
     </Target>
 
     <Target Name="GenerateLicenseRtf" BeforeTargets="CoreCompile">

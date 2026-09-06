@@ -1,0 +1,54 @@
+<Wix
+    xmlns="http://wixtoolset.org/schemas/v4/wxs"
+    xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+    xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
+
+    <Bundle Name="WinTool"
+            Manufacturer="hoax"
+            Version="$(ProductVersion)"
+            UpgradeCode="CCF1AA05-9E64-4973-8E2C-B6B4AA88A493"
+            IconSourceFile="..\..\src\WinTool\Resources\icon.ico">
+
+        <BootstrapperApplication>
+            <bal:WixStandardBootstrapperApplication LicenseUrl="https://github.com/arcanexhoax/WinTool/blob/master/LICENSE"
+                                                    ShowVersion="yes"
+                                                    Theme="hyperlinkLargeLicense" />
+        </BootstrapperApplication>
+
+        <Variable Name="InstallFolder" Type="formatted" Value="[ProgramFiles64Folder]WinTool" />
+
+        <netfx:DotNetCoreSearch Id="DotNetDesktopRuntimeSearch"
+                                Variable="DotNetDesktopRuntimeVersion"
+                                RuntimeType="desktop"
+                                Platform="x64"
+                                MajorVersion="10" />
+
+        <Chain>
+            <ExePackage Id="DotNetDesktopRuntime"
+                        DisplayName="Microsoft .NET 10 Desktop Runtime"
+                        DetectCondition="DotNetDesktopRuntimeVersion &gt;= v10.0.0"
+                        InstallArguments="/install /quiet /norestart"
+                        RepairArguments="/repair /quiet /norestart"
+                        UninstallArguments="/uninstall /quiet /norestart"
+                        PerMachine="yes"
+                        Permanent="yes"
+                        Vital="yes"
+                        Cache="remove">
+
+                <ExePackagePayload Name="windowsdesktop-runtime-10.0.11-win-x64.exe"
+                                   DownloadUrl="https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.11/windowsdesktop-runtime-10.0.11-win-x64.exe"
+                                   Hash="4dbf26b0b78f55c5f59a46c3c81327b23a04f449f7ac6798204dcd19d99459258936daaede61d1b8c1ba523d6c26bf68bac86b3371d22e67cef235edbdc2f26c"
+                                   Size="60001888" />
+            </ExePackage>
+
+            <MsiPackage Id="WinToolMsi"
+                        SourceFile="$(WinTool.Installer.TargetPath)"
+                        Compressed="yes"
+                        Visible="no"
+                        Vital="yes">
+
+                <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
+            </MsiPackage>
+        </Chain>
+    </Bundle>
+</Wix>

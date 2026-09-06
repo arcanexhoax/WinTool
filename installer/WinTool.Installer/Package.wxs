@@ -11,6 +11,7 @@
 
         <SummaryInformation Description="WinTool setup" />
         <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+        <MajorUpgrade DowngradeErrorMessage="A newer version of WinTool is already installed." />
 
         <Icon Id="WinTool.exe" SourceFile="$(WinToolPublishDir)WinTool.exe" />
         <Property Id="ARPPRODUCTICON" Value="WinTool.exe" />
