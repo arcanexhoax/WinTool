@@ -15,9 +15,22 @@ internal class ProcessHelper
         return Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start the installer.");
     }
 
-    // TODO support start with elevated privileges (runas) if needed
-    public static void StartApplication(string applicationPath, string[] applicationArguments)
+    public static void StartApplication(string applicationPath, string[] applicationArguments, bool isElevated)
     {
+        if (isElevated)
+        {
+            var startInfo = new ProcessStartInfo(applicationPath)
+            {
+                UseShellExecute = false,
+            };
+
+            foreach (string argument in applicationArguments)
+                startInfo.ArgumentList.Add(argument);
+
+            Process.Start(startInfo);
+            return;
+        }
+
         var shellType = Type.GetTypeFromProgID("Shell.Application") ?? throw new InvalidOperationException("Unable to access the Windows shell.");
         dynamic shell = Activator.CreateInstance(shellType) ?? throw new InvalidOperationException("Unable to create the Windows shell.");
         shell.ShellExecute(applicationPath, string.Join(' ', applicationArguments), Path.GetDirectoryName(applicationPath), null, 1);

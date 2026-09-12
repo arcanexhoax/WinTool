@@ -37,9 +37,10 @@ internal class Program
 
     private static async Task<int> PrepareUpdateAsync(string[] args)
     {
-        if (args is not [PrepareParameter, var appProcessIdStr, var sourceInstallerPath, var assetIdStr, .. var appArgs]
+        if (args is not [PrepareParameter, var appProcessIdStr, var sourceInstallerPath, var assetIdStr, var isElevatedStr, .. var appArgs]
             || !int.TryParse(appProcessIdStr, out int appProcessId)
             || !long.TryParse(assetIdStr, out long assetId)
+            || !bool.TryParse(isElevatedStr, out bool isElevated)
             || assetId <= 0
             || !File.Exists(sourceInstallerPath)
             || Environment.ProcessPath is not string sourceUpdaterPath)
@@ -84,6 +85,7 @@ internal class Program
         startInfo.ArgumentList.Add(Environment.ProcessId.ToString());
         startInfo.ArgumentList.Add(targetInstallerPath);
         startInfo.ArgumentList.Add(appPath);
+        startInfo.ArgumentList.Add(isElevated.ToString());
 
         foreach (string argument in appArgs)
             startInfo.ArgumentList.Add(argument);
@@ -94,9 +96,10 @@ internal class Program
 
     private static async Task<int> InstallUpdateAsync(string[] args)
     {
-        if (args is not [InstallParameter, var appProcessIdStr, var parentProcessIdStr, var installerPath, var appPath, .. var appArgs]
+        if (args is not [InstallParameter, var appProcessIdStr, var parentProcessIdStr, var installerPath, var appPath, var isElevatedStr, .. var appArgs]
             || !int.TryParse(appProcessIdStr, out int appProcessId)
             || !int.TryParse(parentProcessIdStr, out int parentProcessId)
+            || !bool.TryParse(isElevatedStr, out bool isElevated)
             || !IsUpdaterInUpdateDirectory()
             || !File.Exists(appPath))
         {
@@ -114,7 +117,7 @@ internal class Program
 
         File.Delete(installerPath);
 
-        ProcessHelper.StartApplication(appPath, appArgs);
+        ProcessHelper.StartApplication(appPath, appArgs, isElevated);
         return 0;
     }
 

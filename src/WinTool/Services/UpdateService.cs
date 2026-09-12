@@ -111,7 +111,7 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
         }
     }
 
-    public async Task StartUpdateAsync(string installerPath, long assetId, bool isBackground)
+    public async Task StartUpdateAsync(string installerPath, long assetId, bool isBackground, bool isElevated)
     {
         var updaterPath = _fileSystem.Path.Combine(AppContext.BaseDirectory, UpdaterFileName);
 
@@ -127,6 +127,7 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
         startInfo.ArgumentList.Add(Environment.ProcessId.ToString());
         startInfo.ArgumentList.Add(installerPath);
         startInfo.ArgumentList.Add(assetId.ToString());
+        startInfo.ArgumentList.Add(isElevated.ToString());
 
         if (isBackground)
             startInfo.ArgumentList.Add(BackgroundParameter.ParameterName);

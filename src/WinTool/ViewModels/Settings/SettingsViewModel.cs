@@ -208,7 +208,7 @@ public partial class SettingsViewModel : ObservableObject
             DownloadProgress = 100;
             UpdateState = UpdateState.Installing;
 
-            await _updateService.StartUpdateAsync(installerPath, _updateAsset.Id, _appState.IsBackgroundMode);
+            await _updateService.StartUpdateAsync(installerPath, _updateAsset.Id, _appState.IsBackgroundMode, _processHelper.IsAdmin);
         }
         catch (OperationCanceledException) when (cts.IsCancellationRequested)
         {
