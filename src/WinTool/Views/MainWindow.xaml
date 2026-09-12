@@ -9,7 +9,6 @@
                     xmlns:p="clr-namespace:WinTool.Properties"
                     xmlns:settings="clr-namespace:WinTool.Views.Settings"
                     xmlns:shortcuts="clr-namespace:WinTool.Views.Shortcuts"
-                    xmlns:tb="http://www.hardcodet.net/taskbar"
                     xmlns:views="clr-namespace:WinTool.Views"
                     xmlns:vm="clr-namespace:WinTool.ViewModels"
                     mc:Ignorable="d"
@@ -38,22 +37,6 @@
                     <ColumnDefinition Width="260" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-
-                <tb:TaskbarIcon DoubleClickCommand="{Binding OpenWindowCommand}"
-                                IconSource="/Resources/icon.ico"
-                                PopupActivation="RightClick"
-                                ToolTipText="{x:Static p:Resources.TrayToolTip}"
-                                Visibility="Visible">
-                    <tb:TaskbarIcon.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="{x:Static p:Resources.Open}"
-                                      Command="{Binding OpenWindowCommand}" />
-                            <Separator />
-                            <MenuItem Header="{x:Static p:Resources.Close}"
-                                      Command="{Binding CloseWindowCommand}" />
-                        </ContextMenu>
-                    </tb:TaskbarIcon.ContextMenu>
-                </tb:TaskbarIcon>
 
                 <ListView x:Name="Tabs"
                           SelectionChanged="OnTabSelected"

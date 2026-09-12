@@ -34,33 +34,35 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-
-        using var timer = new PeriodicTimer(TimeSpan.FromHours(24));
-
-        do
+        try
         {
-            try
-            {
-                SetState(UpdateState.Checking);
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
 
-                var result = await CheckForUpdateAsync(stoppingToken);
-                SetState(result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate, result);
+            using var timer = new PeriodicTimer(TimeSpan.FromHours(24));
 
-                if (result.IsUpdateAvailable)
-                    _logger.LogInformation("Update {Version} is available", result.LatestVersion.ToString(3));
-            }
-            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            do
             {
-                break;
+                try
+                {
+                    SetState(UpdateState.Checking);
+
+                    var result = await CheckForUpdateAsync(stoppingToken);
+                    SetState(result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate, result);
+
+                    if (result.IsUpdateAvailable)
+                        _logger.LogInformation("Update {Version} is available", result.LatestVersion.ToString(3));
+                }
+                catch (Exception ex) when (!stoppingToken.IsCancellationRequested)
+                {
+                    SetState(UpdateState.Error, error: ex);
+                    _logger.LogError(ex, "Failed to check for updates");
+                }
             }
-            catch (Exception ex)
-            {
-                SetState(UpdateState.Error, error: ex);
-                _logger.LogError(ex, "Failed to check for updates");
-            }
+            while (await timer.WaitForNextTickAsync(stoppingToken));
         }
-        while (await timer.WaitForNextTickAsync(stoppingToken));
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
+        }
     }
 
     public async Task<UpdateCheckResult> CheckForUpdateAsync(CancellationToken cancellationToken = default)

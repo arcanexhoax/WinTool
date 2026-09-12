@@ -14,15 +14,12 @@ namespace WinTool.Views;
 public partial class MainWindow : FluentWindow
 {
     private readonly Dictionary<string, FrameworkElement> _tabCache = [];
-    private readonly MainViewModel _viewModel;
     private readonly ViewFactory _viewFactory;
 
     private bool _allowClose;
 
     public MainWindow(MainViewModel mainViewModel, ViewFactory viewFactory)
     {
-        _viewModel = mainViewModel;
-        _viewModel.ShowWindowRequested += OnShowWindowRequested;
         DataContext = mainViewModel;
         _viewFactory = viewFactory;
 
@@ -66,8 +63,6 @@ public partial class MainWindow : FluentWindow
         TabContent.Content = view;
     }
 
-    private void OnShowWindowRequested(object? sender, EventArgs e) => Show();
-
     private void OnWindowActivated(object? sender, EventArgs e) => Show();
 
     private void OnWindowClosing(object sender, CancelEventArgs e)
@@ -87,7 +82,6 @@ public partial class MainWindow : FluentWindow
                 disposable.Dispose();
         }
 
-        _viewModel.ShowWindowRequested -= OnShowWindowRequested;
         base.OnClosed(e);
     }
 }

@@ -1,5 +1,6 @@
 #pragma warning disable WPF0001
 using GlobalKeyInterceptor;
+using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -37,6 +38,8 @@ public partial class App : Application
     private AppTheme _currentTheme;
     private InputPopupWindow? _inputPopupWindow;
     private MainWindow? _mainWindow;
+    private TaskbarIcon? _trayIcon;
+    private UpdateService? _updateService;
 
     public static CultureInfo SystemUICulture { get; } = Thread.CurrentThread.CurrentUICulture;
     public static CultureInfo SystemCulture { get; } = Thread.CurrentThread.CurrentCulture;
@@ -115,6 +118,12 @@ public partial class App : Application
         // activate the popup window
         _inputPopupWindow = _app.Services.GetRequiredService<InputPopupWindow>();
         _mainWindow = _app.Services.GetRequiredService<MainWindow>();
+
+        _trayIcon = (TaskbarIcon)FindResource("TrayIcon");
+        _trayIcon.Visibility = Visibility.Visible;
+
+        _updateService = _app.Services.GetRequiredService<UpdateService>();
+        _updateService.UpdateStateChanged += OnUpdateStateChanged;
 
         if (clp.BackgroundParameter is null)
             _mainWindow.Show();
@@ -222,6 +231,28 @@ public partial class App : Application
             _mainWindow.Show();
     }
 
+    private void OnTrayIconOpen(object sender, RoutedEventArgs e)
+    {
+        _app.Services.GetRequiredService<AppState>().IsBackgroundMode = false;
+        _mainWindow?.Show();
+    }
+
+    private void OnTrayIconClose(object sender, RoutedEventArgs e) => Current.Shutdown();
+
+    private void OnUpdateStateChanged(UpdateStateInfo state)
+    {
+        if (state is not { State: UpdateState.Available, Result: { } result })
+            return;
+
+        Current.Dispatcher.BeginInvoke(() =>
+        {
+            _trayIcon?.ShowBalloonTip(
+                WinTool.Properties.Resources.WinTool, 
+                $"{WinTool.Properties.Resources.NewVersionAvailable}: {result.LatestVersion.ToString(3)}", 
+                BalloonIcon.Info);
+        });
+    }
+
     private void OnSettingsChanged(SettingsOptions settings, string? _)
     {
         Current.Dispatcher.BeginInvoke(() =>
@@ -242,6 +273,9 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
+        _updateService?.UpdateStateChanged -= OnUpdateStateChanged;
+        _trayIcon?.Dispose();
+
         Mutex.Release();
         _logger.LogInformation("Application is shutting down");
 
