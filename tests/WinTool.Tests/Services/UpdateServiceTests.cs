@@ -1,6 +1,7 @@
 using System.Net;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text;
+using Microsoft.Extensions.Logging.Abstractions;
 using WinTool.Models;
 using WinTool.Services;
 
@@ -8,76 +9,76 @@ namespace WinTool.Tests.Services;
 
 public class UpdateServiceTests
 {
-    [Theory]
-    [InlineData("v1.2.4", "1.2.3", true)]
-    [InlineData("1.2.3", "1.2.3", false)]
-    [InlineData("v1.2.2", "1.2.3", false)]
-    public async Task CheckForUpdateAsync_ComparesReleaseVersion(
-        string tagName,
-        string currentVersion,
-        bool expectedUpdateAvailable)
+    [Fact]
+    public async Task CheckForUpdateAsync_WithNewerRelease_ReturnsAvailable()
     {
-        var normalizedTag = tagName.TrimStart('v');
-        var handler = new StubHttpMessageHandler(request =>
-        {
-            Assert.Equal("https://api.github.com/repos/arcanexhoax/WinTool/releases/latest", request.RequestUri?.ToString());
-            Assert.Contains(request.Headers.Accept, value => value.MediaType == "application/vnd.github+json");
-            Assert.Equal($"WinTool/{currentVersion}", request.Headers.UserAgent.ToString());
+        var currentVersion = new Version(1, 2, 3);
+        var handler = new StubHttpMessageHandler(CreateReleaseResponse(new Version(1, 2, 4), true));
+        var service = CreateService(handler, currentVersion);
 
-            return CreateJsonResponse($$"""{"tag_name":"{{tagName}}","html_url":"https://github.com/arcanexhoax/WinTool/releases/tag/{{tagName}}","assets":[{"name":"WinTool-{{normalizedTag}}.exe","browser_download_url":"https://github.com/arcanexhoax/WinTool/releases/download/{{tagName}}/WinTool-{{normalizedTag}}.exe","size":3,"id":42,"digest":"sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}]}""");
-        });
-        var service = CreateService(handler);
+        var result = await service.CheckForUpdateAsync();
 
-        var result = await service.CheckForUpdateAsync(Version.Parse(currentVersion));
+        Assert.True(result.IsUpdateAvailable);
+        Assert.Equal(new Version(1, 2, 4), result.LatestVersion);
+        Assert.Equal("https://github.com/arcanexhoax/WinTool/releases/tag/v1.2.4", result.ReleaseUri.AbsoluteUri);
+        Assert.Equal("WinTool/1.2.3", handler.Request?.Headers.UserAgent.ToString());
+        Assert.Equal("WinTool-1.2.4.exe", result.Asset?.Name);
+        Assert.Equal(42, result.Asset?.Id);
+        Assert.Equal("sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", result.Asset?.Digest);
+    }
 
-        Assert.Equal(expectedUpdateAvailable, result.IsUpdateAvailable);
-        Assert.Equal(Version.Parse(normalizedTag), result.LatestVersion);
-        Assert.Equal($"https://github.com/arcanexhoax/WinTool/releases/tag/{tagName}", result.ReleaseUri.AbsoluteUri);
+    [Fact]
+    public async Task CheckForUpdateAsync_WithCurrentRelease_ReturnsUpToDate()
+    {
+        var handler = new StubHttpMessageHandler(CreateReleaseResponse(new Version(1, 2, 3), true));
+        var service = CreateService(handler, new Version(1, 2, 3));
 
-        if (expectedUpdateAvailable)
-        {
-            Assert.Equal($"WinTool-{normalizedTag}.exe", result.Asset?.Name);
-            Assert.Equal(42, result.Asset?.Id);
-            Assert.Equal("sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", result.Asset?.Digest);
-        }
-        else
-        {
-            Assert.Null(result.Asset);
-        }
+        var result = await service.CheckForUpdateAsync();
+
+        Assert.False(result.IsUpdateAvailable);
+        Assert.Null(result.Asset);
+    }
+
+    [Fact]
+    public async Task CheckForUpdateAsync_WithOlderRelease_ReturnsUpToDate()
+    {
+        var handler = new StubHttpMessageHandler(CreateReleaseResponse(new Version(1, 2, 2), true));
+        var service = CreateService(handler, new Version(1, 2, 3));
+
+        var result = await service.CheckForUpdateAsync();
+
+        Assert.False(result.IsUpdateAvailable);
+        Assert.Null(result.Asset);
     }
 
     [Fact]
     public async Task CheckForUpdateAsync_WithInvalidTag_ThrowsInvalidDataException()
     {
-        var handler = new StubHttpMessageHandler(_ => CreateJsonResponse("""{"tag_name":"latest","html_url":"https://github.com/arcanexhoax/WinTool/releases/latest"}"""));
+        var handler = new StubHttpMessageHandler(CreateJsonResponse("""{"tag_name":"latest","html_url":"https://github.com/arcanexhoax/WinTool/releases/latest"}"""));
         var service = CreateService(handler);
 
-        await Assert.ThrowsAsync<InvalidDataException>(() => service.CheckForUpdateAsync(new Version(1, 0, 0)));
+        await Assert.ThrowsAsync<InvalidDataException>(() => service.CheckForUpdateAsync());
     }
 
     [Fact]
     public async Task CheckForUpdateAsync_WithoutInstallerAsset_ThrowsInvalidDataException()
     {
-        var handler = new StubHttpMessageHandler(_ => CreateJsonResponse("""{"tag_name":"v1.1.0","html_url":"https://github.com/arcanexhoax/WinTool/releases/tag/v1.1.0","assets":[]}"""));
-        var service = CreateService(handler);
+        var handler = new StubHttpMessageHandler(CreateReleaseResponse(new Version(1, 2, 4), false));
+        var service = CreateService(handler, new Version(1, 2, 3));
 
-        await Assert.ThrowsAsync<InvalidDataException>(() => service.CheckForUpdateAsync(new Version(1, 0, 0)));
+        await Assert.ThrowsAsync<InvalidDataException>(() => service.CheckForUpdateAsync());
     }
 
     [Fact]
     public async Task DownloadUpdateAsync_DownloadsInstallerToWinToolDataDirectory()
     {
         byte[] installer = [1, 2, 3, 4];
-        var handler = new StubHttpMessageHandler(request =>
+        var handler = new StubHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
         {
-            Assert.Equal("https://example.test/WinTool-1.1.0.exe", request.RequestUri?.AbsoluteUri);
-            return new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new ByteArrayContent(installer),
-            };
+            Content = new ByteArrayContent(installer),
         });
         var fileSystem = new MockFileSystem();
-        var service = CreateService(handler, fileSystem);
+        var service = CreateService(handler, fileSystem: fileSystem);
         var asset = new GitHubReleaseAsset("WinTool-1.1.0.exe", new Uri("https://example.test/WinTool-1.1.0.exe"), installer.Length);
         var progressValues = new List<UpdateDownloadProgress>();
 
@@ -89,6 +90,7 @@ public class UpdateServiceTests
             "WinTool-1.1.0.exe");
 
         Assert.Equal(expectedFilePath, filePath);
+        Assert.Equal("https://example.test/WinTool-1.1.0.exe", handler.Request?.RequestUri?.AbsoluteUri);
         Assert.Equal(installer, fileSystem.File.ReadAllBytes(filePath));
         Assert.False(fileSystem.File.Exists(filePath + ".download"));
         Assert.Equal(100, progressValues[^1].Percentage);
@@ -98,7 +100,7 @@ public class UpdateServiceTests
     public async Task DownloadUpdateAsync_WhenCanceled_CancelsRequest()
     {
         var fileSystem = new MockFileSystem();
-        var service = new UpdateService(new HttpClient(new CancellableHttpMessageHandler()), fileSystem);
+        var service = new UpdateService(new HttpClient(new CancellableHttpMessageHandler()), fileSystem, NullLogger<UpdateService>.Instance, new AppState());
         var asset = new GitHubReleaseAsset("WinTool-1.1.0.exe", new Uri("https://example.test/WinTool-1.1.0.exe"), 4);
         using var cancellationTokenSource = new CancellationTokenSource();
 
@@ -108,9 +110,21 @@ public class UpdateServiceTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => downloadTask);
     }
 
-    private static UpdateService CreateService(HttpMessageHandler handler, MockFileSystem? fileSystem = null)
+    private static UpdateService CreateService(HttpMessageHandler handler, Version? currentVersion = null, MockFileSystem? fileSystem = null)
     {
-        return new UpdateService(new HttpClient(handler), fileSystem ?? new MockFileSystem());
+        var appState = currentVersion is null ? new AppState() : new AppState(currentVersion);
+        return new UpdateService(new HttpClient(handler), fileSystem ?? new MockFileSystem(), NullLogger<UpdateService>.Instance, appState);
+    }
+
+    private static HttpResponseMessage CreateReleaseResponse(Version version, bool includeAsset)
+    {
+        var versionText = version.ToString(3);
+        var tagName = $"v{versionText}";
+
+        if (!includeAsset)
+            return CreateJsonResponse($$"""{"tag_name":"{{tagName}}","html_url":"https://github.com/arcanexhoax/WinTool/releases/tag/{{tagName}}","assets":[]}""");
+
+        return CreateJsonResponse($$"""{"tag_name":"{{tagName}}","html_url":"https://github.com/arcanexhoax/WinTool/releases/tag/{{tagName}}","assets":[{"name":"WinTool-{{versionText}}.exe","browser_download_url":"https://github.com/arcanexhoax/WinTool/releases/download/{{tagName}}/WinTool-{{versionText}}.exe","size":3,"id":42,"digest":"sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}]}""");
     }
 
     private static HttpResponseMessage CreateJsonResponse(string json)
@@ -121,11 +135,14 @@ public class UpdateServiceTests
         };
     }
 
-    private sealed class StubHttpMessageHandler(Func<HttpRequestMessage, HttpResponseMessage> handler) : HttpMessageHandler
+    private sealed class StubHttpMessageHandler(HttpResponseMessage response) : HttpMessageHandler
     {
+        public HttpRequestMessage? Request { get; private set; }
+
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(handler(request));
+            Request = request;
+            return Task.FromResult(response);
         }
     }
 

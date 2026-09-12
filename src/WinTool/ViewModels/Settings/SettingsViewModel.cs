@@ -25,7 +25,6 @@ public partial class SettingsViewModel : ObservableObject
     private readonly ProcessHelper _processHelper;
     private readonly WritableOptions<SettingsOptions> _settingsOptions;
     private readonly UpdateService _updateService;
-    private readonly Version _currentVersion = typeof(SettingsViewModel).Assembly.GetName().Version ?? new Version(0, 0, 0);
 
     private bool _isInitializing;
     private Uri? _releaseUri;
@@ -145,7 +144,7 @@ public partial class SettingsViewModel : ObservableObject
         SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
         SelectedAnimationMode = _settingsOptions.CurrentValue.AnimationMode;
         SelectedLanguage = _settingsOptions.CurrentValue.Language;
-        CurrentVersion = _currentVersion.ToString(3);
+        CurrentVersion = _appState.Version.ToString(3);
 
         _isInitializing = false;
     }
@@ -160,7 +159,7 @@ public partial class SettingsViewModel : ObservableObject
 
         try
         {
-            var result = await _updateService.CheckForUpdateAsync(_currentVersion);
+            var result = await _updateService.CheckForUpdateAsync();
 
             _updateAsset = result.Asset;
             _releaseUri = result.ReleaseUri;

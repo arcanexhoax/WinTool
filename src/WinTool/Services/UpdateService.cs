@@ -9,28 +9,57 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using WinTool.CommandLine;
 using WinTool.Models;
 
 namespace WinTool.Services;
 
-public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
+public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogger<UpdateService> logger, AppState appState) : BackgroundService
 {
     private const string LatestReleaseUri = "https://api.github.com/repos/arcanexhoax/WinTool/releases/latest";
     private const string PrepareParameter = "/prepare";
     private const string UpdaterFileName = "Updater.exe";
 
+    private readonly ILogger _logger = logger;
     private readonly IFileSystem _fileSystem = fileSystem;
     private readonly HttpClient _httpClient = httpClient;
+    private readonly AppState _appState = appState;
     private readonly string _downloadDirectory = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinTool");
 
-    public async Task<UpdateCheckResult> CheckForUpdateAsync(Version currentVersion, CancellationToken cancellationToken = default)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        ArgumentNullException.ThrowIfNull(currentVersion);
+        await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
 
+        using var timer = new PeriodicTimer(TimeSpan.FromHours(24));
+
+        do
+        {
+            try
+            {
+                var result = await CheckForUpdateAsync(stoppingToken);
+
+                if (result.IsUpdateAvailable)
+                    _logger.LogInformation("Update {Version} is available", result.LatestVersion.ToString(3));
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to check for updates");
+            }
+        }
+        while (await timer.WaitForNextTickAsync(stoppingToken));
+    }
+
+    public async Task<UpdateCheckResult> CheckForUpdateAsync(CancellationToken cancellationToken = default)
+    {
         using var request = new HttpRequestMessage(HttpMethod.Get, LatestReleaseUri);
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
-        request.Headers.UserAgent.Add(new ProductInfoHeaderValue("WinTool", currentVersion.ToString(3)));
+        request.Headers.UserAgent.Add(new ProductInfoHeaderValue("WinTool", _appState.Version.ToString(3)));
 
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -44,7 +73,7 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
         if (release?.ReleaseUri is not { IsAbsoluteUri: true } releaseUri)
             throw new InvalidDataException("The latest GitHub release has an invalid URL.");
 
-        var isUpdateAvailable = latestVersion > currentVersion;
+        var isUpdateAvailable = latestVersion > _appState.Version;
         GitHubReleaseAsset? asset = null;
 
         if (isUpdateAvailable)

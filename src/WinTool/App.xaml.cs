@@ -89,6 +89,7 @@ public partial class App : Application
 
         builder.Services.AddHostedService(sp => sp.GetRequiredService<ShortcutsService>());
         builder.Services.AddHostedService(sp => sp.GetRequiredService<KeyboardLayoutManager>());
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<UpdateService>());
 
         _app = builder.Build();
         _logger = _app.Services.GetRequiredService<ILogger<App>>();
