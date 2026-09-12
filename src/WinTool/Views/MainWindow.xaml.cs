@@ -81,6 +81,12 @@ public partial class MainWindow : FluentWindow
 
     protected override void OnClosed(EventArgs e)
     {
+        foreach (var view in _tabCache.Values)
+        {
+            if (view.DataContext is IDisposable disposable)
+                disposable.Dispose();
+        }
+
         _viewModel.ShowWindowRequested -= OnShowWindowRequested;
         base.OnClosed(e);
     }

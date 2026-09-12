@@ -15,7 +15,7 @@ using WinTool.Services;
 
 namespace WinTool.ViewModels.Settings;
 
-public partial class SettingsViewModel : ObservableObject
+public partial class SettingsViewModel : ObservableObject, IDisposable
 {
     private const string GitHubUri = "https://github.com/arcanexhoax/WinTool";
     private const string RegKeyName = "WinTool";
@@ -136,6 +136,7 @@ public partial class SettingsViewModel : ObservableObject
         _processHelper = processHelper;
         _settingsOptions = settingsOptions;
         _updateService = updateService;
+        _updateService.UpdateStateChanged += OnUpdateStateChanged;
         _appState = appState;
         _isInitializing = true;
 
@@ -147,6 +148,8 @@ public partial class SettingsViewModel : ObservableObject
         CurrentVersion = _appState.Version.ToString(3);
 
         _isInitializing = false;
+
+        ApplyUpdateState(_updateService.CurrentState);
     }
 
     [RelayCommand]
@@ -237,9 +240,45 @@ public partial class SettingsViewModel : ObservableObject
         _processHelper.Start(GitHubUri, null, false);
     }
 
+    private void OnUpdateStateChanged(UpdateStateInfo state)
+    {
+        if (Application.Current.Dispatcher.CheckAccess())
+        {
+            ApplyUpdateState(state);
+        }
+        else
+        {
+            Application.Current.Dispatcher.BeginInvoke(() => ApplyUpdateState(state));
+        }
+    }
+
+    private void ApplyUpdateState(UpdateStateInfo state)
+    {
+        UpdateState = state.State;
+        UpdateErrorMessage = state.Error?.Message ?? string.Empty;
+
+        if (state.State is UpdateState.Checking)
+        {
+            _updateAsset = null;
+            _releaseUri = null;
+        }
+
+        if (state.Result is { } result)
+        {
+            _updateAsset = result.Asset;
+            _releaseUri = result.ReleaseUri;
+            AvailableVersion = result.LatestVersion.ToString(3);
+        }
+    }
+
     private string FormatMegabytes(long bytes)
     {
         return $"{bytes / 1024d / 1024d:N1} MB";
+    }
+
+    public void Dispose()
+    {
+        _updateService.UpdateStateChanged -= OnUpdateStateChanged;
     }
 }
 
@@ -257,13 +296,3 @@ public enum AnimationMode
     Off
 }
 
-public enum UpdateState
-{
-    NotChecked,
-    Checking,
-    UpToDate,
-    Available,
-    Downloading,
-    Installing,
-    Error
-}

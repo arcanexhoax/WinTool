@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:WinTool.Models"
              xmlns:p="clr-namespace:WinTool.Properties"
              xmlns:ctrl="clr-namespace:WinTool.UI.Controls"
              xmlns:ui="clr-namespace:WinTool.UI"
@@ -251,7 +252,7 @@
                                             <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlockStyle}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.NotChecked}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.NotChecked}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -268,10 +269,10 @@
                                             <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.NotChecked}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.NotChecked}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.UpToDate}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.UpToDate}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -284,7 +285,7 @@
                                             <Style TargetType="StackPanel">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Checking}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.Checking}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -304,7 +305,7 @@
                                             <Style TargetType="StackPanel">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Available}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.Available}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -334,7 +335,7 @@
                                             <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Downloading}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.Downloading}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -350,7 +351,7 @@
                                             <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Error}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.Error}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -363,7 +364,7 @@
                                             <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlockStyle}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.UpToDate}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.UpToDate}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -376,7 +377,7 @@
                                             <Style TargetType="StackPanel">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Available}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.Available}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -393,7 +394,7 @@
                                             <Style TargetType="StackPanel">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Downloading}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.Downloading}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -415,7 +416,7 @@
                                             <Style TargetType="StackPanel">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Installing}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.Installing}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -435,7 +436,7 @@
                                             <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlockStyle}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static settings:UpdateState.Error}">
+                                                    <DataTrigger Binding="{Binding UpdateState}" Value="{x:Static models:UpdateState.Error}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>

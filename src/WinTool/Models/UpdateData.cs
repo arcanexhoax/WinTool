@@ -18,7 +18,20 @@ public record GitHubReleaseAsset(
 
 public record UpdateCheckResult(bool IsUpdateAvailable, Version LatestVersion, Uri ReleaseUri, GitHubReleaseAsset? Asset);
 
+public record UpdateStateInfo(UpdateState State, UpdateCheckResult? Result = null, Exception? Error = null);
+
 public readonly record struct UpdateDownloadProgress(long BytesReceived, long TotalBytes)
 {
     public double Percentage => TotalBytes > 0 ? BytesReceived * 100d / TotalBytes : 0;
+}
+
+public enum UpdateState
+{
+    NotChecked,
+    Checking,
+    UpToDate,
+    Available,
+    Downloading,
+    Installing,
+    Error
 }

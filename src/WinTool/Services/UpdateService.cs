@@ -28,6 +28,10 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
     private readonly AppState _appState = appState;
     private readonly string _downloadDirectory = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinTool");
 
+    public UpdateStateInfo CurrentState { get; private set; } = new(UpdateState.NotChecked);
+
+    public event Action<UpdateStateInfo>? UpdateStateChanged;
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
@@ -38,7 +42,10 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
         {
             try
             {
+                SetState(UpdateState.Checking);
+
                 var result = await CheckForUpdateAsync(stoppingToken);
+                SetState(result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate, result);
 
                 if (result.IsUpdateAvailable)
                     _logger.LogInformation("Update {Version} is available", result.LatestVersion.ToString(3));
@@ -49,6 +56,7 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
             }
             catch (Exception ex)
             {
+                SetState(UpdateState.Error, error: ex);
                 _logger.LogError(ex, "Failed to check for updates");
             }
         }
@@ -168,5 +176,11 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
             throw new InvalidOperationException($"The updater failed to prepare the update with exit code {updater.ExitCode}.");
 
         Application.Current.Shutdown();
+    }
+
+    private void SetState(UpdateState state, UpdateCheckResult? result = null, Exception? error = null)
+    {
+        CurrentState = new UpdateStateInfo(state, result, error);
+        UpdateStateChanged?.Invoke(CurrentState);
     }
 }
