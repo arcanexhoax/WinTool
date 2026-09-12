@@ -24,7 +24,7 @@ public class UpdateServiceTests
             Assert.Contains(request.Headers.Accept, value => value.MediaType == "application/vnd.github+json");
             Assert.Equal($"WinTool/{currentVersion}", request.Headers.UserAgent.ToString());
 
-            return CreateJsonResponse($$"""{"tag_name":"{{tagName}}","html_url":"https://github.com/arcanexhoax/WinTool/releases/tag/{{tagName}}","assets":[{"name":"WinTool-{{normalizedTag}}.exe","browser_download_url":"https://github.com/arcanexhoax/WinTool/releases/download/{{tagName}}/WinTool-{{normalizedTag}}.exe","size":3}]}""");
+            return CreateJsonResponse($$"""{"tag_name":"{{tagName}}","html_url":"https://github.com/arcanexhoax/WinTool/releases/tag/{{tagName}}","assets":[{"name":"WinTool-{{normalizedTag}}.exe","browser_download_url":"https://github.com/arcanexhoax/WinTool/releases/download/{{tagName}}/WinTool-{{normalizedTag}}.exe","size":3,"id":42,"digest":"sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}]}""");
         });
         var service = CreateService(handler);
 
@@ -35,9 +35,15 @@ public class UpdateServiceTests
         Assert.Equal($"https://github.com/arcanexhoax/WinTool/releases/tag/{tagName}", result.ReleaseUri.AbsoluteUri);
 
         if (expectedUpdateAvailable)
+        {
             Assert.Equal($"WinTool-{normalizedTag}.exe", result.Asset?.Name);
+            Assert.Equal(42, result.Asset?.Id);
+            Assert.Equal("sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", result.Asset?.Digest);
+        }
         else
+        {
             Assert.Null(result.Asset);
+        }
     }
 
     [Fact]

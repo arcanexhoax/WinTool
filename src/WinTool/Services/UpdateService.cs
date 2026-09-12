@@ -17,6 +17,7 @@ namespace WinTool.Services;
 public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
 {
     private const string LatestReleaseUri = "https://api.github.com/repos/arcanexhoax/WinTool/releases/latest";
+    private const string PrepareParameter = "/prepare";
     private const string UpdaterFileName = "Updater.exe";
 
     private readonly IFileSystem _fileSystem = fileSystem;
@@ -51,7 +52,7 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
             var expectedAssetName = $"WinTool-{latestVersion.ToString(3)}.exe";
             asset = release.Assets?.FirstOrDefault(a => string.Equals(a.Name, expectedAssetName, StringComparison.OrdinalIgnoreCase));
 
-            if (asset is not { DownloadUri.IsAbsoluteUri: true, Size: > 0 })
+            if (asset is not { DownloadUri.IsAbsoluteUri: true, Size: > 0, Id: > 0 })
                 throw new InvalidDataException($"The latest GitHub release does not contain {expectedAssetName}.");
         }
 
@@ -110,32 +111,32 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem)
         }
     }
 
-    public void StartUpdate(string installerPath, bool isBackground)
+    public async Task StartUpdateAsync(string installerPath, long assetId, bool isBackground)
     {
-        var applicationPath = Environment.ProcessPath ?? throw new InvalidOperationException("Unable to determine the WinTool path.");
-        var sourceUpdaterPath = _fileSystem.Path.Combine(AppContext.BaseDirectory, UpdaterFileName);
+        var updaterPath = _fileSystem.Path.Combine(AppContext.BaseDirectory, UpdaterFileName);
 
-        if (!_fileSystem.File.Exists(sourceUpdaterPath))
-            throw new FileNotFoundException("The updater was not found.", sourceUpdaterPath);
+        if (!_fileSystem.File.Exists(updaterPath))
+            throw new FileNotFoundException("The updater was not found.", updaterPath);
 
-        _fileSystem.Directory.CreateDirectory(_downloadDirectory);
-
-        var targetUpdaterPath = _fileSystem.Path.Combine(_downloadDirectory, UpdaterFileName);
-        _fileSystem.File.Copy(sourceUpdaterPath, targetUpdaterPath, true);
-
-        var startInfo = new ProcessStartInfo(targetUpdaterPath)
+        var startInfo = new ProcessStartInfo(updaterPath)
         {
             UseShellExecute = true,
             Verb = "runas"
         };
+        startInfo.ArgumentList.Add(PrepareParameter);
         startInfo.ArgumentList.Add(Environment.ProcessId.ToString());
         startInfo.ArgumentList.Add(installerPath);
-        startInfo.ArgumentList.Add(applicationPath);
+        startInfo.ArgumentList.Add(assetId.ToString());
 
         if (isBackground)
             startInfo.ArgumentList.Add(BackgroundParameter.ParameterName);
 
         using var updater = Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start the updater.");
+        await updater.WaitForExitAsync();
+
+        if (updater.ExitCode != 0)
+            throw new InvalidOperationException($"The updater failed to prepare the update with exit code {updater.ExitCode}.");
+
         Application.Current.Shutdown();
     }
 }

@@ -12,7 +12,9 @@ public record GitHubRelease(
 public record GitHubReleaseAsset(
     [property: JsonPropertyName("name")] string? Name,
     [property: JsonPropertyName("browser_download_url")] Uri? DownloadUri,
-    [property: JsonPropertyName("size")] long Size);
+    [property: JsonPropertyName("size")] long Size,
+    [property: JsonPropertyName("id")] long Id = 0,
+    [property: JsonPropertyName("digest")] string? Digest = null);
 
 public record UpdateCheckResult(bool IsUpdateAvailable, Version LatestVersion, Uri ReleaseUri, GitHubReleaseAsset? Asset);
 
