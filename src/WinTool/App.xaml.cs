@@ -42,6 +42,7 @@ public partial class App : Application
     private MainWindow? _mainWindow;
     private TaskbarIcon? _trayIcon;
     private UpdateService? _updateService;
+    private IOptionsMonitor<SettingsOptions>? _settingsOptions;
 
     public static CultureInfo SystemUICulture { get; } = Thread.CurrentThread.CurrentUICulture;
     public static CultureInfo SystemCulture { get; } = Thread.CurrentThread.CurrentCulture;
@@ -109,10 +110,10 @@ public partial class App : Application
 
         var clp = CommandLineParameters.Parse(e.Args);
 
-        var settingsMonitor = _app.Services.GetRequiredService<IOptionsMonitor<SettingsOptions>>();
-        settingsMonitor.OnChange(OnSettingsChanged);
+        _settingsOptions = _app.Services.GetRequiredService<IOptionsMonitor<SettingsOptions>>();
+        _settingsOptions.OnChange(OnSettingsChanged);
 
-        var settings = settingsMonitor.CurrentValue;
+        var settings = _settingsOptions.CurrentValue;
         var processHelper = _app.Services.GetRequiredService<ProcessHelper>();
 
         ApplyLanguage(settings.Language);
@@ -281,7 +282,7 @@ public partial class App : Application
     {
         Current.Dispatcher.BeginInvoke(() =>
         {
-            if (!_app.Services.GetRequiredService<IOptionsMonitor<SettingsOptions>>().CurrentValue.Notifications.NewVersions)
+            if (_settingsOptions?.CurrentValue.Notifications.NewVersions == false)
                 return;
 
             _trayIcon?.ShowBalloonTip(

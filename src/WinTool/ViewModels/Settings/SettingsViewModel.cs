@@ -199,7 +199,9 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private async Task DownloadAndInstallAsync()
     {
-        if (_updateAsset is null)
+        var updateAsset = _updateAsset;
+
+        if (updateAsset is null)
             return;
 
         using var cts = new CancellationTokenSource();
@@ -218,11 +220,11 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
         try
         {
-            var installerPath = await _updateService.DownloadUpdateAsync(_updateAsset, progress, cts.Token);
+            var installerPath = await _updateService.DownloadUpdateAsync(updateAsset, progress, cts.Token);
             DownloadProgress = 100;
             UpdateState = UpdateState.Installing;
 
-            await _updateService.StartUpdateAsync(installerPath, _updateAsset.Id, _appState.IsBackgroundMode, _processHelper.IsAdmin);
+            await _updateService.StartUpdateAsync(installerPath, updateAsset.Id, _appState.IsBackgroundMode, _processHelper.IsAdmin);
         }
         catch (OperationCanceledException) when (cts.IsCancellationRequested)
         {

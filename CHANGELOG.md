@@ -1,3 +1,8 @@
+## v0.11.0
+- Added an installer with automatic installation of the required .NET Desktop Runtime
+- Added an `About` section in settings with manual and automatic update checks, update download, and installation
+- Added notifications and a taskbar indicator when a new update is available
+
 ## v0.10.2
 - Added support for running non-executable files as administrator
 - Added `Keep console open` option to `Run file with arguments` command

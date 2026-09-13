@@ -78,6 +78,14 @@
                           WorkingDirectory="INSTALLFOLDER"
                           Icon="WinTool.exe"
                           Advertise="yes" />
+
+                <Shortcut Id="WinToolDesktopShortcut"
+                          Directory="DesktopFolder"
+                          Name="WinTool"
+                          Description="Launch WinTool"
+                          WorkingDirectory="INSTALLFOLDER"
+                          Icon="WinTool.exe"
+                          Advertise="yes" />
             </File>
 
             <RemoveFolder Id="RemoveInstallFolder"

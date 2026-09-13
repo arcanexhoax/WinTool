@@ -11,6 +11,8 @@
 
         <BootstrapperApplication>
             <bal:WixStandardBootstrapperApplication LicenseUrl="https://github.com/arcanexhoax/WinTool/blob/master/LICENSE"
+                                                    LaunchTarget="[InstallFolder]\WinTool.exe"
+                                                    LaunchWorkingFolder="[InstallFolder]"
                                                     ShowVersion="yes"
                                                     Theme="hyperlinkLargeLicense" />
         </BootstrapperApplication>

@@ -23,7 +23,7 @@ jobs:
       uses: microsoft/setup-msbuild@v3
 
     - name: Build solution
-      run: msbuild -restore -t:Build -p:Configuration=Release -p:Platform="Any CPU" -p:RuntimeIdentifier=win-x64 -p:InstallerOutputPath="${{ github.workspace }}/${{ env.OUTPUT_DIR }}"
+      run: msbuild -restore -t:Build -p:Configuration=Release -p:Platform="Any CPU" -p:RuntimeIdentifier=win-x64 -p:SelfContained=false -p:PublishSingleFile=true -p:InstallerOutputPath="${{ github.workspace }}/${{ env.OUTPUT_DIR }}"
 
     - name: Tests
       run: dotnet test -c Release -p:RuntimeIdentifier=win-x64 --no-build

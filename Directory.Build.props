@@ -1,5 +1,5 @@
 <Project>
 	<PropertyGroup>
-		<WinToolVersion>0.10.2</WinToolVersion>
+		<WinToolVersion>0.11.0</WinToolVersion>
 	</PropertyGroup>
 </Project>
