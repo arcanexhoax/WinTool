@@ -20,6 +20,7 @@
             <tb:TaskbarIcon x:Key="TrayIcon"
                             IconSource="/Resources/icon.ico"
                             PopupActivation="RightClick"
+                            TrayBalloonTipClicked="OnUpdateNotificationClicked"
                             TrayLeftMouseDown="OnTrayIconOpen"
                             ToolTipText="{x:Static p:Resources.TrayToolTip}"
                             Visibility="Collapsed">

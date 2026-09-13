@@ -23,7 +23,8 @@
                        Style="{StaticResource TitleTextBlockStyle}"
                        MaxWidth="1000" />
 
-            <ScrollViewer ui:ScrollViewerExtensions.AutoHideScrollBars="True"
+            <ScrollViewer x:Name="SettingsScrollViewer"
+                          ui:ScrollViewerExtensions.AutoHideScrollBars="True"
                           Margin="0 24 0 0"
                           Padding="0 0 20 0"
                           Grid.Row="1">
@@ -209,7 +210,8 @@
                                Style="{StaticResource BodyStrongTextBlockStyle}"
                                Margin="0 36 0 0" />
 
-                    <Expander Style="{DynamicResource SettingsExpanderStyle}"
+                    <Expander x:Name="AboutExpander"
+                              Style="{DynamicResource SettingsExpanderStyle}"
                               Margin="0 8 0 0">
                         <Expander.Header>
                                 <Grid>

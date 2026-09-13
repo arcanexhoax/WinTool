@@ -221,6 +221,22 @@ public partial class App : Application
         return value is int i && i == 0 ? AppTheme.Dark : AppTheme.Light;
     }
 
+    private void OpenMainWindow()
+    {
+        _app.Services.GetRequiredService<AppState>().IsBackgroundMode = false;
+
+        if (_mainWindow is null)
+            return;
+
+        if (!_mainWindow.IsVisible)
+            _mainWindow.Show();
+
+        if (_mainWindow.WindowState == WindowState.Minimized)
+            _mainWindow.WindowState = WindowState.Normal;
+
+        _mainWindow.Activate();
+    }
+
     private void RecreateMainWindow()
     {
         var wasVisible = _mainWindow?.IsVisible == true;
@@ -231,13 +247,15 @@ public partial class App : Application
             _mainWindow.Show();
     }
 
-    private void OnTrayIconOpen(object sender, RoutedEventArgs e)
-    {
-        _app.Services.GetRequiredService<AppState>().IsBackgroundMode = false;
-        _mainWindow?.Show();
-    }
+    private void OnTrayIconOpen(object sender, RoutedEventArgs e) => OpenMainWindow();
 
     private void OnTrayIconClose(object sender, RoutedEventArgs e) => Current.Shutdown();
+
+    private void OnUpdateNotificationClicked(object sender, RoutedEventArgs e)
+    {
+        OpenMainWindow();
+        _mainWindow?.OpenAboutSettings();
+    }
 
     private void OnUpdateStateChanged(UpdateStateInfo state)
     {
@@ -247,8 +265,8 @@ public partial class App : Application
         Current.Dispatcher.BeginInvoke(() =>
         {
             _trayIcon?.ShowBalloonTip(
-                WinTool.Properties.Resources.WinTool, 
-                $"{WinTool.Properties.Resources.NewVersionAvailable}: {result.LatestVersion.ToString(3)}", 
+                WinTool.Properties.Resources.WinTool,
+                $"{WinTool.Properties.Resources.NewVersionAvailable}: {result.LatestVersion.ToString(3)}",
                 BalloonIcon.Info);
         });
     }

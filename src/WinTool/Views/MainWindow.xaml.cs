@@ -32,6 +32,14 @@ public partial class MainWindow : FluentWindow
         Close();
     }
 
+    public void OpenAboutSettings()
+    {
+        Tabs.SelectedItem = SettingsTab;
+
+        if (TabContent.Content is SettingsView settingsView)
+            settingsView.OpenAbout();
+    }
+
     protected override void OnSourceInitialized(EventArgs e)
     {
         base.OnSourceInitialized(e);
