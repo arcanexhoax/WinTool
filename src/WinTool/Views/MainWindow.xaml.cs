@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using WinTool.Services;
 using WinTool.ViewModels;
 using WinTool.Views.Features;
@@ -38,6 +39,13 @@ public partial class MainWindow : FluentWindow
 
         if (TabContent.Content is SettingsView settingsView)
             settingsView.OpenAbout();
+    }
+
+    public void SetUpdateOverlay(bool isUpdateAvailable)
+    {
+        TaskbarInfo.Overlay = isUpdateAvailable
+            ? new BitmapImage(new Uri("pack://application:,,,/Resources/update-overlay.png"))
+            : null;
     }
 
     protected override void OnSourceInitialized(EventArgs e)

@@ -17,7 +17,7 @@ using WinTool.Options;
 
 namespace WinTool.Services;
 
-public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogger<UpdateService> logger, AppState appState, WritableOptions<SettingsOptions> settingsOptions) : BackgroundService
+public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogger<UpdateService> logger, AppState appState, WritableOptions<UpdateOptions> updateOptions) : BackgroundService
 {
     private const string LatestReleaseUri = "https://api.github.com/repos/arcanexhoax/WinTool/releases/latest";
     private const string PrepareParameter = "/prepare";
@@ -27,29 +27,30 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
     private readonly IFileSystem _fileSystem = fileSystem;
     private readonly HttpClient _httpClient = httpClient;
     private readonly AppState _appState = appState;
-    private readonly WritableOptions<SettingsOptions> _settingsOptions = settingsOptions;
+    private readonly WritableOptions<UpdateOptions> _updateOptions = updateOptions;
     private readonly string _downloadDirectory = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinTool");
 
-    public UpdateStateInfo CurrentState { get; private set; } = new(UpdateState.NotChecked);
+    public UpdateStateInfo CurrentBackgroundCheckState { get; private set; } = new(UpdateState.NotChecked);
 
-    public event Action<UpdateStateInfo>? UpdateStateChanged;
-    public event Action<UpdateCheckResult>? UpdateAvailable;
+    public event Action<UpdateStateInfo>? BackgroundCheckStateChanged;
+    public event Action<UpdateCheckResult>? UpdateChecked;
+    public event Action<UpdateCheckResult>? NewUpdateAvailable;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         try
         {
-            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+            await Task.Delay(_updateOptions.CurrentValue.InitialCheckDelay, stoppingToken);
 
-            using var timer = new PeriodicTimer(TimeSpan.FromHours(24));
+            using var timer = new PeriodicTimer(_updateOptions.CurrentValue.CheckInterval);
 
             do
             {
                 try
                 {
-                    SetState(UpdateState.Checking);
+                    SetBackgroundCheckState(UpdateState.Checking);
 
-                    var previousVersion = _settingsOptions.CurrentValue.Update.AvailableVersion;
+                    var previousVersion = _updateOptions.CurrentValue.AvailableVersion;
                     var result = await CheckForUpdateAsync(stoppingToken);
 
                     if (result.IsUpdateAvailable)
@@ -57,14 +58,14 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
                         _logger.LogInformation("Update {Version} is available", result.LatestVersion.ToString(3));
 
                         if (result.LatestVersion != previousVersion)
-                            UpdateAvailable?.Invoke(result);
+                            NewUpdateAvailable?.Invoke(result);
                     }
 
-                    SetState(result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate, result);
+                    SetBackgroundCheckState(result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate, result);
                 }
                 catch (Exception ex) when (!stoppingToken.IsCancellationRequested)
                 {
-                    SetState(UpdateState.Error, error: ex);
+                    SetBackgroundCheckState(UpdateState.Error, error: ex);
                     _logger.LogError(ex, "Failed to check for updates");
                 }
             }
@@ -106,7 +107,8 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
         }
 
         var result = new UpdateCheckResult(isUpdateAvailable, latestVersion, releaseUri, asset);
-        _settingsOptions.Update(o => o.Update.AvailableVersion = latestVersion);
+        _updateOptions.Update(o => o.AvailableVersion = latestVersion);
+        UpdateChecked?.Invoke(result);
 
         return result;
     }
@@ -193,9 +195,9 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
         Application.Current.Shutdown();
     }
 
-    private void SetState(UpdateState state, UpdateCheckResult? result = null, Exception? error = null)
+    private void SetBackgroundCheckState(UpdateState state, UpdateCheckResult? result = null, Exception? error = null)
     {
-        CurrentState = new UpdateStateInfo(state, result, error);
-        UpdateStateChanged?.Invoke(CurrentState);
+        CurrentBackgroundCheckState = new UpdateStateInfo(state, result, error);
+        BackgroundCheckStateChanged?.Invoke(CurrentBackgroundCheckState);
     }
 }

@@ -18,10 +18,13 @@ public class UpdateServiceTests
         var currentVersion = new Version(1, 2, 3);
         var handler = new StubHttpMessageHandler(CreateReleaseResponse(new Version(1, 2, 4), true));
         var service = CreateService(handler, currentVersion);
+        UpdateCheckResult? checkedResult = null;
+        service.UpdateChecked += result => checkedResult = result;
 
         var result = await service.CheckForUpdateAsync();
 
         Assert.True(result.IsUpdateAvailable);
+        Assert.Same(result, checkedResult);
         Assert.Equal(new Version(1, 2, 4), result.LatestVersion);
         Assert.Equal("https://github.com/arcanexhoax/WinTool/releases/tag/v1.2.4", result.ReleaseUri.AbsoluteUri);
         Assert.Equal("WinTool/1.2.3", handler.Request?.Headers.UserAgent.ToString());
@@ -33,19 +36,20 @@ public class UpdateServiceTests
     [Theory]
     [InlineData(false, 1)]
     [InlineData(true, 0)]
-    public async Task ExecuteAsync_NotifiesOnlyAboutNewVersion(bool versionAlreadyDetected, int expectedNotifications)
+    public async Task ExecuteAsync_RaisesNewUpdateOnlyForNewVersion(bool versionAlreadyDetected, int expectedNotifications)
     {
         var latestVersion = new Version(1, 2, 4);
-        var settings = new SettingsOptions
+        var updateOptions = new UpdateOptions
         {
-            Update = new UpdateOptions { AvailableVersion = versionAlreadyDetected ? latestVersion : new Version(0, 0, 0) }
+            InitialCheckDelay = TimeSpan.Zero,
+            AvailableVersion = versionAlreadyDetected ? latestVersion : new Version(0, 0, 0)
         };
         var handler = new StubHttpMessageHandler(CreateReleaseResponse(latestVersion, true));
-        var service = CreateService(handler, new Version(1, 2, 3), settingsOptions: settings);
+        var service = CreateService(handler, new Version(1, 2, 3), updateOptions: updateOptions);
         var checkCompleted = new TaskCompletionSource<UpdateStateInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
         var notifications = 0;
-        service.UpdateAvailable += _ => notifications++;
-        service.UpdateStateChanged += state =>
+        service.NewUpdateAvailable += _ => notifications++;
+        service.BackgroundCheckStateChanged += state =>
         {
             if (state.State is UpdateState.Available or UpdateState.Error)
                 checkCompleted.TrySetResult(state);
@@ -149,15 +153,15 @@ public class UpdateServiceTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => downloadTask);
     }
 
-    private static UpdateService CreateService(HttpMessageHandler handler, Version? currentVersion = null, MockFileSystem? fileSystem = null, SettingsOptions? settingsOptions = null)
+    private static UpdateService CreateService(HttpMessageHandler handler, Version? currentVersion = null, MockFileSystem? fileSystem = null, UpdateOptions? updateOptions = null)
     {
         fileSystem ??= new MockFileSystem();
-        settingsOptions ??= new SettingsOptions();
+        updateOptions ??= new UpdateOptions();
         var appState = currentVersion is null ? new AppState() : new AppState(currentVersion);
         var jsonOptions = new JsonSerializerOptions();
-        var settingsFilePath = fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), fileSystem.Path.GetRandomFileName());
-        var provider = new CustomFileConfigurationProvider(settingsFilePath, jsonOptions, fileSystem);
-        var writableOptions = new WritableOptions<SettingsOptions>(provider, new TestOptionsMonitor<SettingsOptions>(settingsOptions), jsonOptions);
+        var optionsFilePath = fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), fileSystem.Path.GetRandomFileName());
+        var provider = new CustomFileConfigurationProvider(optionsFilePath, jsonOptions, fileSystem);
+        var writableOptions = new WritableOptions<UpdateOptions>(provider, new TestOptionsMonitor<UpdateOptions>(updateOptions), jsonOptions);
         return new UpdateService(new HttpClient(handler), fileSystem, NullLogger<UpdateService>.Instance, appState, writableOptions);
     }
 

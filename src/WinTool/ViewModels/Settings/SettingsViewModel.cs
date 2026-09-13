@@ -136,7 +136,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         _processHelper = processHelper;
         _settingsOptions = settingsOptions;
         _updateService = updateService;
-        _updateService.UpdateStateChanged += OnUpdateStateChanged;
+        _updateService.BackgroundCheckStateChanged += OnBackgroundCheckStateChanged;
         _appState = appState;
         _isInitializing = true;
 
@@ -149,7 +149,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
         _isInitializing = false;
 
-        ApplyUpdateState(_updateService.CurrentState);
+        ApplyUpdateState(_updateService.CurrentBackgroundCheckState);
     }
 
     [RelayCommand]
@@ -240,7 +240,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         _processHelper.Start(GitHubUri, null, false);
     }
 
-    private void OnUpdateStateChanged(UpdateStateInfo state)
+    private void OnBackgroundCheckStateChanged(UpdateStateInfo state)
     {
         if (Application.Current.Dispatcher.CheckAccess())
         {
@@ -278,7 +278,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
-        _updateService.UpdateStateChanged -= OnUpdateStateChanged;
+        _updateService.BackgroundCheckStateChanged -= OnBackgroundCheckStateChanged;
     }
 }
 

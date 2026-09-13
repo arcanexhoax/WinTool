@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using WinTool.CommandLine;
 using WinTool.Extensions;
 using WinTool.Models;
@@ -34,6 +35,7 @@ public partial class App : Application
     private readonly IHost _app;
     private readonly ILogger _logger;
 
+    private bool _isUpdateAvailable;
     private string? _currentLanguage;
     private AppTheme _currentTheme;
     private InputPopupWindow? _inputPopupWindow;
@@ -56,6 +58,7 @@ public partial class App : Application
         builder.Services.Configure<SettingsOptions>(builder.Configuration.GetSection(nameof(SettingsOptions)));
         builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection(nameof(FeaturesOptions)));
         builder.Services.Configure<ShortcutsOptions>(builder.Configuration.GetSection(nameof(ShortcutsOptions)));
+        builder.Services.Configure<UpdateOptions>(builder.Configuration.GetSection(nameof(UpdateOptions)));
 
         builder.Services.AddTransient<MainWindow>();
         builder.Services.AddTransient<ShortcutsView>();
@@ -87,6 +90,7 @@ public partial class App : Application
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
+        builder.Services.AddSingleton<WritableOptions<UpdateOptions>>();
         builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
         builder.Services.AddSingleton<IPostConfigureOptions<SettingsOptions>, PostConfigureSettingsOptions>();
 
@@ -123,7 +127,9 @@ public partial class App : Application
         _trayIcon.Visibility = Visibility.Visible;
 
         _updateService = _app.Services.GetRequiredService<UpdateService>();
-        _updateService.UpdateAvailable += OnUpdateAvailable;
+        _updateService.UpdateChecked += OnUpdateChecked;
+        _updateService.NewUpdateAvailable += OnNewUpdateAvailable;
+        ApplyUpdateAvailability(_updateService.CurrentBackgroundCheckState.State == UpdateState.Available);
 
         if (clp.BackgroundParameter is null)
             _mainWindow.Show();
@@ -209,6 +215,18 @@ public partial class App : Application
         _currentTheme = selectedTheme;
     }
 
+    private void ApplyUpdateAvailability(bool isUpdateAvailable)
+    {
+        _isUpdateAvailable = isUpdateAvailable;
+        _mainWindow?.SetUpdateOverlay(isUpdateAvailable);
+
+        if (_trayIcon is null)
+            return;
+
+        var iconName = isUpdateAvailable ? "update.ico" : "icon.ico";
+        _trayIcon.IconSource = new BitmapImage(new Uri($"pack://application:,,,/Resources/{iconName}"));
+    }
+
     private AppTheme GetSystemTheme()
     {
         const string keyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
@@ -243,6 +261,8 @@ public partial class App : Application
         _mainWindow?.ForceClose();
         _mainWindow = _app.Services.GetRequiredService<MainWindow>();
 
+        ApplyUpdateAvailability(_isUpdateAvailable);
+
         if (wasVisible)
             _mainWindow.Show();
     }
@@ -257,7 +277,7 @@ public partial class App : Application
         _mainWindow?.OpenAboutSettings();
     }
 
-    private void OnUpdateAvailable(UpdateCheckResult result)
+    private void OnNewUpdateAvailable(UpdateCheckResult result)
     {
         Current.Dispatcher.BeginInvoke(() =>
         {
@@ -266,6 +286,11 @@ public partial class App : Application
                 $"{WinTool.Properties.Resources.NewVersionAvailable}: {result.LatestVersion.ToString(3)}",
                 BalloonIcon.Info);
         });
+    }
+
+    private void OnUpdateChecked(UpdateCheckResult result)
+    {
+        Current.Dispatcher.BeginInvoke(() => ApplyUpdateAvailability(result.IsUpdateAvailable));
     }
 
     private void OnSettingsChanged(SettingsOptions settings, string? _)
@@ -288,7 +313,8 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
-        _updateService?.UpdateAvailable -= OnUpdateAvailable;
+        _updateService?.UpdateChecked -= OnUpdateChecked;
+        _updateService?.NewUpdateAvailable -= OnNewUpdateAvailable;
         _trayIcon?.Dispose();
 
         Mutex.Release();
