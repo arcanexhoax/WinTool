@@ -29,10 +29,16 @@ public class WritableOptionsTests
                     "AlwaysRunAsAdmin": "True",
                     "AppTheme": "Dark",
                     "AnimationMode": "On",
-                    "Language": "uk"
+                    "Language": "uk",
+                    "Notifications": { "NewVersions": "False" }
                 },
                 "FeaturesOptions": { "EnableInputPopup": "False" },
-                "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Alt + F1" } }
+                "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Alt + F1" } },
+                "UpdateOptions": {
+                    "InitialCheckDelay": "00:00:05",
+                    "CheckInterval": "1.00:00:00",
+                    "AvailableVersion": "1.2.3"
+                }
             }
             """;
         _fileSystem.File.WriteAllText(_appSettingsPath, json);
@@ -41,15 +47,20 @@ public class WritableOptionsTests
         var settings = sp.GetRequiredService<IOptionsMonitor<SettingsOptions>>().CurrentValue;
         var features = sp.GetRequiredService<IOptionsMonitor<FeaturesOptions>>().CurrentValue;
         var shortcuts = sp.GetRequiredService<IOptionsMonitor<ShortcutsOptions>>().CurrentValue;
+        var update = sp.GetRequiredService<IOptionsMonitor<UpdateOptions>>().CurrentValue;
 
         Assert.False(settings.WindowsStartupEnabled);
         Assert.True(settings.AlwaysRunAsAdmin);
         Assert.Equal("Dark", settings.AppTheme.ToString());
         Assert.Equal("On", settings.AnimationMode.ToString());
         Assert.Equal("uk", settings.Language);
+        Assert.False(settings.Notifications.NewVersions);
         Assert.False(features.EnableInputPopup);
         Assert.Equal("Alt + F1", shortcuts.Shortcuts["CreateFile"]);
         Assert.Equal("Ctrl + Shift + C", shortcuts.Shortcuts["SelectedItemCopyPath"]);
+        Assert.Equal(TimeSpan.FromSeconds(5), update.InitialCheckDelay);
+        Assert.Equal(TimeSpan.FromDays(1), update.CheckInterval);
+        Assert.Equal(new Version(1, 2, 3), update.AvailableVersion);
     }
 
     [Fact]
@@ -59,16 +70,21 @@ public class WritableOptionsTests
         var shortcutsOptions = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
         var featuresOptions = sp.GetRequiredService<WritableOptions<FeaturesOptions>>();
         var settingsOptions = sp.GetRequiredService<WritableOptions<SettingsOptions>>();
+        var updateOptions = sp.GetRequiredService<WritableOptions<UpdateOptions>>();
 
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
         featuresOptions.Update(o => o.EnableInputPopup = false);
         settingsOptions.Update(o => o.AppTheme = WinTool.ViewModels.Settings.AppTheme.Light);
+        settingsOptions.Update(o => o.Notifications.NewVersions = false);
+        updateOptions.Update(o => o.AvailableVersion = new Version(1, 2, 3));
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
 
         Assert.Contains("\"CreateFile\": \"Alt + F1\"", text);
         Assert.Contains("\"EnableInputPopup\": \"False\"", text);
         Assert.Contains("\"AppTheme\": \"1\"", text);
+        Assert.Contains("\"NewVersions\": \"False\"", text);
+        Assert.Contains("\"AvailableVersion\": \"1.2.3\"", text);
     }
 
     [Fact]
@@ -76,9 +92,10 @@ public class WritableOptionsTests
     {
         var json = """
             {
-                "SettingsOptions": { "AppTheme": "Dark" },
+                "SettingsOptions": { "AppTheme": "Dark", "Notifications": { "NewVersions": "True" } },
                 "FeaturesOptions": { "EnableInputPopup": "False" },
-                "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Ctrl + Q" } }
+                "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Ctrl + Q" } },
+                "UpdateOptions": { "AvailableVersion": "1.0.0" }
             }
             """;
         _fileSystem.File.WriteAllText(_appSettingsPath, json);
@@ -87,16 +104,21 @@ public class WritableOptionsTests
         var shortcutsOptions = sp.GetRequiredService<WritableOptions<ShortcutsOptions>>();
         var featuresOptions = sp.GetRequiredService<WritableOptions<FeaturesOptions>>();
         var settingsOptions = sp.GetRequiredService<WritableOptions<SettingsOptions>>();
+        var updateOptions = sp.GetRequiredService<WritableOptions<UpdateOptions>>();
 
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
         featuresOptions.Update(o => o.EnableInputPopup = true);
         settingsOptions.Update(o => o.AppTheme = WinTool.ViewModels.Settings.AppTheme.Light);
+        settingsOptions.Update(o => o.Notifications.NewVersions = false);
+        updateOptions.Update(o => o.AvailableVersion = new Version(1, 2, 3));
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
 
         Assert.Contains("\"CreateFile\": \"Alt + F1\"", text);
         Assert.Contains("\"EnableInputPopup\": \"True\"", text);
         Assert.Contains("\"AppTheme\": \"1\"", text);
+        Assert.Contains("\"NewVersions\": \"False\"", text);
+        Assert.Contains("\"AvailableVersion\": \"1.2.3\"", text);
     }
 
     [Fact]
@@ -185,6 +207,7 @@ public class WritableOptionsTests
         services.Configure<SettingsOptions>(config.GetSection(nameof(SettingsOptions)));
         services.Configure<FeaturesOptions>(config.GetSection(nameof(FeaturesOptions)));
         services.Configure<ShortcutsOptions>(config.GetSection(nameof(ShortcutsOptions)));
+        services.Configure<UpdateOptions>(config.GetSection(nameof(UpdateOptions)));
 
         services.AddSingleton(jsonOptions);
         services.AddSingleton(fileProvider);
@@ -192,11 +215,13 @@ public class WritableOptionsTests
         services.AddSingleton<IOptionsMonitor<SettingsOptions>, OptionsMonitor<SettingsOptions>>();
         services.AddSingleton<IOptionsMonitor<FeaturesOptions>, OptionsMonitor<FeaturesOptions>>();
         services.AddSingleton<IOptionsMonitor<ShortcutsOptions>, OptionsMonitor<ShortcutsOptions>>();
+        services.AddSingleton<IOptionsMonitor<UpdateOptions>, OptionsMonitor<UpdateOptions>>();
         services.AddSingleton<IPostConfigureOptions<SettingsOptions>, PostConfigureSettingsOptions>();
         services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
         services.AddSingleton<WritableOptions<SettingsOptions>>();
         services.AddSingleton<WritableOptions<FeaturesOptions>>();
         services.AddSingleton<WritableOptions<ShortcutsOptions>>();
+        services.AddSingleton<WritableOptions<UpdateOptions>>();
 
         return services.BuildServiceProvider();
     }

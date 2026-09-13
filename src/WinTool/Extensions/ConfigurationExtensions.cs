@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
@@ -17,7 +17,7 @@ public static class ConfigurationExtensions
         var fileSystem = new FileSystem();
 
         fileSystem.Directory.CreateDirectory(appFolderPath);
-
+        
         var jsonOptions = new JsonSerializerOptions() 
         { 
             WriteIndented = true,

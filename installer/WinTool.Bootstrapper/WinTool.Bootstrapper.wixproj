@@ -1,0 +1,16 @@
+<Project Sdk="WixToolset.Sdk/7.0.0">
+    <PropertyGroup>
+        <OutputType>Bundle</OutputType>
+        <InstallerPlatform>x64</InstallerPlatform>
+        <OutputName>WinTool-$(WinToolVersion)</OutputName>
+        <OutputPath Condition="'$(InstallerOutputPath)' != ''">$(InstallerOutputPath)</OutputPath>
+        <AcceptEula>wix7</AcceptEula>
+        <DefineConstants>$(DefineConstants);ProductVersion=$(WinToolVersion)</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="WixToolset.Bal.wixext" Version="7.0.0" />
+        <PackageReference Include="WixToolset.Netfx.wixext" Version="7.0.0" />
+        <ProjectReference Include="..\WinTool.Installer\WinTool.Installer.wixproj" />
+    </ItemGroup>
+</Project>

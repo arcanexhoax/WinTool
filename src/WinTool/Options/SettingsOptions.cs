@@ -1,4 +1,4 @@
-﻿using WinTool.ViewModels.Settings;
+using WinTool.ViewModels.Settings;
 
 namespace WinTool.Options;
 
@@ -9,4 +9,10 @@ public class SettingsOptions
     public string? Language { get; set; }
     public AppTheme AppTheme { get; set; } = AppTheme.System;
     public AnimationMode AnimationMode { get; set; } = AnimationMode.Auto;
+    public NotificationOptions Notifications { get; set; } = new();
+}
+
+public class NotificationOptions
+{
+    public bool NewVersions { get; set; } = true;
 }

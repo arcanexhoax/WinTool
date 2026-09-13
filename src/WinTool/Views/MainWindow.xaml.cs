@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using WinTool.Services;
 using WinTool.ViewModels;
 using WinTool.Views.Features;
@@ -14,15 +15,12 @@ namespace WinTool.Views;
 public partial class MainWindow : FluentWindow
 {
     private readonly Dictionary<string, FrameworkElement> _tabCache = [];
-    private readonly MainViewModel _viewModel;
     private readonly ViewFactory _viewFactory;
 
     private bool _allowClose;
 
     public MainWindow(MainViewModel mainViewModel, ViewFactory viewFactory)
     {
-        _viewModel = mainViewModel;
-        _viewModel.ShowWindowRequested += OnShowWindowRequested;
         DataContext = mainViewModel;
         _viewFactory = viewFactory;
 
@@ -33,6 +31,21 @@ public partial class MainWindow : FluentWindow
     {
         _allowClose = true;
         Close();
+    }
+
+    public void OpenAboutSettings()
+    {
+        Tabs.SelectedItem = SettingsTab;
+
+        if (TabContent.Content is SettingsView settingsView)
+            settingsView.OpenAbout();
+    }
+
+    public void SetUpdateOverlay(bool isUpdateAvailable)
+    {
+        TaskbarInfo.Overlay = isUpdateAvailable
+            ? new BitmapImage(new Uri("pack://application:,,,/Resources/update-overlay.png"))
+            : null;
     }
 
     protected override void OnSourceInitialized(EventArgs e)
@@ -66,8 +79,6 @@ public partial class MainWindow : FluentWindow
         TabContent.Content = view;
     }
 
-    private void OnShowWindowRequested(object? sender, EventArgs e) => Show();
-
     private void OnWindowActivated(object? sender, EventArgs e) => Show();
 
     private void OnWindowClosing(object sender, CancelEventArgs e)
@@ -81,7 +92,12 @@ public partial class MainWindow : FluentWindow
 
     protected override void OnClosed(EventArgs e)
     {
-        _viewModel.ShowWindowRequested -= OnShowWindowRequested;
+        foreach (var view in _tabCache.Values)
+        {
+            if (view.DataContext is IDisposable disposable)
+                disposable.Dispose();
+        }
+
         base.OnClosed(e);
     }
 }

@@ -1,16 +1,18 @@
 #pragma warning disable WPF0001
 using GlobalKeyInterceptor;
+using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using System;
-using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using WinTool.CommandLine;
 using WinTool.Extensions;
 using WinTool.Models;
@@ -33,10 +35,14 @@ public partial class App : Application
     private readonly IHost _app;
     private readonly ILogger _logger;
 
+    private bool _isUpdateAvailable;
     private string? _currentLanguage;
     private AppTheme _currentTheme;
     private InputPopupWindow? _inputPopupWindow;
     private MainWindow? _mainWindow;
+    private TaskbarIcon? _trayIcon;
+    private UpdateService? _updateService;
+    private IOptionsMonitor<SettingsOptions>? _settingsOptions;
 
     public static CultureInfo SystemUICulture { get; } = Thread.CurrentThread.CurrentUICulture;
     public static CultureInfo SystemCulture { get; } = Thread.CurrentThread.CurrentCulture;
@@ -53,6 +59,7 @@ public partial class App : Application
         builder.Services.Configure<SettingsOptions>(builder.Configuration.GetSection(nameof(SettingsOptions)));
         builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection(nameof(FeaturesOptions)));
         builder.Services.Configure<ShortcutsOptions>(builder.Configuration.GetSection(nameof(ShortcutsOptions)));
+        builder.Services.Configure<UpdateOptions>(builder.Configuration.GetSection(nameof(UpdateOptions)));
 
         builder.Services.AddTransient<MainWindow>();
         builder.Services.AddTransient<ShortcutsView>();
@@ -73,19 +80,24 @@ public partial class App : Application
         builder.Services.AddSingleton<KeyboardLayoutManager>();
         builder.Services.AddSingleton<StaThreadService>();
         builder.Services.AddSingleton<ShortcutsService>();
+        builder.Services.AddSingleton<UpdateService>();
+        builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<ProcessHelper>();
         builder.Services.AddSingleton<ViewFactory>();
         builder.Services.AddSingleton<ShortcutContext>();
+        builder.Services.AddSingleton<AppState>();
         builder.Services.AddSingleton<RunWithArgsDialogState>();
         builder.Services.AddSingleton<IKeyInterceptor>(new KeyInterceptor());
         builder.Services.AddSingleton<WritableOptions<SettingsOptions>>();
         builder.Services.AddSingleton<WritableOptions<FeaturesOptions>>();
         builder.Services.AddSingleton<WritableOptions<ShortcutsOptions>>();
+        builder.Services.AddSingleton<WritableOptions<UpdateOptions>>();
         builder.Services.AddSingleton<IPostConfigureOptions<ShortcutsOptions>, PostConfigureShortcutsOptions>();
         builder.Services.AddSingleton<IPostConfigureOptions<SettingsOptions>, PostConfigureSettingsOptions>();
 
         builder.Services.AddHostedService(sp => sp.GetRequiredService<ShortcutsService>());
         builder.Services.AddHostedService(sp => sp.GetRequiredService<KeyboardLayoutManager>());
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<UpdateService>());
 
         _app = builder.Build();
         _logger = _app.Services.GetRequiredService<ILogger<App>>();
@@ -98,10 +110,10 @@ public partial class App : Application
 
         var clp = CommandLineParameters.Parse(e.Args);
 
-        var settingsMonitor = _app.Services.GetRequiredService<IOptionsMonitor<SettingsOptions>>();
-        settingsMonitor.OnChange(OnSettingsChanged);
+        _settingsOptions = _app.Services.GetRequiredService<IOptionsMonitor<SettingsOptions>>();
+        _settingsOptions.OnChange(OnSettingsChanged);
 
-        var settings = settingsMonitor.CurrentValue;
+        var settings = _settingsOptions.CurrentValue;
         var processHelper = _app.Services.GetRequiredService<ProcessHelper>();
 
         ApplyLanguage(settings.Language);
@@ -111,6 +123,14 @@ public partial class App : Application
         // activate the popup window
         _inputPopupWindow = _app.Services.GetRequiredService<InputPopupWindow>();
         _mainWindow = _app.Services.GetRequiredService<MainWindow>();
+
+        _trayIcon = (TaskbarIcon)FindResource("TrayIcon");
+        _trayIcon.Visibility = Visibility.Visible;
+
+        _updateService = _app.Services.GetRequiredService<UpdateService>();
+        _updateService.UpdateChecked += OnUpdateChecked;
+        _updateService.NewUpdateAvailable += OnNewUpdateAvailable;
+        ApplyUpdateAvailability(_updateService.CurrentBackgroundCheckState.State == UpdateState.Available);
 
         if (clp.BackgroundParameter is null)
             _mainWindow.Show();
@@ -196,6 +216,18 @@ public partial class App : Application
         _currentTheme = selectedTheme;
     }
 
+    private void ApplyUpdateAvailability(bool isUpdateAvailable)
+    {
+        _isUpdateAvailable = isUpdateAvailable;
+        _mainWindow?.SetUpdateOverlay(isUpdateAvailable);
+
+        if (_trayIcon is null)
+            return;
+
+        var iconName = isUpdateAvailable ? "update.ico" : "icon.ico";
+        _trayIcon.IconSource = new BitmapImage(new Uri($"pack://application:,,,/Resources/{iconName}"));
+    }
+
     private AppTheme GetSystemTheme()
     {
         const string keyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
@@ -208,14 +240,61 @@ public partial class App : Application
         return value is int i && i == 0 ? AppTheme.Dark : AppTheme.Light;
     }
 
+    private void OpenMainWindow()
+    {
+        _app.Services.GetRequiredService<AppState>().IsBackgroundMode = false;
+
+        if (_mainWindow is null)
+            return;
+
+        if (!_mainWindow.IsVisible)
+            _mainWindow.Show();
+
+        if (_mainWindow.WindowState == WindowState.Minimized)
+            _mainWindow.WindowState = WindowState.Normal;
+
+        _mainWindow.Activate();
+    }
+
     private void RecreateMainWindow()
     {
         var wasVisible = _mainWindow?.IsVisible == true;
         _mainWindow?.ForceClose();
         _mainWindow = _app.Services.GetRequiredService<MainWindow>();
 
+        ApplyUpdateAvailability(_isUpdateAvailable);
+
         if (wasVisible)
             _mainWindow.Show();
+    }
+
+    private void OnTrayIconOpen(object sender, RoutedEventArgs e) => OpenMainWindow();
+
+    private void OnTrayIconClose(object sender, RoutedEventArgs e) => Current.Shutdown();
+
+    private void OnUpdateNotificationClicked(object sender, RoutedEventArgs e)
+    {
+        OpenMainWindow();
+        _mainWindow?.OpenAboutSettings();
+    }
+
+    private void OnNewUpdateAvailable(UpdateCheckResult result)
+    {
+        Current.Dispatcher.BeginInvoke(() =>
+        {
+            if (_settingsOptions?.CurrentValue.Notifications.NewVersions == false)
+                return;
+
+            _trayIcon?.ShowBalloonTip(
+                WinTool.Properties.Resources.WinTool,
+                $"{WinTool.Properties.Resources.NewVersionAvailable}: {result.LatestVersion.ToString(3)}",
+                BalloonIcon.Info);
+        });
+    }
+
+    private void OnUpdateChecked(UpdateCheckResult result)
+    {
+        Current.Dispatcher.BeginInvoke(() => ApplyUpdateAvailability(result.IsUpdateAvailable));
     }
 
     private void OnSettingsChanged(SettingsOptions settings, string? _)
@@ -238,6 +317,10 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
+        _updateService?.UpdateChecked -= OnUpdateChecked;
+        _updateService?.NewUpdateAvailable -= OnNewUpdateAvailable;
+        _trayIcon?.Dispose();
+
         Mutex.Release();
         _logger.LogInformation("Application is shutting down");
 

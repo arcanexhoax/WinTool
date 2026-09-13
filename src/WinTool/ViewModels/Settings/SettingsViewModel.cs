@@ -1,38 +1,35 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using WinTool.CommandLine;
 using WinTool.Extensions;
+using WinTool.Models;
 using WinTool.Options;
 using WinTool.Properties;
+using WinTool.Services;
 
 namespace WinTool.ViewModels.Settings;
 
-public enum AppTheme
+public partial class SettingsViewModel : ObservableObject, IDisposable
 {
-    System,
-    Light,
-    Dark
-}
-
-public enum AnimationMode
-{
-    Auto,
-    On,
-    Off
-}
-
-public class SettingsViewModel : ObservableObject
-{
+    private const string GitHubUri = "https://github.com/arcanexhoax/WinTool";
     private const string RegKeyName = "WinTool";
 
-    private readonly string _executionFilePath;
     private readonly ILogger _logger;
+    private readonly AppState _appState;
+    private readonly ProcessHelper _processHelper;
     private readonly WritableOptions<SettingsOptions> _settingsOptions;
+    private readonly UpdateService _updateService;
 
     private bool _isInitializing;
+    private Uri? _releaseUri;
+    private GitHubReleaseAsset? _updateAsset;
+    private CancellationTokenSource? _downloadCts;
 
     public bool LaunchOnWindowsStartup
     {
@@ -50,7 +47,7 @@ public class SettingsViewModel : ObservableObject
 
                 if (value)
                 {
-                    runKey.SetValue(RegKeyName, _executionFilePath);
+                    runKey.SetValue(RegKeyName, $@"""{Environment.ProcessPath!}"" {BackgroundParameter.ParameterName}");
                 }
                 else
                 {
@@ -110,12 +107,48 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
-    public SettingsViewModel(ILogger<SettingsViewModel> logger, WritableOptions<SettingsOptions> settingsOptions)
+    public bool NewVersionNotifications
     {
-        // use arg "/background" to start app in background mode
-        _executionFilePath = $"{Environment.ProcessPath!} {BackgroundParameter.ParameterName}";
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.Notifications.NewVersions = value);
+            }
+        }
+    }
+
+    [ObservableProperty]
+    public partial UpdateState UpdateState { get; set; }
+
+    [ObservableProperty]
+    public partial string CurrentVersion { get; set; }
+
+    [ObservableProperty]
+    public partial string AvailableVersion { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial double DownloadProgress { get; set; }
+
+    [ObservableProperty]
+    public partial string DownloadProgressText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string UpdateErrorMessage { get; set; } = string.Empty;
+
+    public SettingsViewModel(
+        ILogger<SettingsViewModel> logger,
+        ProcessHelper processHelper,
+        AppState appState,
+        WritableOptions<SettingsOptions> settingsOptions,
+        UpdateService updateService)
+    {
         _logger = logger;
+        _processHelper = processHelper;
         _settingsOptions = settingsOptions;
+        _updateService = updateService;
+        _updateService.BackgroundCheckStateChanged += OnBackgroundCheckStateChanged;
+        _appState = appState;
         _isInitializing = true;
 
         LaunchOnWindowsStartup = _settingsOptions.CurrentValue.WindowsStartupEnabled;
@@ -123,7 +156,157 @@ public class SettingsViewModel : ObservableObject
         SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
         SelectedAnimationMode = _settingsOptions.CurrentValue.AnimationMode;
         SelectedLanguage = _settingsOptions.CurrentValue.Language;
+        NewVersionNotifications = _settingsOptions.CurrentValue.Notifications.NewVersions;
+        CurrentVersion = _appState.Version.ToString(3);
 
         _isInitializing = false;
+
+        ApplyUpdateState(_updateService.CurrentBackgroundCheckState);
+    }
+
+    [RelayCommand]
+    private async Task CheckForUpdatesAsync()
+    {
+        UpdateState = UpdateState.Checking;
+        UpdateErrorMessage = string.Empty;
+        _updateAsset = null;
+        _releaseUri = null;
+
+        try
+        {
+            var result = await _updateService.CheckForUpdateAsync();
+
+            _updateAsset = result.Asset;
+            _releaseUri = result.ReleaseUri;
+            AvailableVersion = result.LatestVersion.ToString(3);
+            UpdateState = result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to check for updates");
+            UpdateErrorMessage = ex.Message;
+            UpdateState = UpdateState.Error;
+        }
+    }
+
+    [RelayCommand]
+    private void ShowReleaseNotes()
+    {
+        if (_releaseUri is not null)
+            _processHelper.Start(_releaseUri.AbsoluteUri, null, false);
+    }
+
+    [RelayCommand]
+    private async Task DownloadAndInstallAsync()
+    {
+        var updateAsset = _updateAsset;
+
+        if (updateAsset is null)
+            return;
+
+        using var cts = new CancellationTokenSource();
+        _downloadCts = cts;
+
+        DownloadProgress = 0;
+        DownloadProgressText = string.Empty;
+        UpdateErrorMessage = string.Empty;
+        UpdateState = UpdateState.Downloading;
+
+        var progress = new Progress<UpdateDownloadProgress>(value =>
+        {
+            DownloadProgress = value.Percentage;
+            DownloadProgressText = $"{FormatMegabytes(value.BytesReceived)} / {FormatMegabytes(value.TotalBytes)}";
+        });
+
+        try
+        {
+            var installerPath = await _updateService.DownloadUpdateAsync(updateAsset, progress, cts.Token);
+            DownloadProgress = 100;
+            UpdateState = UpdateState.Installing;
+
+            await _updateService.StartUpdateAsync(installerPath, updateAsset.Id, _appState.IsBackgroundMode, _processHelper.IsAdmin);
+        }
+        catch (OperationCanceledException) when (cts.IsCancellationRequested)
+        {
+            UpdateState = UpdateState.Available;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to download or start update");
+            UpdateErrorMessage = ex.Message;
+            UpdateState = UpdateState.Error;
+        }
+        finally
+        {
+            _downloadCts = null;
+        }
+    }
+
+    [RelayCommand]
+    private void CancelUpdate()
+    {
+        _downloadCts?.Cancel();
+    }
+
+    [RelayCommand]
+    private void OpenGitHub()
+    {
+        _processHelper.Start(GitHubUri, null, false);
+    }
+
+    private void OnBackgroundCheckStateChanged(UpdateStateInfo state)
+    {
+        if (Application.Current.Dispatcher.CheckAccess())
+        {
+            ApplyUpdateState(state);
+        }
+        else
+        {
+            Application.Current.Dispatcher.BeginInvoke(() => ApplyUpdateState(state));
+        }
+    }
+
+    private void ApplyUpdateState(UpdateStateInfo state)
+    {
+        UpdateState = state.State;
+        UpdateErrorMessage = state.Error?.Message ?? string.Empty;
+
+        if (state.State is UpdateState.Checking)
+        {
+            _updateAsset = null;
+            _releaseUri = null;
+        }
+
+        if (state.Result is { } result)
+        {
+            _updateAsset = result.Asset;
+            _releaseUri = result.ReleaseUri;
+            AvailableVersion = result.LatestVersion.ToString(3);
+        }
+    }
+
+    private string FormatMegabytes(long bytes)
+    {
+        return $"{bytes / 1024d / 1024d:N1} MB";
+    }
+
+    public void Dispose()
+    {
+        _updateService.BackgroundCheckStateChanged -= OnBackgroundCheckStateChanged;
     }
 }
+
+public enum AppTheme
+{
+    System,
+    Light,
+    Dark
+}
+
+public enum AnimationMode
+{
+    Auto,
+    On,
+    Off
+}
+
