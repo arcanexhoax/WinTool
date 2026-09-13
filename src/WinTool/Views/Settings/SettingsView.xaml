@@ -206,6 +206,35 @@
                         </Grid>
                     </Border>
 
+                    <TextBlock Text="{x:Static p:Resources.Notifications}"
+                               Style="{StaticResource BodyStrongTextBlockStyle}"
+                               Margin="0 36 0 0" />
+
+                    <Border Style="{DynamicResource CardBorderStyle}"
+                            Margin="0 8 0 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{StaticResource Icon.Sync}"
+                                       FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                       FontSize="18"
+                                       Margin="0 0 18 0" />
+
+                            <TextBlock Text="{x:Static p:Resources.NewVersionNotifications}"
+                                       Grid.Column="1" />
+
+                            <ctrl:ToggleSwitch IsChecked="{Binding NewVersionNotifications}"
+                                               ShowStateContent="True"
+                                               StateContentPosition="Left"
+                                               Grid.Column="3" />
+                        </Grid>
+                    </Border>
+
                     <TextBlock Text="{x:Static p:Resources.About}"
                                Style="{StaticResource BodyStrongTextBlockStyle}"
                                Margin="0 36 0 0" />

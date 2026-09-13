@@ -296,6 +296,12 @@
     <value>Dil</value>
     <comment>App display language</comment>
   </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Bildirimler</value>
+  </data>
+  <data name="NewVersionNotifications" xml:space="preserve">
+    <value>Yeni sürüm bildirimleri</value>
+  </data>
   <data name="About" xml:space="preserve">
     <value>Hakkında</value>
     <comment>About this app</comment>

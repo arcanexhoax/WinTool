@@ -296,6 +296,12 @@
     <value>Language</value>
     <comment>App display language</comment>
   </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="NewVersionNotifications" xml:space="preserve">
+    <value>New version notifications</value>
+  </data>
   <data name="About" xml:space="preserve">
     <value>About</value>
     <comment>About this app</comment>

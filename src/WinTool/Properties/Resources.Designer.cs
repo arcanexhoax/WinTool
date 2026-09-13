@@ -383,6 +383,15 @@ namespace WinTool.Properties {
                 return ResourceManager.GetString("NewVersionAvailable", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to New version notifications.
+        /// </summary>
+        public static string NewVersionNotifications {
+            get {
+                return ResourceManager.GetString("NewVersionNotifications", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Not specified.
@@ -390,6 +399,15 @@ namespace WinTool.Properties {
         public static string NotSpecified {
             get {
                 return ResourceManager.GetString("NotSpecified", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string Notifications {
+            get {
+                return ResourceManager.GetString("Notifications", resourceCulture);
             }
         }
         

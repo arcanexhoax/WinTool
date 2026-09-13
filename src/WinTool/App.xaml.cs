@@ -281,6 +281,9 @@ public partial class App : Application
     {
         Current.Dispatcher.BeginInvoke(() =>
         {
+            if (!_app.Services.GetRequiredService<IOptionsMonitor<SettingsOptions>>().CurrentValue.Notifications.NewVersions)
+                return;
+
             _trayIcon?.ShowBalloonTip(
                 WinTool.Properties.Resources.WinTool,
                 $"{WinTool.Properties.Resources.NewVersionAvailable}: {result.LatestVersion.ToString(3)}",

@@ -107,6 +107,17 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         }
     }
 
+    public bool NewVersionNotifications
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.Notifications.NewVersions = value);
+            }
+        }
+    }
+
     [ObservableProperty]
     public partial UpdateState UpdateState { get; set; }
 
@@ -145,6 +156,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
         SelectedAnimationMode = _settingsOptions.CurrentValue.AnimationMode;
         SelectedLanguage = _settingsOptions.CurrentValue.Language;
+        NewVersionNotifications = _settingsOptions.CurrentValue.Notifications.NewVersions;
         CurrentVersion = _appState.Version.ToString(3);
 
         _isInitializing = false;

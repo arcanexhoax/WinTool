@@ -29,7 +29,8 @@ public class WritableOptionsTests
                     "AlwaysRunAsAdmin": "True",
                     "AppTheme": "Dark",
                     "AnimationMode": "On",
-                    "Language": "uk"
+                    "Language": "uk",
+                    "Notifications": { "NewVersions": "False" }
                 },
                 "FeaturesOptions": { "EnableInputPopup": "False" },
                 "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Alt + F1" } },
@@ -53,6 +54,7 @@ public class WritableOptionsTests
         Assert.Equal("Dark", settings.AppTheme.ToString());
         Assert.Equal("On", settings.AnimationMode.ToString());
         Assert.Equal("uk", settings.Language);
+        Assert.False(settings.Notifications.NewVersions);
         Assert.False(features.EnableInputPopup);
         Assert.Equal("Alt + F1", shortcuts.Shortcuts["CreateFile"]);
         Assert.Equal("Ctrl + Shift + C", shortcuts.Shortcuts["SelectedItemCopyPath"]);
@@ -73,6 +75,7 @@ public class WritableOptionsTests
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
         featuresOptions.Update(o => o.EnableInputPopup = false);
         settingsOptions.Update(o => o.AppTheme = WinTool.ViewModels.Settings.AppTheme.Light);
+        settingsOptions.Update(o => o.Notifications.NewVersions = false);
         updateOptions.Update(o => o.AvailableVersion = new Version(1, 2, 3));
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
@@ -80,6 +83,7 @@ public class WritableOptionsTests
         Assert.Contains("\"CreateFile\": \"Alt + F1\"", text);
         Assert.Contains("\"EnableInputPopup\": \"False\"", text);
         Assert.Contains("\"AppTheme\": \"1\"", text);
+        Assert.Contains("\"NewVersions\": \"False\"", text);
         Assert.Contains("\"AvailableVersion\": \"1.2.3\"", text);
     }
 
@@ -88,7 +92,7 @@ public class WritableOptionsTests
     {
         var json = """
             {
-                "SettingsOptions": { "AppTheme": "Dark" },
+                "SettingsOptions": { "AppTheme": "Dark", "Notifications": { "NewVersions": "True" } },
                 "FeaturesOptions": { "EnableInputPopup": "False" },
                 "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Ctrl + Q" } },
                 "UpdateOptions": { "AvailableVersion": "1.0.0" }
@@ -105,6 +109,7 @@ public class WritableOptionsTests
         shortcutsOptions.Update(o => o.Shortcuts["CreateFile"] = "Alt + F1");
         featuresOptions.Update(o => o.EnableInputPopup = true);
         settingsOptions.Update(o => o.AppTheme = WinTool.ViewModels.Settings.AppTheme.Light);
+        settingsOptions.Update(o => o.Notifications.NewVersions = false);
         updateOptions.Update(o => o.AvailableVersion = new Version(1, 2, 3));
 
         var text = _fileSystem.File.ReadAllText(_appSettingsPath);
@@ -112,6 +117,7 @@ public class WritableOptionsTests
         Assert.Contains("\"CreateFile\": \"Alt + F1\"", text);
         Assert.Contains("\"EnableInputPopup\": \"True\"", text);
         Assert.Contains("\"AppTheme\": \"1\"", text);
+        Assert.Contains("\"NewVersions\": \"False\"", text);
         Assert.Contains("\"AvailableVersion\": \"1.2.3\"", text);
     }
 

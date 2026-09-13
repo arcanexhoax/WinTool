@@ -296,6 +296,12 @@
     <value>Язык</value>
     <comment>App display language</comment>
   </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="NewVersionNotifications" xml:space="preserve">
+    <value>Уведомления о новых версиях</value>
+  </data>
   <data name="About" xml:space="preserve">
     <value>О программе</value>
     <comment>About this app</comment>
