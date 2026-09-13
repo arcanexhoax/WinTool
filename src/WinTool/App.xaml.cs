@@ -123,7 +123,7 @@ public partial class App : Application
         _trayIcon.Visibility = Visibility.Visible;
 
         _updateService = _app.Services.GetRequiredService<UpdateService>();
-        _updateService.UpdateStateChanged += OnUpdateStateChanged;
+        _updateService.UpdateAvailable += OnUpdateAvailable;
 
         if (clp.BackgroundParameter is null)
             _mainWindow.Show();
@@ -257,11 +257,8 @@ public partial class App : Application
         _mainWindow?.OpenAboutSettings();
     }
 
-    private void OnUpdateStateChanged(UpdateStateInfo state)
+    private void OnUpdateAvailable(UpdateCheckResult result)
     {
-        if (state is not { State: UpdateState.Available, Result: { } result })
-            return;
-
         Current.Dispatcher.BeginInvoke(() =>
         {
             _trayIcon?.ShowBalloonTip(
@@ -291,7 +288,7 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
-        _updateService?.UpdateStateChanged -= OnUpdateStateChanged;
+        _updateService?.UpdateAvailable -= OnUpdateAvailable;
         _trayIcon?.Dispose();
 
         Mutex.Release();

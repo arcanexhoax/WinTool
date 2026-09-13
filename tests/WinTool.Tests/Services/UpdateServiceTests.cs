@@ -1,8 +1,11 @@
 using System.Net;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using WinTool.Models;
+using WinTool.Options;
 using WinTool.Services;
 
 namespace WinTool.Tests.Services;
@@ -25,6 +28,42 @@ public class UpdateServiceTests
         Assert.Equal("WinTool-1.2.4.exe", result.Asset?.Name);
         Assert.Equal(42, result.Asset?.Id);
         Assert.Equal("sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", result.Asset?.Digest);
+    }
+
+    [Theory]
+    [InlineData(false, 1)]
+    [InlineData(true, 0)]
+    public async Task ExecuteAsync_NotifiesOnlyAboutNewVersion(bool versionAlreadyDetected, int expectedNotifications)
+    {
+        var latestVersion = new Version(1, 2, 4);
+        var settings = new SettingsOptions
+        {
+            Update = new UpdateOptions { AvailableVersion = versionAlreadyDetected ? latestVersion : new Version(0, 0, 0) }
+        };
+        var handler = new StubHttpMessageHandler(CreateReleaseResponse(latestVersion, true));
+        var service = CreateService(handler, new Version(1, 2, 3), settingsOptions: settings);
+        var checkCompleted = new TaskCompletionSource<UpdateStateInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var notifications = 0;
+        service.UpdateAvailable += _ => notifications++;
+        service.UpdateStateChanged += state =>
+        {
+            if (state.State is UpdateState.Available or UpdateState.Error)
+                checkCompleted.TrySetResult(state);
+        };
+
+        await service.StartAsync(CancellationToken.None);
+
+        try
+        {
+            var state = await checkCompleted.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Equal(UpdateState.Available, state.State);
+            Assert.Equal(expectedNotifications, notifications);
+        }
+        finally
+        {
+            await service.StopAsync(CancellationToken.None);
+        }
     }
 
     [Fact]
@@ -100,7 +139,7 @@ public class UpdateServiceTests
     public async Task DownloadUpdateAsync_WhenCanceled_CancelsRequest()
     {
         var fileSystem = new MockFileSystem();
-        var service = new UpdateService(new HttpClient(new CancellableHttpMessageHandler()), fileSystem, NullLogger<UpdateService>.Instance, new AppState());
+        var service = CreateService(new CancellableHttpMessageHandler(), fileSystem: fileSystem);
         var asset = new GitHubReleaseAsset("WinTool-1.1.0.exe", new Uri("https://example.test/WinTool-1.1.0.exe"), 4);
         using var cancellationTokenSource = new CancellationTokenSource();
 
@@ -110,10 +149,16 @@ public class UpdateServiceTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => downloadTask);
     }
 
-    private static UpdateService CreateService(HttpMessageHandler handler, Version? currentVersion = null, MockFileSystem? fileSystem = null)
+    private static UpdateService CreateService(HttpMessageHandler handler, Version? currentVersion = null, MockFileSystem? fileSystem = null, SettingsOptions? settingsOptions = null)
     {
+        fileSystem ??= new MockFileSystem();
+        settingsOptions ??= new SettingsOptions();
         var appState = currentVersion is null ? new AppState() : new AppState(currentVersion);
-        return new UpdateService(new HttpClient(handler), fileSystem ?? new MockFileSystem(), NullLogger<UpdateService>.Instance, appState);
+        var jsonOptions = new JsonSerializerOptions();
+        var settingsFilePath = fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), fileSystem.Path.GetRandomFileName());
+        var provider = new CustomFileConfigurationProvider(settingsFilePath, jsonOptions, fileSystem);
+        var writableOptions = new WritableOptions<SettingsOptions>(provider, new TestOptionsMonitor<SettingsOptions>(settingsOptions), jsonOptions);
+        return new UpdateService(new HttpClient(handler), fileSystem, NullLogger<UpdateService>.Instance, appState, writableOptions);
     }
 
     private static HttpResponseMessage CreateReleaseResponse(Version version, bool includeAsset)
@@ -161,5 +206,14 @@ public class UpdateServiceTests
             await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
+    }
+
+    private class TestOptionsMonitor<T>(T currentValue) : IOptionsMonitor<T>
+    {
+        public T CurrentValue { get; } = currentValue;
+
+        public T Get(string? name) => CurrentValue;
+
+        public IDisposable? OnChange(Action<T, string?> listener) => null;
     }
 }

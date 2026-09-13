@@ -13,10 +13,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WinTool.CommandLine;
 using WinTool.Models;
+using WinTool.Options;
 
 namespace WinTool.Services;
 
-public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogger<UpdateService> logger, AppState appState) : BackgroundService
+public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogger<UpdateService> logger, AppState appState, WritableOptions<SettingsOptions> settingsOptions) : BackgroundService
 {
     private const string LatestReleaseUri = "https://api.github.com/repos/arcanexhoax/WinTool/releases/latest";
     private const string PrepareParameter = "/prepare";
@@ -26,11 +27,13 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
     private readonly IFileSystem _fileSystem = fileSystem;
     private readonly HttpClient _httpClient = httpClient;
     private readonly AppState _appState = appState;
+    private readonly WritableOptions<SettingsOptions> _settingsOptions = settingsOptions;
     private readonly string _downloadDirectory = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinTool");
 
     public UpdateStateInfo CurrentState { get; private set; } = new(UpdateState.NotChecked);
 
     public event Action<UpdateStateInfo>? UpdateStateChanged;
+    public event Action<UpdateCheckResult>? UpdateAvailable;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -46,11 +49,18 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
                 {
                     SetState(UpdateState.Checking);
 
+                    var previousVersion = _settingsOptions.CurrentValue.Update.AvailableVersion;
                     var result = await CheckForUpdateAsync(stoppingToken);
-                    SetState(result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate, result);
 
                     if (result.IsUpdateAvailable)
+                    {
                         _logger.LogInformation("Update {Version} is available", result.LatestVersion.ToString(3));
+
+                        if (result.LatestVersion != previousVersion)
+                            UpdateAvailable?.Invoke(result);
+                    }
+
+                    SetState(result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate, result);
                 }
                 catch (Exception ex) when (!stoppingToken.IsCancellationRequested)
                 {
@@ -95,7 +105,10 @@ public class UpdateService(HttpClient httpClient, IFileSystem fileSystem, ILogge
                 throw new InvalidDataException($"The latest GitHub release does not contain {expectedAssetName}.");
         }
 
-        return new UpdateCheckResult(isUpdateAvailable, latestVersion, releaseUri, asset);
+        var result = new UpdateCheckResult(isUpdateAvailable, latestVersion, releaseUri, asset);
+        _settingsOptions.Update(o => o.Update.AvailableVersion = latestVersion);
+
+        return result;
     }
 
     public async Task<string> DownloadUpdateAsync(GitHubReleaseAsset asset, IProgress<UpdateDownloadProgress>? progress = null, CancellationToken cancellationToken = default)

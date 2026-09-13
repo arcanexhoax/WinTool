@@ -29,7 +29,8 @@ public class WritableOptionsTests
                     "AlwaysRunAsAdmin": "True",
                     "AppTheme": "Dark",
                     "AnimationMode": "On",
-                    "Language": "uk"
+                    "Language": "uk",
+                    "Update": { "AvailableVersion": "1.2.3" }
                 },
                 "FeaturesOptions": { "EnableInputPopup": "False" },
                 "ShortcutsOptions": { "Shortcuts": { "CreateFile": "Alt + F1" } }
@@ -47,6 +48,7 @@ public class WritableOptionsTests
         Assert.Equal("Dark", settings.AppTheme.ToString());
         Assert.Equal("On", settings.AnimationMode.ToString());
         Assert.Equal("uk", settings.Language);
+        Assert.Equal(new Version(1, 2, 3), settings.Update.AvailableVersion);
         Assert.False(features.EnableInputPopup);
         Assert.Equal("Alt + F1", shortcuts.Shortcuts["CreateFile"]);
         Assert.Equal("Ctrl + Shift + C", shortcuts.Shortcuts["SelectedItemCopyPath"]);
@@ -170,6 +172,7 @@ public class WritableOptionsTests
         var settings = sp.GetRequiredService<WritableOptions<SettingsOptions>>().CurrentValue;
 
         Assert.Equal(App.SystemUICulture.TwoLetterISOLanguageName, settings.Language);
+        Assert.Equal(new Version(0, 0, 0), settings.Update.AvailableVersion);
     }
 
     private ServiceProvider BuildServiceProvider(string jsonFile)
