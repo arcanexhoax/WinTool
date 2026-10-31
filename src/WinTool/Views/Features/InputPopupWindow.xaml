@@ -10,6 +10,7 @@
                     d:DataContext="{d:DesignInstance Type=vm:InputPopupViewModel}"
                     ResizeMode="NoResize"
                     Focusable="False"
+                    ShowActivated="False"
                     ShowInTaskbar="False"
                     SizeToContent="Manual"
                     Height="40">

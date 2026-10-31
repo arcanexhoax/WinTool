@@ -13,10 +13,12 @@
                    mc:Ignorable="d"
                    d:DataContext="{d:DesignInstance Type=vm:RunWithArgsViewModel}"
                    Icon="/Resources/icon.ico"
-                   SizeToContent="Height"
                    WindowStartupLocation="CenterScreen"
                    Title="{Binding FileName, StringFormat={x:Static p:Resources.RunFormat}}"
-                   Width="400">
+                   Width="400"
+                   Height="440"
+                   MinWidth="400"
+                   MinHeight="440">
     <Window.InputBindings>
         <KeyBinding Command="{Binding RunCommand}"
                     Key="Return" />
@@ -31,7 +33,13 @@
         </Grid.RowDefinitions>
 
         <Border Style="{StaticResource DialogContentBorderStyle}">
-            <StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
                 <TextBlock FontSize="20"
                            FontWeight="SemiBold"
                            Text="{Binding FileName, StringFormat={x:Static p:Resources.RunFormat}}"
@@ -41,14 +49,15 @@
                 <TextBox x:Name="textBox"
                          Text="{Binding Args, UpdateSourceTrigger=PropertyChanged}"
                          ui:TextBoxExtensions.IsTextSelected="{Binding IsTextSelected}"
-                         MinWidth="200"
-                         MinHeight="150"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"
                          Margin="0 16 0 0"
-                         TextWrapping="Wrap"/>
+                         Grid.Row="1" />
 
                 <Expander Header="{x:Static p:Resources.Options}"
                           IsExpanded="{Binding AreOptionsOpened}"
-                          Margin="0 16 0 0">
+                          Margin="0 16 0 0"
+                          Grid.Row="2">
                     <StackPanel>
                         <CheckBox Content="{x:Static p:Resources.RunAsAdmin}"
                                   IsChecked="{Binding RunAsAdmin}"
@@ -61,7 +70,7 @@
                                   VerticalAlignment="Top" />
                     </StackPanel>
                 </Expander>
-            </StackPanel>
+            </Grid>
         </Border>
 
         <Border Padding="26 0"
