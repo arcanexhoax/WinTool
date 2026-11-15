@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using System;
 using UIAutomationClient;
 using WinTool.Native;
@@ -15,7 +15,16 @@ public class CaretHelper
 
     public static RECT? GetCaretRect()
     {
-        var focusedElement = s_automation.GetFocusedElement();
+        IUIAutomationElement? focusedElement = null;
+
+        try
+        {
+            focusedElement = s_automation.GetFocusedElement();
+        }
+        catch (Exception ex)
+        {
+            s_logger.Debug(ex, "Failed to get focused element.");
+        }
 
         var caretRect = GetCaretRectByTextPattern2(focusedElement);
 
@@ -55,7 +64,7 @@ public class CaretHelper
         return null;
     }
 
-    public static RECT? GetCaretRectByTextPattern2(IUIAutomationElement element)
+    public static RECT? GetCaretRectByTextPattern2(IUIAutomationElement? element)
     {
         try
         {
@@ -75,7 +84,7 @@ public class CaretHelper
         }
     }
 
-    public static RECT? GetCaretRectByTextPattern(IUIAutomationElement element)
+    public static RECT? GetCaretRectByTextPattern(IUIAutomationElement? element)
     {
         try
         {
@@ -149,16 +158,23 @@ public class CaretHelper
 
     private static RECT? GetCaretRectByAccessible(nint hwnd)
     {
-        var guid = typeof(IAccessible).GUID;
-        object? accessibleObject = null;
-        var retVal = NativeMethods.AccessibleObjectFromWindow(hwnd, NativeMethods.OBJID_CARET, ref guid, ref accessibleObject);
+        try
+        {
+            var guid = typeof(IAccessible).GUID;
+            object? accessibleObject = null;
+            var retVal = NativeMethods.AccessibleObjectFromWindow(hwnd, NativeMethods.OBJID_CARET, ref guid, ref accessibleObject);
 
-        if (retVal != 0 || accessibleObject is not IAccessible accessible)
+            if (retVal != 0 || accessibleObject is not IAccessible accessible)
+                return null;
+
+            accessible.accLocation(out int left, out int top, out int width, out int height, NativeMethods.CHILDID_SELF);
+
+            return BuildRect(left, top, width, height);
+        }
+        catch
+        {
             return null;
-
-        accessible.accLocation(out int left, out int top, out int width, out int height, NativeMethods.CHILDID_SELF);
-
-        return BuildRect(left, top, width, height);
+        }
     }
 
     private static bool IsRectValid(RECT? rect)
