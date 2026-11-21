@@ -23,12 +23,12 @@
                                 Variable="DotNetDesktopRuntimeVersion"
                                 RuntimeType="desktop"
                                 Platform="x64"
-                                MajorVersion="10" />
+                                MajorVersion="11" />
 
         <Chain>
             <ExePackage Id="DotNetDesktopRuntime"
-                        DisplayName="Microsoft .NET 10 Desktop Runtime"
-                        DetectCondition="DotNetDesktopRuntimeVersion &gt;= v10.0.0"
+                        DisplayName="Microsoft .NET 11 Desktop Runtime"
+                        DetectCondition="DotNetDesktopRuntimeVersion &gt;= v11.0.0"
                         InstallArguments="/install /quiet /norestart"
                         RepairArguments="/repair /quiet /norestart"
                         UninstallArguments="/uninstall /quiet /norestart"
@@ -37,10 +37,10 @@
                         Vital="yes"
                         Cache="remove">
 
-                <ExePackagePayload Name="windowsdesktop-runtime-10.0.11-win-x64.exe"
-                                   DownloadUrl="https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.11/windowsdesktop-runtime-10.0.11-win-x64.exe"
-                                   Hash="4dbf26b0b78f55c5f59a46c3c81327b23a04f449f7ac6798204dcd19d99459258936daaede61d1b8c1ba523d6c26bf68bac86b3371d22e67cef235edbdc2f26c"
-                                   Size="60001888" />
+                <ExePackagePayload Name="windowsdesktop-runtime-11.0.0-win-x64.exe"
+                                   DownloadUrl="https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/11.0.0/windowsdesktop-runtime-11.0.0-win-x64.exe"
+                                   Hash="ca20dba0c69dd6ae3932d2a42beeeecc4f4ece0be084f9921b001c8acd4ece7999df73ede76b87b6ae0d34974112ddd1c828fafad487df27c25e59e7f794c059"
+                                   Size="62332904" />
             </ExePackage>
 
             <MsiPackage Id="WinToolMsi"
