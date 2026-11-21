@@ -1,3 +1,9 @@
+## v0.11.1
+- Fixed Input popup stealing focus in WinTool text boxes
+- Fixed crashes when detecting the text cursor position for Input popup
+- Fixed resizing of the `Run file with arguments` window and added scrolling for long arguments
+- Updated to .NET 11
+
 ## v0.11.0
 - Added an installer with automatic installation of the required .NET Desktop Runtime
 - Added an `About` section in settings with manual and automatic update checks, update download, and installation

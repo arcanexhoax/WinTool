@@ -21,12 +21,22 @@
 
     <Target Name="PublishWinToolForInstaller">
         <MSBuild Projects="$(WinToolProject)"
+                 Targets="Restore"
+                 BuildInParallel="false"
+                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=false;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolPublishDir)" />
+
+        <MSBuild Projects="$(WinToolProject)"
                  Targets="Publish"
                  BuildInParallel="false"
                  Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=false;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolPublishDir)" />
     </Target>
 
     <Target Name="PublishWinToolUpdaterForInstaller">
+        <MSBuild Projects="$(WinToolUpdaterProject)"
+                 Targets="Restore"
+                 BuildInParallel="false"
+                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=false;PublishSingleFile=true;IncludeNativeLibrariesForSelfExtract=true;DebugType=None;DebugSymbols=false;PublishDir=$(WinToolUpdaterPublishDir)" />
+
         <MSBuild Projects="$(WinToolUpdaterProject)"
                  Targets="Publish"
                  BuildInParallel="false"
