@@ -17,7 +17,7 @@
                                                     Theme="hyperlinkLargeLicense" />
         </BootstrapperApplication>
 
-        <Variable Name="InstallFolder" Type="formatted" Value="[ProgramFiles64Folder]WinTool" />
+        <Variable Name="InstallFolder" Type="formatted" Value="[ProgramFiles64Folder]WinTool" bal:Overridable="yes" />
 
         <netfx:DotNetCoreSearch Id="DotNetDesktopRuntimeSearch"
                                 Variable="DotNetDesktopRuntimeVersion"

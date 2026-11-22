@@ -1,4 +1,5 @@
 ## v0.11.1
+- Fixed automatic updates ignoring the custom installation folder and preventing the app from restarting afterward
 - Fixed Input popup stealing focus in WinTool text boxes
 - Fixed crashes when detecting the text cursor position for Input popup
 - Fixed resizing of the `Run file with arguments` window and added scrolling for long arguments

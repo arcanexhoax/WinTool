@@ -109,7 +109,7 @@ internal class Program
         await ProcessHelper.WaitForProcessExitAsync(parentProcessId);
         await ProcessHelper.WaitForProcessExitAsync(appProcessId);
 
-        using var installer = ProcessHelper.StartInstaller(installerPath, s_updateDirectory);
+        using var installer = ProcessHelper.StartInstaller(installerPath, s_updateDirectory, Path.GetDirectoryName(appPath)!);
         await installer.WaitForExitAsync();
 
         if (installer.ExitCode is not (0 or RebootRequiredExitCode))

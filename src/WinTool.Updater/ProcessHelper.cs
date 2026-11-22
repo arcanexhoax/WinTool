@@ -4,13 +4,17 @@ namespace WinTool.Updater;
 
 internal class ProcessHelper
 {
-    public static Process StartInstaller(string installerPath, string updateDirectory)
+    public static Process StartInstaller(string installerPath, string updateDirectory, string applicationDirectory)
     {
         var startInfo = new ProcessStartInfo(installerPath)
         {
-            Arguments = $@"/passive /norestart /log ""{Path.Combine(updateDirectory, "update.log")}""",
             UseShellExecute = false,
         };
+        startInfo.ArgumentList.Add("/passive");
+        startInfo.ArgumentList.Add("/norestart");
+        startInfo.ArgumentList.Add("/log");
+        startInfo.ArgumentList.Add(Path.Combine(updateDirectory, "update.log"));
+        startInfo.ArgumentList.Add($"InstallFolder={applicationDirectory}");
 
         return Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start the installer.");
     }
