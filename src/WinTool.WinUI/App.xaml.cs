@@ -1,4 +1,6 @@
+using CommunityToolkit.Mvvm.Input;
 using GlobalKeyInterceptor;
+using H.NotifyIcon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -6,9 +8,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Win32;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using WinTool.WinUI.CommandLine;
@@ -21,6 +25,7 @@ using WinTool.WinUI.ViewModels;
 using WinTool.WinUI.ViewModels.Features;
 using WinTool.WinUI.ViewModels.Settings;
 using WinTool.WinUI.ViewModels.Shortcuts;
+using WinTool.WinUI.Views;
 
 namespace WinTool.WinUI;
 
@@ -36,7 +41,7 @@ public partial class App : Application
     private string? _currentLanguage;
     private AppTheme _currentTheme;
     //private InputPopupWindow? _inputPopupWindow;
-    //private TaskbarIcon? _trayIcon;
+    private TaskbarIcon? _trayIcon;
     private UpdateService? _updateService;
     private IOptionsMonitor<SettingsOptions>? _settingsOptions;
 
@@ -130,8 +135,7 @@ public partial class App : Application
         //_inputPopupWindow = _app.Services.GetRequiredService<InputPopupWindow>();
         MainWindow = _app.Services.GetRequiredService<MainWindow>();
 
-        //_trayIcon = (TaskbarIcon)FindResource("TrayIcon");
-        //_trayIcon.Visibility = Visibility.Visible;
+        InitializeTrayIcon();
 
         _updateService = _app.Services.GetRequiredService<UpdateService>();
         _updateService.UpdateChecked += OnUpdateChecked;
@@ -228,16 +232,45 @@ public partial class App : Application
         _currentTheme = selectedTheme;
     }
 
+    private void InitializeTrayIcon()
+    {
+        _trayIcon = (TaskbarIcon)Resources["TrayIcon"];
+        _trayIcon.LeftClickCommand = new RelayCommand(OnTrayIconOpen);
+
+        var menu = (MenuFlyout)_trayIcon.ContextFlyout;
+        ((MenuFlyoutItem)menu.Items[0]).Command = new RelayCommand(OnTrayIconOpen);
+        ((MenuFlyoutItem)menu.Items[2]).Command = new RelayCommand(OnTrayIconClose);
+
+        UpdateTrayIconLocalization();
+        ApplyUpdateAvailability(_isUpdateAvailable);
+
+        _trayIcon.Visibility = Visibility.Visible;
+        _trayIcon.ForceCreate(enablesEfficiencyMode: false);
+    }
+
+    private void UpdateTrayIconLocalization()
+    {
+        if (_trayIcon is null)
+            return;
+
+        // TODO use .resw to remove this code
+        _trayIcon.ToolTipText = Properties.Resources.TrayToolTip;
+
+        var menu = (MenuFlyout)_trayIcon.ContextFlyout;
+        ((MenuFlyoutItem)menu.Items[0]).Text = Properties.Resources.Open;
+        ((MenuFlyoutItem)menu.Items[2]).Text = Properties.Resources.Close;
+    }
+
     private void ApplyUpdateAvailability(bool isUpdateAvailable)
     {
         _isUpdateAvailable = isUpdateAvailable;
-        //_mainWindow?.SetUpdateOverlay(isUpdateAvailable);
+        MainWindow?.SetUpdateOverlay(isUpdateAvailable);
 
-        //if (_trayIcon is null)
-        //    return;
+        if (_trayIcon is null)
+            return;
 
         var iconName = isUpdateAvailable ? "update.ico" : "icon.ico";
-        //_trayIcon.IconSource = new BitmapImage(new Uri($"pack://application:,,,/Resources/{iconName}"));
+        _trayIcon.Icon = new System.Drawing.Icon(Path.Combine(AppContext.BaseDirectory, "Resources", iconName));
     }
 
     private AppTheme GetSystemTheme()
@@ -271,7 +304,7 @@ public partial class App : Application
     private void RecreateMainWindow()
     {
         var wasVisible = MainWindow?.AppWindow.IsVisible == true;
-        //MainWindow?.ForceClose();
+        MainWindow?.ForceClose();
         MainWindow = _app.Services.GetRequiredService<MainWindow>();
 
         ApplyUpdateAvailability(_isUpdateAvailable);
@@ -280,9 +313,9 @@ public partial class App : Application
             OpenMainWindow();
     }
 
-    private void OnTrayIconOpen(object sender, RoutedEventArgs e) => OpenMainWindow();
+    private void OnTrayIconOpen() => OpenMainWindow();
 
-    private void OnTrayIconClose(object sender, RoutedEventArgs e) => Shutdown();
+    private void OnTrayIconClose() => Shutdown();
 
     private void OnUpdateNotificationClicked(object sender, RoutedEventArgs e)
     {
@@ -322,6 +355,7 @@ public partial class App : Application
             if (settings.Language != _currentLanguage)
             {
                 ApplyLanguage(settings.Language);
+                UpdateTrayIconLocalization();
                 RecreateMainWindow();
             }
         });
@@ -337,7 +371,7 @@ public partial class App : Application
         _isShuttingDown = true;
         _updateService?.UpdateChecked -= OnUpdateChecked;
         _updateService?.NewUpdateAvailable -= OnNewUpdateAvailable;
-        //_trayIcon?.Dispose();
+        _trayIcon?.Dispose();
 
         await _app.StopAsync();
         _app.Dispose();

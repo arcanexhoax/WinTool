@@ -1,12 +1,25 @@
 <Application x:Class="WinTool.WinUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:tb="using:H.NotifyIcon">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <ResourceDictionary Source="UI/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <tb:TaskbarIcon x:Key="TrayIcon"
+                            MenuActivation="RightClick"
+                            Visibility="Collapsed">
+                <tb:TaskbarIcon.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem />
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem />
+                    </MenuFlyout>
+                </tb:TaskbarIcon.ContextFlyout>
+            </tb:TaskbarIcon>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
