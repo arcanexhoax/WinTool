@@ -1,5 +1,9 @@
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using System;
+using System.IO;
+using Windows.Graphics;
 using WinTool.WinUI.ViewModels;
 
 namespace WinTool.WinUI.Views;
@@ -14,7 +18,23 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(AppTitleBar);
+        AppWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
+        AppWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+
         ((FrameworkElement)Content).DataContext = ViewModel = mainViewModel;
+
+        AppWindow.Resize(new SizeInt32(1000, 600));
+        AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Resources", "icon.ico"));
+
+        if (AppWindow.Presenter is OverlappedPresenter presenter)
+        {
+            presenter.PreferredMinimumWidth = 900;
+            presenter.PreferredMinimumHeight = 400;
+        }
+
+        Tabs.SelectedItem = ShortcutsTab;
 
         AppWindow.Closing += OnClosing;
         Closed += OnClosed;
@@ -28,7 +48,7 @@ public partial class MainWindow : Window
 
     public void OpenAboutSettings()
     {
-        //Tabs.SelectedItem = SettingsTab;
+        Tabs.SelectedItem = SettingsTab;
 
         //if (TabContent.Content is SettingsView settingsView)
         //    settingsView.OpenAbout();

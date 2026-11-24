@@ -9,7 +9,6 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.Win32;
 using System;
 using System.Globalization;
 using System.IO;
@@ -126,7 +125,6 @@ public partial class App : Application
         var processHelper = _app.Services.GetRequiredService<ProcessHelper>();
 
         ApplyLanguage(settings.Language);
-        ApplyTheme(settings.AppTheme);
 
         if (RunAsAdminIfNeeded(processHelper, settings, clp))
             return;
@@ -135,6 +133,7 @@ public partial class App : Application
         //_inputPopupWindow = _app.Services.GetRequiredService<InputPopupWindow>();
         MainWindow = _app.Services.GetRequiredService<MainWindow>();
 
+        ApplyTheme(settings.AppTheme);
         InitializeTrayIcon();
 
         _updateService = _app.Services.GetRequiredService<UpdateService>();
@@ -211,23 +210,17 @@ public partial class App : Application
 
     private void ApplyTheme(AppTheme selectedTheme)
     {
-        var selectedThemeName = selectedTheme.ToString();
+        if (MainWindow?.Content is FrameworkElement root)
+        {
+            root.RequestedTheme = selectedTheme switch
+            {
+                AppTheme.Light => ElementTheme.Light,
+                AppTheme.Dark => ElementTheme.Dark,
+                _ => ElementTheme.Default
+            };
+        }
 
-        //if (Current.ThemeMode.Value != selectedThemeName)
-        //    Current.ThemeMode = new ThemeMode(selectedThemeName);
-
-        //var actualTheme = selectedTheme == AppTheme.System ? GetSystemTheme() : selectedTheme;
-
-        //if (actualTheme == AppTheme.Dark)
-        //{
-        //    Current.Resources["EmptyBackdropBrush"] = new SolidColorBrush(Color.FromArgb(0xFF, 0x20, 0x20, 0x20));
-        //    Current.Resources["AcrylicLayoutBrush"] = new SolidColorBrush(Color.FromArgb(0x99, 0x00, 0x00, 0x00));
-        //}
-        //else
-        //{
-        //    Current.Resources["EmptyBackdropBrush"] = new SolidColorBrush(Color.FromArgb(0xFF, 0xF0, 0xF0, 0xF0));
-        //    Current.Resources["AcrylicLayoutBrush"] = new SolidColorBrush(Color.FromArgb(0x99, 0xFF, 0xFF, 0xFF));
-        //}
+        //_inputPopupWindow?.RefreshBackdrop();
 
         _currentTheme = selectedTheme;
     }
@@ -273,18 +266,6 @@ public partial class App : Application
         _trayIcon.Icon = new System.Drawing.Icon(Path.Combine(AppContext.BaseDirectory, "Resources", iconName));
     }
 
-    private AppTheme GetSystemTheme()
-    {
-        const string keyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
-        using var key = Registry.CurrentUser.OpenSubKey(keyPath);
-
-        if (key == null)
-            return AppTheme.Light;
-
-        var value = key.GetValue("AppsUseLightTheme");
-        return value is int i && i == 0 ? AppTheme.Dark : AppTheme.Light;
-    }
-
     private void OpenMainWindow()
     {
         _app.Services.GetRequiredService<AppState>().IsBackgroundMode = false;
@@ -307,6 +288,7 @@ public partial class App : Application
         MainWindow?.ForceClose();
         MainWindow = _app.Services.GetRequiredService<MainWindow>();
 
+        ApplyTheme(_currentTheme);
         ApplyUpdateAvailability(_isUpdateAvailable);
 
         if (wasVisible)
@@ -347,10 +329,7 @@ public partial class App : Application
         Dispatcher.TryEnqueue(() =>
         {
             if (settings.AppTheme != _currentTheme)
-            {
                 ApplyTheme(settings.AppTheme);
-                //_inputPopupWindow?.RefreshBackdrop();
-            }
 
             if (settings.Language != _currentLanguage)
             {

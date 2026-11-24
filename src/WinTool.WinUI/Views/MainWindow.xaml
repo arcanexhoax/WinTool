@@ -1,10 +1,61 @@
 <Window x:Class="WinTool.WinUI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="WinTool">
+        xmlns:p="using:WinTool.WinUI.Properties"
+        Title="{x:Bind p:Resources.WinTool}">
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
     <Grid>
-        <TextBlock Text="WinTool.WinUI"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TitleBar x:Name="AppTitleBar"
+                  Title="{x:Bind p:Resources.WinTool}"
+                  Background="Transparent">
+            <TitleBar.IconSource>
+                <BitmapIconSource UriSource="ms-appx:///Resources/icon.ico"
+                                  ShowAsMonochrome="False" />
+            </TitleBar.IconSource>
+        </TitleBar>
+
+        <NavigationView x:Name="Tabs"
+                        IsBackButtonVisible="Collapsed"
+                        IsPaneToggleButtonVisible="False"
+                        IsSettingsVisible="False"
+                        OpenPaneLength="260"
+                        PaneDisplayMode="Left"
+                        Grid.Row="1">
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Name="ShortcutsTab"
+                                    Content="{x:Bind p:Resources.Shortcuts}">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="ms-appx:///Resources/Icons/keyboard.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="FeaturesTab"
+                                    Content="{x:Bind p:Resources.Features}">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="ms-appx:///Resources/Icons/idea.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem x:Name="SettingsTab"
+                                    Content="{x:Bind p:Resources.Settings}">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="ms-appx:///Resources/Icons/settings.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+
+            <TextBlock Text="{Binding SelectedItem.Content, ElementName=Tabs}"
+                       Style="{StaticResource TitleTextBlockStyle}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+        </NavigationView>
     </Grid>
 </Window>
