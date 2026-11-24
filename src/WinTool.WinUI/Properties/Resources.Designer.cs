@@ -79,15 +79,6 @@ namespace WinTool.WinUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The app is already running as administrator, but an unauthorized access error occurred: {0}.
-        /// </summary>
-        public static string AlreadyRunnningAsAdminError {
-            get {
-                return ResourceManager.GetString("AlreadyRunnningAsAdminError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Always run as administrator.
         /// </summary>
         public static string AlwaysRunAsAdmin {
@@ -264,15 +255,6 @@ namespace WinTool.WinUI.Properties {
         public static string Features {
             get {
                 return ResourceManager.GetString("Features", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to create file &apos;{0}&apos;: {1}.
-        /// </summary>
-        public static string FileCreationError {
-            get {
-                return ResourceManager.GetString("FileCreationError", resourceCulture);
             }
         }
         
@@ -480,15 +462,6 @@ namespace WinTool.WinUI.Properties {
         public static string RunAsAdmin {
             get {
                 return ResourceManager.GetString("RunAsAdmin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Run WinTool as admin failed: {0}.
-        /// </summary>
-        public static string RunAsAdminError {
-            get {
-                return ResourceManager.GetString("RunAsAdminError", resourceCulture);
             }
         }
         

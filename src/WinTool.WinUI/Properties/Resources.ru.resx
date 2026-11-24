@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AlreadyRunnningAsAdminError" xml:space="preserve">
-    <value>Приложение уже запущено от имени администратора, но получено: {0}</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Отмена</value>
   </data>
@@ -141,9 +138,6 @@
   </data>
   <data name="Features" xml:space="preserve">
     <value>Функции</value>
-  </data>
-  <data name="FileCreationError" xml:space="preserve">
-    <value>Не удалось создать файл '{0}': {1}</value>
   </data>
   <data name="GetSettingsError" xml:space="preserve">
     <value>Не удалось получить настройки: {0}</value>
@@ -168,9 +162,6 @@
   <data name="Run" xml:space="preserve">
     <value>Запустить</value>
     <comment>Run [an app]</comment>
-  </data>
-  <data name="RunAsAdminError" xml:space="preserve">
-    <value>Не удалось запустить WinTool от имени администратора: {0}</value>
   </data>
   <data name="RunFormat" xml:space="preserve">
     <value>Запустить "{0}" с аргументами</value>

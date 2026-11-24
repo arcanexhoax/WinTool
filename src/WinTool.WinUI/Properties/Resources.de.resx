@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AlreadyRunnningAsAdminError" xml:space="preserve">
-    <value>Die App wird bereits als Administrator ausgeführt, aber es wurde Folgendes zurückgegeben: {0}</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
@@ -141,9 +138,6 @@
   </data>
   <data name="Features" xml:space="preserve">
     <value>Funktionen</value>
-  </data>
-  <data name="FileCreationError" xml:space="preserve">
-    <value>Datei '{0}' konnte nicht erstellt werden: {1}</value>
   </data>
   <data name="GetSettingsError" xml:space="preserve">
     <value>Einstellungen konnten nicht abgerufen werden: {0}</value>
@@ -168,9 +162,6 @@
   <data name="Run" xml:space="preserve">
     <value>Ausführen</value>
     <comment>Run [an app]</comment>
-  </data>
-  <data name="RunAsAdminError" xml:space="preserve">
-    <value>WinTool konnte nicht als Administrator ausgeführt werden: {0}</value>
   </data>
   <data name="RunFormat" xml:space="preserve">
     <value>"{0}" mit Argumenten ausführen</value>

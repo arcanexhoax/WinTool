@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AlreadyRunnningAsAdminError" xml:space="preserve">
-    <value>L’application est déjà en cours d’exécution en tant qu’administrateur, mais a renvoyé : {0}</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Annuler</value>
   </data>
@@ -141,9 +138,6 @@
   </data>
   <data name="Features" xml:space="preserve">
     <value>Fonctionnalités</value>
-  </data>
-  <data name="FileCreationError" xml:space="preserve">
-    <value>Échec de la création du fichier '{0}' : {1}</value>
   </data>
   <data name="GetSettingsError" xml:space="preserve">
     <value>Échec de la récupération des paramètres : {0}</value>
@@ -168,9 +162,6 @@
   <data name="Run" xml:space="preserve">
     <value>Exécuter</value>
     <comment>Run [an app]</comment>
-  </data>
-  <data name="RunAsAdminError" xml:space="preserve">
-    <value>Échec de l’exécution de WinTool en tant qu’administrateur : {0}</value>
   </data>
   <data name="RunFormat" xml:space="preserve">
     <value>Exécuter "{0}" avec des arguments</value>

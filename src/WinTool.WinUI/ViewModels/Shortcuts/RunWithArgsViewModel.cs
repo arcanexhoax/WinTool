@@ -1,0 +1,68 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System;
+using System.IO;
+using WinTool.WinUI.Models;
+
+namespace WinTool.WinUI.ViewModels.Shortcuts;
+
+public partial class RunWithArgsViewModel : ObservableObject, IDialogViewModel<string, RunWithArgsOutput>
+{
+    private readonly RunWithArgsDialogState _state;
+
+    private Action<Result<RunWithArgsOutput>>? _onResult;
+
+    [ObservableProperty]
+    public partial string? FileName { get; set; }
+
+    [ObservableProperty]
+    public partial string? FullFilePath { get; set; }
+
+    [ObservableProperty]
+    public partial string? Args { get; set; }
+
+    [ObservableProperty]
+    public partial bool RunAsAdmin { get; set; }
+
+    [ObservableProperty]
+    public partial bool KeepConsoleOpen { get; set; }
+
+    [ObservableProperty]
+    public partial bool AreOptionsOpened { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsTextSelected { get; set; }
+
+    public RelayCommand RunCommand { get; }
+    public RelayCommand CloseWindowCommand { get; }
+
+    public RunWithArgsViewModel(RunWithArgsDialogState state)
+    {
+        _state = state;
+
+        Args = _state.Args;
+        RunAsAdmin = _state.RunAsAdmin;
+        KeepConsoleOpen = _state.KeepConsoleOpen;
+
+        RunCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(true, new RunWithArgsOutput(Args, RunAsAdmin, KeepConsoleOpen))));
+        CloseWindowCommand = new RelayCommand(() => _onResult?.Invoke(new Result<RunWithArgsOutput>(false)));
+    }
+
+    public void OnShow(string filePath, Action<Result<RunWithArgsOutput>> onResult)
+    {
+        _onResult = onResult;
+
+        FileName = Path.GetFileName(filePath);
+        FullFilePath = filePath;
+        IsTextSelected = true;
+        AreOptionsOpened = RunAsAdmin || KeepConsoleOpen;
+    }
+
+    public void OnClose()
+    {
+        _state.Args = Args;
+        _state.RunAsAdmin = RunAsAdmin;
+        _state.KeepConsoleOpen = KeepConsoleOpen;
+        _onResult = null;
+    }
+}

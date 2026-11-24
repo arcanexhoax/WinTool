@@ -1,0 +1,293 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using WinTool.WinUI.CommandLine;
+using WinTool.WinUI.Models;
+using WinTool.WinUI.Options;
+using WinTool.WinUI.Properties;
+using WinTool.WinUI.Services;
+
+namespace WinTool.WinUI.ViewModels.Settings;
+
+public partial class SettingsViewModel : ObservableObject, IDisposable
+{
+    private const string GitHubUri = "https://github.com/arcanexhoax/WinTool";
+    private const string RegKeyName = "WinTool";
+
+    private readonly ILogger _logger;
+    private readonly AppState _appState;
+    private readonly ProcessHelper _processHelper;
+    private readonly WritableOptions<SettingsOptions> _settingsOptions;
+    private readonly UpdateService _updateService;
+    private readonly DialogService _dialogService;
+
+    private bool _isInitializing;
+    private Uri? _releaseUri;
+    private GitHubReleaseAsset? _updateAsset;
+    private CancellationTokenSource? _downloadCts;
+
+    public bool LaunchOnWindowsStartup
+    {
+        get; set
+        {
+            try
+            {
+                if (SetProperty(ref field, value) && !_isInitializing)
+                {
+                    _settingsOptions.Update(o => o.WindowsStartupEnabled = value);
+                }
+
+                using RegistryKey runKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true) ??
+                    throw new InvalidOperationException("Unable to open registry.");
+
+                if (value)
+                {
+                    runKey.SetValue(RegKeyName, $@"""{Environment.ProcessPath!}"" {BackgroundParameter.ParameterName}");
+                }
+                else
+                {
+                    if (runKey.GetValue(RegKeyName) is not null)
+                        runKey.DeleteValue(RegKeyName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error setting Windows startup");
+                _ = _dialogService.ShowErrorAsync(string.Format(Resources.SetWindowsStartupError, ex.Message));
+            }
+        }
+    }
+
+    public bool AlwaysRunAsAdmin
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.AlwaysRunAsAdmin = value);
+            }
+        }
+    }
+
+    public AppTheme SelectedAppTheme
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.AppTheme = value);
+            }
+        }
+    }
+
+    public AnimationMode SelectedAnimationMode
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.AnimationMode = value);
+            }
+        }
+    }
+
+    public string? SelectedLanguage
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.Language = value);
+            }
+        }
+    }
+
+    public bool NewVersionNotifications
+    {
+        get; set
+        {
+            if (SetProperty(ref field, value) && !_isInitializing)
+            {
+                _settingsOptions.Update(o => o.Notifications.NewVersions = value);
+            }
+        }
+    }
+
+    [ObservableProperty]
+    public partial UpdateState UpdateState { get; set; }
+
+    [ObservableProperty]
+    public partial string CurrentVersion { get; set; }
+
+    [ObservableProperty]
+    public partial string AvailableVersion { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial double DownloadProgress { get; set; }
+
+    [ObservableProperty]
+    public partial string DownloadProgressText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string UpdateErrorMessage { get; set; } = string.Empty;
+
+    public SettingsViewModel(ILogger<SettingsViewModel> logger, ProcessHelper processHelper, AppState appState, WritableOptions<SettingsOptions> settingsOptions, UpdateService updateService, DialogService dialogService)
+    {
+        _logger = logger;
+        _processHelper = processHelper;
+        _settingsOptions = settingsOptions;
+        _updateService = updateService;
+        _dialogService = dialogService;
+        _updateService.BackgroundCheckStateChanged += OnBackgroundCheckStateChanged;
+        _appState = appState;
+        _isInitializing = true;
+
+        LaunchOnWindowsStartup = _settingsOptions.CurrentValue.WindowsStartupEnabled;
+        AlwaysRunAsAdmin = _settingsOptions.CurrentValue.AlwaysRunAsAdmin;
+        SelectedAppTheme = _settingsOptions.CurrentValue.AppTheme;
+        SelectedAnimationMode = _settingsOptions.CurrentValue.AnimationMode;
+        SelectedLanguage = _settingsOptions.CurrentValue.Language;
+        NewVersionNotifications = _settingsOptions.CurrentValue.Notifications.NewVersions;
+        CurrentVersion = _appState.Version.ToString(3);
+
+        _isInitializing = false;
+
+        ApplyUpdateState(_updateService.CurrentBackgroundCheckState);
+    }
+
+    [RelayCommand]
+    private async Task CheckForUpdatesAsync()
+    {
+        UpdateState = UpdateState.Checking;
+        UpdateErrorMessage = string.Empty;
+        _updateAsset = null;
+        _releaseUri = null;
+
+        try
+        {
+            var result = await _updateService.CheckForUpdateAsync();
+
+            _updateAsset = result.Asset;
+            _releaseUri = result.ReleaseUri;
+            AvailableVersion = result.LatestVersion.ToString(3);
+            UpdateState = result.IsUpdateAvailable ? UpdateState.Available : UpdateState.UpToDate;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to check for updates");
+            UpdateErrorMessage = ex.Message;
+            UpdateState = UpdateState.Error;
+        }
+    }
+
+    [RelayCommand]
+    private void ShowReleaseNotes()
+    {
+        if (_releaseUri is not null)
+            _processHelper.Start(_releaseUri.AbsoluteUri, null, false);
+    }
+
+    [RelayCommand]
+    private async Task DownloadAndInstallAsync()
+    {
+        var updateAsset = _updateAsset;
+
+        if (updateAsset is null)
+            return;
+
+        using var cts = new CancellationTokenSource();
+        _downloadCts = cts;
+
+        DownloadProgress = 0;
+        DownloadProgressText = string.Empty;
+        UpdateErrorMessage = string.Empty;
+        UpdateState = UpdateState.Downloading;
+
+        var progress = new Progress<UpdateDownloadProgress>(value =>
+        {
+            DownloadProgress = value.Percentage;
+            DownloadProgressText = $"{FormatMegabytes(value.BytesReceived)} / {FormatMegabytes(value.TotalBytes)}";
+        });
+
+        try
+        {
+            var installerPath = await _updateService.DownloadUpdateAsync(updateAsset, progress, cts.Token);
+            DownloadProgress = 100;
+            UpdateState = UpdateState.Installing;
+
+            await _updateService.StartUpdateAsync(installerPath, updateAsset.Id, _appState.IsBackgroundMode, _processHelper.IsAdmin);
+        }
+        catch (OperationCanceledException) when (cts.IsCancellationRequested)
+        {
+            UpdateState = UpdateState.Available;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to download or start update");
+            UpdateErrorMessage = ex.Message;
+            UpdateState = UpdateState.Error;
+        }
+        finally
+        {
+            _downloadCts = null;
+        }
+    }
+
+    [RelayCommand]
+    private void CancelUpdate()
+    {
+        _downloadCts?.Cancel();
+    }
+
+    [RelayCommand]
+    private void OpenGitHub()
+    {
+        _processHelper.Start(GitHubUri, null, false);
+    }
+
+    private void OnBackgroundCheckStateChanged(UpdateStateInfo state)
+    {
+        if (App.Dispatcher.HasThreadAccess)
+        {
+            ApplyUpdateState(state);
+        }
+        else
+        {
+            App.Dispatcher.TryEnqueue(() => ApplyUpdateState(state));
+        }
+    }
+
+    private void ApplyUpdateState(UpdateStateInfo state)
+    {
+        UpdateState = state.State;
+        UpdateErrorMessage = state.Error?.Message ?? string.Empty;
+
+        if (state.State is UpdateState.Checking)
+        {
+            _updateAsset = null;
+            _releaseUri = null;
+        }
+
+        if (state.Result is { } result)
+        {
+            _updateAsset = result.Asset;
+            _releaseUri = result.ReleaseUri;
+            AvailableVersion = result.LatestVersion.ToString(3);
+        }
+    }
+
+    private string FormatMegabytes(long bytes)
+    {
+        return $"{bytes / 1024d / 1024d:N1} MB";
+    }
+
+    public void Dispose()
+    {
+        _updateService.BackgroundCheckStateChanged -= OnBackgroundCheckStateChanged;
+    }
+}
+
