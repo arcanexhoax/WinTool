@@ -1,0 +1,54 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:WinTool.WinUI.UI.Controls">
+    <Style TargetType="controls:Shortcut">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:Shortcut">
+                    <ItemsControl ItemsSource="{TemplateBinding Tokens}"
+                                  FontSize="{TemplateBinding FontSize}"
+                                  FontWeight="{TemplateBinding FontWeight}"
+                                  Foreground="{TemplateBinding Foreground}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="6" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border x:Name="TokenBorder"
+                                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                        CornerRadius="4"
+                                        MinWidth="{Binding ActualHeight, ElementName=TokenBorder}"
+                                        Padding="12 6">
+                                    <Grid MinWidth="{Binding Owner.FontSize}"
+                                          MinHeight="{Binding Owner.FontSize}">
+                                        <TextBlock Text="{Binding Text}"
+                                                   FontSize="{Binding Owner.FontSize}"
+                                                   FontWeight="{Binding Owner.FontWeight}"
+                                                   Foreground="{Binding Owner.Foreground}"
+                                                   Visibility="{Binding TextVisibility}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                        <Viewbox Visibility="{Binding WindowsVisibility}"
+                                                 Width="{Binding Owner.FontSize}"
+                                                 Height="{Binding Owner.FontSize}">
+                                            <Path Data="M7 7H0V0H7V7ZM15 7H8V0H15V7ZM7 15H0V8H7V15ZM15 15H8V8H15V15Z"
+                                                  Fill="{Binding Owner.Foreground}"
+                                                  Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

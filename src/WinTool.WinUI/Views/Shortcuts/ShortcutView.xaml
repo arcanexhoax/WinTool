@@ -1,0 +1,47 @@
+<UserControl x:Class="WinTool.WinUI.Views.Shortcuts.ShortcutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctrl="using:WinTool.WinUI.UI.Controls"
+             xmlns:p="using:WinTool.WinUI.Properties">
+    <Grid Height="32"
+          ColumnDefinitions="Auto, *, 20, Auto">
+        <TextBlock Text="{x:Bind ViewModel.Icon}"
+                   FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                   FontSize="18"
+                   Margin="0 0 20 0"
+                   VerticalAlignment="Center" />
+
+        <TextBlock Text="{x:Bind ViewModel.Description}"
+                   ToolTipService.ToolTip="{x:Bind ViewModel.Description}"
+                   TextTrimming="CharacterEllipsis"
+                   VerticalAlignment="Center"
+                   Grid.Column="1" />
+
+        <StackPanel Background="Transparent"
+                    Orientation="Horizontal"
+                    PointerEntered="OnPointerEntered"
+                    PointerExited="OnPointerExited"
+                    HorizontalAlignment="Right"
+                    Grid.Column="3">
+            <Button x:Name="EditButton"
+                    Command="{x:Bind ViewModel.EditShortcutCommand}"
+                    IsTabStop="False"
+                    Visibility="Collapsed"
+                    Margin="0 0 8 0">
+                <TextBlock Text="{StaticResource Icon.Edit}"
+                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                           FontSize="12" />
+            </Button>
+
+            <ctrl:Shortcut Value="{x:Bind ViewModel.Shortcut, Mode=OneWay}"
+                           Visibility="{x:Bind GetShortcutVisibility(ViewModel.Shortcut), Mode=OneWay}"
+                           FontSize="14"
+                           VerticalAlignment="Center" />
+
+            <TextBlock Text="{x:Bind p:Resources.NotSpecified}"
+                       Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                       Visibility="{x:Bind GetNotSpecifiedVisibility(ViewModel.Shortcut), Mode=OneWay}"
+                       VerticalAlignment="Center" />
+        </StackPanel>
+    </Grid>
+</UserControl>

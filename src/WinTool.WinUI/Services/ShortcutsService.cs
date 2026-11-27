@@ -52,6 +52,7 @@ public partial class ShortcutsService : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // TODO move to ctor
         foreach (var (name, scStr) in _options.CurrentValue.Shortcuts)
         {
             if (Shortcut.TryParse(scStr, KeyState.Down, out var shortcut)

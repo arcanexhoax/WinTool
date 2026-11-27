@@ -25,6 +25,7 @@ using WinTool.WinUI.ViewModels.Features;
 using WinTool.WinUI.ViewModels.Settings;
 using WinTool.WinUI.ViewModels.Shortcuts;
 using WinTool.WinUI.Views;
+using WinTool.WinUI.Views.Shortcuts;
 
 namespace WinTool.WinUI;
 
@@ -67,11 +68,11 @@ public partial class App : Application
         builder.Services.Configure<UpdateOptions>(builder.Configuration.GetSection(nameof(UpdateOptions)));
 
         builder.Services.AddTransient<MainWindow>();
-        //builder.Services.AddTransient<ShortcutsView>();
-        //builder.Services.AddTransient<EditShortcutView>();
+        builder.Services.AddTransient<ShortcutsView>();
+        builder.Services.AddTransient<EditShortcutView>();
+        builder.Services.AddTransient<RunWithArgsWindow>();
         //builder.Services.AddTransient<FeaturesView>();
         //builder.Services.AddTransient<SettingsView>();
-        //builder.Services.AddTransient<RunWithArgsWindow>();
         //builder.Services.AddTransient<InputPopupWindow>();
         builder.Services.AddTransient<MainViewModel>();
         builder.Services.AddTransient<InputPopupViewModel>();

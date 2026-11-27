@@ -9,6 +9,9 @@ public class NativeMethods
 {
     // TODO clean up methods and classes
     private const int SW_NORMAL = 1;
+    private const uint WM_SYSCOMMAND = 0x0112;
+    private const uint WM_LBUTTONUP = 0x0202;
+    private const int SC_MOUSEMOVE = 0xF012;
     public const int CHILDID_SELF = 0;
     public const uint OBJID_CARET = 0xFFFFFFF8;
     public const int GA_ROOTOWNER = 3;
@@ -53,6 +56,13 @@ public class NativeMethods
 
     [DllImport("user32.dll")]
     internal static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool ReleaseCapture();
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    private static extern nint SendMessage(nint hWnd, uint msg, nint wParam, nint lParam);
 
     [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
     internal static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
@@ -175,6 +185,13 @@ public class NativeMethods
         SetForegroundWindow(hwnd);
 
         return true;
+    }
+
+    public static void DragMove(nint hwnd)
+    {
+        ReleaseCapture();
+        SendMessage(hwnd, WM_SYSCOMMAND, SC_MOUSEMOVE, nint.Zero);
+        SendMessage(hwnd, WM_LBUTTONUP, nint.Zero, nint.Zero);
     }
 
     public static void ShowWindowAsPopup(nint hwnd)

@@ -1,0 +1,31 @@
+<ContentDialog x:Class="WinTool.WinUI.Views.Shortcuts.EditShortcutView"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:ctrl="using:WinTool.WinUI.UI.Controls"
+               xmlns:p="using:WinTool.WinUI.Properties"
+               Title="{x:Bind p:Resources.EnterNewShortcut}"
+               CloseButtonCommand="{x:Bind ViewModel.CancelCommand}"
+               CloseButtonText="{x:Bind p:Resources.Cancel}"
+               DefaultButton="Primary"
+               IsPrimaryButtonEnabled="False"
+               PrimaryButtonCommand="{x:Bind ViewModel.SaveCommand}"
+               PrimaryButtonText="{x:Bind p:Resources.Save}"
+               Style="{StaticResource DefaultContentDialogStyle}">
+    <StackPanel>
+        <TextBlock Text="{x:Bind p:Resources.EditShortcutTip}"
+                   TextWrapping="Wrap" />
+
+        <StackPanel Margin="0 36 0 0">
+            <ctrl:Shortcut Value="{x:Bind ViewModel.Shortcut, Mode=OneWay}"
+                           FontSize="30"
+                           HorizontalAlignment="Center" />
+
+            <TextBlock Text="{x:Bind ViewModel.ErrorText, Mode=OneWay}"
+                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                       TextWrapping="Wrap"
+                       Visibility="{x:Bind ViewModel.IsErrorShown, Mode=OneWay}"
+                       Margin="0 16 0 0"
+                       HorizontalAlignment="Center" />
+        </StackPanel>
+    </StackPanel>
+</ContentDialog>

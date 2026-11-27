@@ -7,12 +7,7 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
+    <Grid RowDefinitions="Auto, *">
         <TitleBar x:Name="AppTitleBar"
                   Title="{x:Bind p:Resources.WinTool}"
                   Background="Transparent">
@@ -28,7 +23,13 @@
                         IsSettingsVisible="False"
                         OpenPaneLength="260"
                         PaneDisplayMode="Left"
+                        SelectionChanged="OnTabSelected"
                         Grid.Row="1">
+            <NavigationView.Resources>
+                <Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>
+                <SolidColorBrush x:Key="NavigationViewContentBackground"
+                                 Color="Transparent" />
+            </NavigationView.Resources>
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Name="ShortcutsTab"
                                     Content="{x:Bind p:Resources.Shortcuts}">
@@ -52,10 +53,14 @@
                 </NavigationViewItem>
             </NavigationView.FooterMenuItems>
 
-            <TextBlock Text="{Binding SelectedItem.Content, ElementName=Tabs}"
-                       Style="{StaticResource TitleTextBlockStyle}"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
+            <Frame x:Name="TabContent"
+                   IsNavigationStackEnabled="False">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <NavigationThemeTransition />
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
         </NavigationView>
     </Grid>
 </Window>
